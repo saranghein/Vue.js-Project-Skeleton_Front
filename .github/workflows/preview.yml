@@ -1,0 +1,78 @@
+name: pr-preview
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches: ['main', 'develop']
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+  pages: write
+  deployments: write
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Get Vercel Environment Variables
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Install Dependencies and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
+          echo "preview_url=$(cat vercel-output.txt)" >> $GITHUB_OUTPUT
+
+      - name: Run Lighthouse
+        id: lighthouse
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          urls: |
+            ${{ steps.deploy.outputs.preview_url }}
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          separator: '\n'
+
+      - name: Comment PR with Preview URL and Lighthouse scores
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🎉 구현한 기능 Preview: ${{ steps.deploy.outputs.preview_url }}
+
+            🧩 변경된 파일
+            ${{ steps.changed-files.outputs.files }}
+
+            Lighthouse 점수:
+            - Performance: ${{ steps.lighthouse.outputs.performance }}
+            - Accessibility: ${{ steps.lighthouse.outputs.accessibility }}
+            - Best Practices: ${{ steps.lighthouse.outputs.best-practices }}
+            - SEO: ${{ steps.lighthouse.outputs.seo }}
