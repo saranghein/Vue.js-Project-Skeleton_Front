@@ -47,8 +47,14 @@ jobs:
         id: deploy
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
-          url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt | head -n 1)
-          echo "preview_url=$url" >> $GITHUB_OUTPUT
+
+          echo "🔍 Raw vercel-output.txt content:"
+          cat vercel-output.txt
+
+          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt)
+          echo "🔍 Extracted preview_url: $preview_url"
+
+          echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
       - name: Run Lighthouse
         id: lighthouse
@@ -57,12 +63,18 @@ jobs:
           urls: |
             ${{ steps.deploy.outputs.preview_url }}
 
+      - name: Debug Lighthouse Outputs
+        run: |
+          echo "📊 Lighthouse Performance: ${{ steps.lighthouse.outputs.performance }}"
+          echo "📊 Lighthouse Accessibility: ${{ steps.lighthouse.outputs.accessibility }}"
+          echo "📊 Lighthouse Best Practices: ${{ steps.lighthouse.outputs.best-practices }}"
+          echo "📊 Lighthouse SEO: ${{ steps.lighthouse.outputs.seo }}"
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
           separator: '\n'
-          fetch-depth: 0
 
       - name: Comment PR with Preview URL and Lighthouse scores
         uses: thollander/actions-comment-pull-request@v2
@@ -72,7 +84,7 @@ jobs:
 
             🧩 변경된 파일
             ```
-            ${{ steps.changed-files.outputs.all_changed_files }}
+            ${{ steps.changed-files.outputs.files }}
             ```
 
 
