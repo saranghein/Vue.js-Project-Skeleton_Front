@@ -47,7 +47,8 @@ jobs:
         id: deploy
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
-          echo "preview_url=$(cat vercel-output.txt)" >> $GITHUB_OUTPUT
+          url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt | head -n 1)
+          echo "preview_url=$url" >> $GITHUB_OUTPUT
 
       - name: Run Lighthouse
         id: lighthouse
@@ -61,6 +62,7 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           separator: '\n'
+          fetch-depth: 0
 
       - name: Comment PR with Preview URL and Lighthouse scores
         uses: thollander/actions-comment-pull-request@v2
@@ -69,7 +71,10 @@ jobs:
             🎉 구현한 기능 Preview: ${{ steps.deploy.outputs.preview_url }}
 
             🧩 변경된 파일
-            ${{ steps.changed-files.outputs.files }}
+            ```
+            ${{ steps.changed-files.outputs.all_changed_files }}
+            ```
+
 
             Lighthouse 점수:
             - Performance: ${{ steps.lighthouse.outputs.performance }}
