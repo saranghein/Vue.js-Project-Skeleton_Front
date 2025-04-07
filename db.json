@@ -1,44 +1,36 @@
 {
-  "budget": [
+  "money": [
     {
       "id": 1,
-      "date": "2025-04-01",
-      "type": "income",
+      "user_id": 1,
+      "flow_type": "수입",
+      "date": "2025-04-01T00:00:00",
+      "amount": 3000000,
       "category": "월급",
-      "detailCategory": "정기급여",
-      "amout": 3000000,
-      "memo": "4월 급여"
+      "memo": "4월 급여",
+      "payment": "계좌이체"
     },
     {
       "id": 2,
-      "date": "2025-04-02",
-      "type": "expense",
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-02T12:30:00",
+      "amount": 12000,
       "category": "식비",
-      "detailCategory": "점심",
-      "amout": 12000,
-      "memo": "회사 근처 식당"
+      "memo": "회사 근처 식당",
+      "payment": "신용/체크"
     }
   ],
-  "incomeCategory": [
-    { "id": 1, "name": "월급" },
-    { "id": 2, "name": "용돈" },
-    { "id": 3, "name": "이자" },
-    { "id": 4, "name": "기타수입" }
-  ],
-  "expenseCategory": [
-    { "id": 1, "name": "식비" },
-    { "id": 2, "name": "교통비" },
-    { "id": 3, "name": "취미생활" },
-    { "id": 4, "name": "공과금" }
-  ],
-  "periodicExpense": [
+
+  "users": [
     {
       "id": 1,
-      "date": "2025-04-01",
-      "type": "expense",
-      "category": "공과금",
-      "amout": 100000,
-      "memo": "전기요금 자동이체"
+      "nickname": "홍길동",
+      "birth": "1990-01-01",
+      "phone": "010-1234-5678",
+      "email": "hong@example.com",
+      "user_id": "hong123",
+      "user_pw": "securepassword"
     }
   ]
 }
