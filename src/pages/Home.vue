@@ -33,14 +33,12 @@
           {{ item.amount.toLocaleString() }}원
         </div>
       </div>
-
-      <IncomeExpenseChart :data="budget" />
-      <DoughnutChart :data="budget" type="수입" />
-      <DoughnutChart :data="budget" type="지출" />
-
       <div class="more-button-wrap">
         <button class="more-button" @click="goToDetails">자세히 보기</button>
       </div>
+      <IncomeExpenseChart :data="budget" />
+      <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+      <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
     </section>
 
     <button class="fab" @click="goToAdd">＋</button>

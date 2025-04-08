@@ -1,25 +1,39 @@
 <template>
-  <div class="chart-wrapper">
+  <div
+    ref="observerTarget"
+    class="chart-wrapper scroll-hidden"
+    :class="{ 'scroll-visible': isVisible }"
+  >
     <h3>{{ type }} 카테고리 비율</h3>
 
     <div class="chart-area">
       <Doughnut :data="chartData" :options="chartOptions" />
     </div>
 
-    <div v-if="selectedCategory" class="detail-list">
-      <h4>📂 {{ selectedCategory }} 상세 내역</h4>
-      <ul>
-        <li v-for="item in filteredItems" :key="item.id">
-          {{ item.date.slice(0, 10) }} - {{ item.memo }} -
-          {{ item.amount.toLocaleString() }}원
-        </li>
-      </ul>
-    </div>
+    <transition name="fade-slide" mode="out-in">
+      <div v-if="selectedCategory" class="detail-list" :key="selectedCategory">
+        <h4>📂 {{ selectedCategory }} 상세 내역</h4>
+        <ul class="detail-list-ul">
+          <li v-for="item in filteredItems" :key="item.id" class="detail-item">
+            <div class="detail-left">
+              <p class="detail-date">{{ item.date.slice(0, 10) }}</p>
+              <p class="detail-memo">{{ item.memo }}</p>
+            </div>
+            <div
+              class="detail-amount"
+              :class="item.flow_type === '수입' ? 'blue' : 'red'"
+            >
+              {{ item.amount.toLocaleString() }}원
+            </div>
+          </li>
+        </ul>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -38,9 +52,10 @@ const props = defineProps({
   type: String,
 });
 
+const observerTarget = ref(null);
+const isVisible = ref(false);
 const selectedCategory = ref(null);
 
-// 색상 고정 배열
 const incomeColors = ['#FFB74D', '#FFD54F', '#81C784', '#4DB6AC', '#A1887F'];
 const expenseColors = ['#4FC3F7', '#64B5F6', '#BA68C8', '#E57373', '#F06292'];
 
@@ -81,7 +96,6 @@ const chartOptions = computed(() => ({
     legend: { position: 'bottom' },
     title: { display: false },
   },
-  // ✅ 클릭 이벤트 Chart.js native로 등록
   onClick: (e, elements, chart) => {
     const index = chart.getElementsAtEventForMode(
       e,
@@ -89,7 +103,6 @@ const chartOptions = computed(() => ({
       { intersect: true },
       false
     )[0]?.index;
-
     if (index !== undefined) {
       const label = chart.data.labels[index];
       selectedCategory.value = selectedCategory.value === label ? null : label;
@@ -104,6 +117,21 @@ const filteredItems = computed(() => {
       item.flow_type === props.type && item.category === selectedCategory.value
   );
 });
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        isVisible.value = true;
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.1 }
+  );
+  if (observerTarget.value) {
+    observer.observe(observerTarget.value);
+  }
+});
 </script>
 
 <style scoped>
@@ -114,19 +142,79 @@ const filteredItems = computed(() => {
   border-radius: 16px;
   background: #fdfdfd;
 }
+
 .chart-area {
   height: 300px;
   position: relative;
 }
+
+.scroll-hidden {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+.scroll-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .detail-list {
   margin-top: 16px;
 }
-.detail-list ul {
-  padding-left: 16px;
-  line-height: 1.6;
+.detail-list-ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
-h3,
-h4 {
-  font-family: 'BMJUA_tff', sans-serif;
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.detail-left {
+  display: flex;
+  flex-direction: column;
+}
+.detail-date {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+.detail-memo {
+  font-size: 14px;
+  margin: 2px 0 0 0;
+  font-weight: 500;
+}
+.detail-amount {
+  font-weight: bold;
+  font-size: 15px;
+}
+.blue {
+  color: #007aff;
+}
+.red {
+  color: #ff3b30;
+}
+
+/* 전환 애니메이션 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.15s ease;
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-slide-enter-to,
+.fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
