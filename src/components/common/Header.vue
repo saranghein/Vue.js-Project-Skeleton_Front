@@ -27,7 +27,13 @@ i {
 </style>
 
 <template>
-  <div class="headerContainer" :style="{ backgroundColor: COLORS.GREEN02 }">
+  <div
+    class="headerContainer"
+    :style="{
+      backgroundColor: whiteBg ? 'white' : COLORS.GREEN02,
+      borderBottom: whiteBg ? `1px solid ${COLORS.GRAY01}` : '',
+    }"
+  >
     <i @click="navigateToHome" class="fa-solid fa-chevron-left"></i>
     <p>{{ pageName }}</p>
   </div>
@@ -37,7 +43,13 @@ i {
 import { useRouter } from 'vue-router';
 import { COLORS } from '@/util/constants';
 
-defineProps(['pageName']);
+defineProps({
+  pageName: String,
+  whiteBg: {
+    type: Boolean,
+    default: false,
+  },
+});
 const router = useRouter();
 
 function navigateToHome() {
