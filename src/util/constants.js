@@ -5,6 +5,7 @@ export const COLORS = {
   GRAY00: '#F7F7F7',
   GRAY01: '#D9D9D9',
   GRAY02: '#8D8D8D',
+  GRAY03: '#434343',
   BLUE01: '8BBFFF',
   BLACK: '#000000',
   WHITE: '#FDFDFD',
