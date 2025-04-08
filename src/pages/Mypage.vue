@@ -1,8 +1,6 @@
 <style scoped></style>
 <template>
-	<!-- <Header :pageName="'마이페이지'"></Header> -->
-	<Sidebar :username="'홍길동'"></Sidebar>
-	<Button :bgColor="'GREEN02'" :color="'BLACK'" :name="'등록'"></Button>
+	<Header :pageName="'마이페이지'"></Header>
 </template>
 <script setup>
 import Sidebar from "@/components/common/Sidebar.vue";
