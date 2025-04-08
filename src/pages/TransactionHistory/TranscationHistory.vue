@@ -2,26 +2,6 @@
   <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
     <Header :pageName="'거래 내역'"></Header>
     <section class="transaction-info">
-      <div class="transaction-info__badge">
-        <badge
-          :name="'전체'"
-          :color="selectedType === '전체' ? 'WHITE' : 'GRAY02'"
-          :bgColor="selectedType === '전체' ? 'GRAY03' : 'GREEN01'"
-          @click="selectType('전체')"
-        ></badge>
-        <badge
-          :name="'수입'"
-          :color="selectedType === '수입' ? 'WHITE' : 'GRAY02'"
-          :bgColor="selectedType === '수입' ? 'GRAY03' : 'GREEN01'"
-          @click="selectType('수입')"
-        ></badge>
-        <badge
-          :name="'지출'"
-          :color="selectedType === '지출' ? 'WHITE' : 'GRAY02'"
-          :bgColor="selectedType === '지출' ? 'GRAY03' : 'GREEN01'"
-          @click="selectType('지출')"
-        ></badge>
-      </div>
       <div
         class="transaction-info__balance"
         :style="{ backgroundColor: COLORS.GREEN01 }"
@@ -32,6 +12,32 @@
           >총 평가금액</span
         >
         <span class="transaction-info__balance__amount">1,000,000</span>
+      </div>
+      <div class="transaction-info__summary">
+        <div
+          :style="{
+            backgroundColor:
+              selectedType === '수입' ? COLORS.GRAY03 : COLORS.GREEN01,
+            color: selectedType === '수입' ? COLORS.WHITE : COLORS.GRAY02,
+          }"
+          @click="selectType('수입')"
+        >
+          <span>수입</span>
+          <br />
+          <span>10000원</span>
+        </div>
+        <div
+          :style="{
+            backgroundColor:
+              selectedType === '지출' ? COLORS.GRAY03 : COLORS.GREEN01,
+            color: selectedType === '지출' ? COLORS.WHITE : COLORS.GRAY02,
+          }"
+          @click="selectType('지출')"
+        >
+          <span>지출</span>
+          <br />
+          <span>10000원</span>
+        </div>
       </div>
     </section>
     <section
@@ -56,7 +62,6 @@
 
 <style scoped>
 .transaction-info {
-  margin-top: 20px;
   margin-left: 16px;
   margin-right: 16px;
 
@@ -85,9 +90,28 @@
   justify-content: center;
 }
 
+.transaction-info__summary {
+  margin-bottom: 24px;
+  margin-top: 20px;
+
+  display: flex;
+  justify-content: space-around;
+}
+
+.transaction-info__summary > div {
+  width: 100%;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.transaction-info__summary > div:first-child {
+  margin-right: 20px;
+}
+
 .transaction-list {
   width: 100%;
-  margin-top: 25px;
+  margin-top: 15px;
   padding-top: 15px;
   border-radius: 16px 16px 0 0;
 }
