@@ -1,87 +1,100 @@
-# 워크플로우 이름
 name: Run Lighthouse CI (Push on PR to master branch)
 
-# 워크플로우를 실행할 조건
 on:
   pull_request:
-    branches:
-      # master 브랜치가 타겟브랜치인 PR
-      - master
     types:
-      # PR이 생성되면
       - opened
-      # PR이 업데이트되면
+      - reopened
       - synchronize
+    branches: ['main', 'develop']
 
-    # 액세스 권한 설정
 permissions:
   contents: read
   pull-requests: write
 
-# 워크플로우가 실행할 일
 jobs:
   lhci:
     name: Lighthouse CI
     runs-on: ubuntu-latest
     steps:
-      # 워크플로우에서 액세스할 수 있도록 저장소의 코드를 가져옴
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Node.js 버전을 설치하고 설정
-      # 각자의 프로젝트 설정에 맞는 노드 버전을 사용하면 됨
       - name: Use Node.js 18.12.1
         uses: actions/setup-node@v4
         with:
           node-version: 18.12.1
 
-      # node modules 디렉토리 캐싱
-      # 동일한 종속성으로 여러 번 실행되는 워크플로우 속도 향상시킴
       - name: Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
-          # 캐시할 디렉토리/파일의 경로 지정
           path: |
             **/node_modules
-          # 캐시 키 설정
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          # 캐시를 복원할 때 사용할 대체 키 지정
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # 프로젝트 종속성 설치
-      # package.json 파일에 정의된 모든 종속성을 node_modules 디렉토리에 설정
       - name: Install packages
-        run: |
-          npm install
+        run: npm install
 
-      # 프로젝트 빌드
       - name: Build
-        run: |
-          npm run build
+        run: npm run build
 
-           # Desktop 설정으로 Lighthouse 측정
       - name: Run Lighthouse CI for Desktop
-        # secrets에 저장한 LHCI_GITHUB_APP_TOKEN 값 사용
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        # Lighthouse CI를 전역으로 설치
-        # lighthouserc-desktop.js 설정 파일에 따라 Lighthouse 데이터 수집
-        # lighthouserc-desktop.js 설정 파일에 따라 수집된 데이터 업로드
-        # 실패 시 'Fail to Run Lighthouse CI 💦' 출력
         run: |
           npm install -g @lhci/cli
           lhci collect --config=lighthouserc-desktop.js || echo 'Fail to Run Lighthouse CI 💦'
           lhci upload --config=lighthouserc-desktop.js || echo 'Fail to Run Lighthouse CI 💦'
 
-      # Mobile 설정으로 Lighthouse 측정
       - name: Run Lighthouse CI for Mobile
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        # lighthouserc-mobile.js 설정 파일에 따라 Lighthouse 데이터 수집
-        # lighthouserc-mobile.js 설정 파일에 따라 수집된 데이터 업로드
-        # 실패 시 'Fail to Run Lighthouse CI 💦' 출력
         run: |
           lhci collect --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
           lhci upload --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
+
+      - name: Generate Lighthouse Table Summary
+        run: |
+          DESKTOP=$(jq '.[0].summary' .lighthouseci/manifest.json)
+          MOBILE=$(jq '.[1].summary' .lighthouseci/manifest.json)
+
+          echo "## 📊 Lighthouse Report Summary" > lighthouse-summary.md
+          echo "" >> lighthouse-summary.md
+          echo "| 항목 | 💻 데스크탑 | 📱 모바일 |" >> lighthouse-summary.md
+          echo "|------|-------------|-----------|" >> lighthouse-summary.md
+
+          add_signal() {
+            score=$1
+            if (( $(echo "$score >= 0.9" | bc -l) )); then
+              echo "🟢 $score"
+            elif (( $(echo "$score >= 0.5" | bc -l) )); then
+              echo "🟡 $score"
+            else
+              echo "🔴 $score"
+            fi
+          }
+
+          declare -A label_map=(
+            ["performance"]="성능"
+            ["accessibility"]="접근성"
+            ["bestPractices"]="베스트 프랙티스"
+            ["seo"]="SEO"
+            ["pwa"]="PWA"
+          )
+
+          for key in performance accessibility bestPractices seo pwa; do
+            d_raw=$(echo "$DESKTOP" | jq -r ".$key")
+            m_raw=$(echo "$MOBILE" | jq -r ".$key")
+            d_val=$(add_signal $d_raw)
+            m_val=$(add_signal $m_raw)
+            label=${label_map[$key]}
+            echo "| $label | $d_val | $m_val |" >> lighthouse-summary.md
+          done
+
+      - name: Comment on PR with Lighthouse Result
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: lighthouse-summary.md
