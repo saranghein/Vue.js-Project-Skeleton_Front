@@ -3,6 +3,9 @@
   src: url('./fonts/BMJUA_ttf.ttf') format('truetype');
 }
 
-body {
+html,
+body,
+#app,
+* {
   font-family: 'BMJUA_tff', sans-serif;
 }
