@@ -3,12 +3,14 @@
     <div class="transaction-item__left">
       <img class="transaction-item__img" src="" alt="" />
       <div class="transaction-item__content">
-        <p class="transaction-item__title">거래명</p>
-        <p class="transaction-item__desc">2025.04.07 | 메모메모</p>
+        <p class="transaction-item__title">{{ data.transactionTitle }}</p>
+        <p class="transaction-item__desc">
+          {{ data.transactionDate }} | {{ data.transactionMemo }}
+        </p>
       </div>
     </div>
     <div class="transaction-item__right">
-      <p class="transaction-item__amount">00,000원</p>
+      <p class="transaction-item__amount">{{ data.transactionAmount }}원</p>
       <i class="fa-solid fa-ellipsis-vertical" style="color: #aeaeae"></i>
     </div>
   </article>
@@ -60,4 +62,16 @@
 }
 </style>
 
-<script setup></script>
+<script setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  data: {
+    transactionId: Number,
+    transactionTitle: String,
+    transactionDate: String,
+    transactionMemo: String,
+    transactionAmount: Number,
+  },
+});
+</script>
