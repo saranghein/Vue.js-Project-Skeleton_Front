@@ -5,4 +5,6 @@ export const COLORS = {
   GRAY01: '#D9D9D9',
   GRAY02: '#8D8D8D',
   BLUE01: '8BBFFF',
+  BLACK: '#000000',
+  WHITE: '#FDFDFD',
 };
