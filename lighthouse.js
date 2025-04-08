@@ -13,21 +13,15 @@ module.exports = {
   // PR Comment에 페이지 url이 아닌 페이지 이름을 노출시키기 위해 필요함
   // 페이지 url이 짧다면 괜찮지만, 길다면 가독성이 떨어질 수 있기 때문에 페이지 이름을 보여주는 것을 추천
   //현재는 임시 코드임
-  LHCI_MONITORING_PAGE_NAMES: [
-    '페이지A',
-    '페이지B',
-    '페이지C',
-    '페이지D',
-    '페이지E',
-  ],
+  LHCI_MONITORING_PAGE_NAMES: ['/'],
 
   // lighthouse 성능 측정할 페이지 이름 - url 매핑
   LHCI_PAGE_NAME_TO_URL: {
-    페이지A: '/page/typeA',
-    페이지B: '/page/typeB',
-    페이지C: '/page/typeC',
-    페이지D: '/page/typeD',
-    페이지E: '/page/typeE',
+    // 페이지A: '/page/typeA',
+    // 페이지B: '/page/typeB',
+    // 페이지C: '/page/typeC',
+    // 페이지D: '/page/typeD',
+    // 페이지E: '/page/typeE',
   },
 
   // 페이지 이름을 받아서 페이지 url을 리턴해주는 함수
