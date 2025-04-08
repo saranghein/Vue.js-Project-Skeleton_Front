@@ -1,4 +1,4 @@
-name: pr-preview
+name: pr-preview-vercel
 on:
   pull_request:
     types:
@@ -62,11 +62,11 @@ jobs:
 
           echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
-      # GitHub Pages PR Preview 배포
-      - name: Deploy to GitHub Pages (PR Preview)
+      # PR 프리뷰 배포
+      - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN}}
           source-dir: ./dist/
           preview-branch: gh-pages
           umbrella-dir: pr-preview
@@ -77,18 +77,6 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           separator: '\n'
-
-  deploy-gh-pages:
-    needs: deploy-preview
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
 
       - name: Generate comment body
         run: |
