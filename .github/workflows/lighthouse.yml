@@ -58,8 +58,8 @@ jobs:
 
       - name: Generate Lighthouse Table Summary
         run: |
-          DESKTOP=$(jq '.[0].summary' .lighthouseci/manifest.json)
-          MOBILE=$(jq '.[1].summary' .lighthouseci/manifest.json)
+          DESKTOP=$(jq '.[0].summary' ./lhci_reports/desktop/manifest.json)
+          MOBILE=$(jq '.[0].summary' ./lhci_reports/mobile/manifest.json)
 
           echo "## 📊 Lighthouse Report Summary" > lighthouse-summary.md
           echo "" >> lighthouse-summary.md
