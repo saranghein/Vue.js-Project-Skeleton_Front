@@ -3,9 +3,24 @@
     <Header :pageName="'거래 내역'"></Header>
     <section class="transaction-info">
       <div class="transaction-info__badge">
-        <badge :name="'전체'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
-        <badge :name="'수입'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
-        <badge :name="'지출'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
+        <badge
+          :name="'전체'"
+          :color="selectedType === '전체' ? 'WHITE' : 'GRAY02'"
+          :bgColor="selectedType === '전체' ? 'GRAY03' : 'GREEN01'"
+          @click="selectType('전체')"
+        ></badge>
+        <badge
+          :name="'수입'"
+          :color="selectedType === '수입' ? 'WHITE' : 'GRAY02'"
+          :bgColor="selectedType === '수입' ? 'GRAY03' : 'GREEN01'"
+          @click="selectType('수입')"
+        ></badge>
+        <badge
+          :name="'지출'"
+          :color="selectedType === '지출' ? 'WHITE' : 'GRAY02'"
+          :bgColor="selectedType === '지출' ? 'GRAY03' : 'GREEN01'"
+          @click="selectType('지출')"
+        ></badge>
       </div>
       <div
         class="transaction-info__balance"
@@ -97,4 +112,11 @@ import TransactionList from '@/components/transactionHistory/TransactionList.vue
 import Header from '@/components/common/Header.vue';
 import Badge from '@/components/common/Badge.vue';
 import { COLORS } from '@/util/constants';
+import { ref } from 'vue';
+
+const selectedType = ref('전체');
+
+const selectType = (type) => {
+  selectedType.value = type;
+};
 </script>
