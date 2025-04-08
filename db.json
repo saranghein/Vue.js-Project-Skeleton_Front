@@ -1,44 +1,137 @@
 {
-  "budget": [
+  "money": [
     {
       "id": 1,
-      "date": "2025-04-01",
-      "type": "income",
+      "user_id": 1,
+      "flow_type": "수입",
+      "date": "2025-04-01T00:00:00",
+      "amount": 3000000,
       "category": "월급",
-      "detailCategory": "정기급여",
-      "amout": 3000000,
-      "memo": "4월 급여"
+      "memo": "4월 급여",
+      "payment": "계좌이체"
     },
     {
       "id": 2,
-      "date": "2025-04-02",
-      "type": "expense",
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-02T12:30:00",
+      "amount": 12000,
       "category": "식비",
-      "detailCategory": "점심",
-      "amout": 12000,
-      "memo": "회사 근처 식당"
+      "memo": "회사 근처 식당",
+      "payment": "신용/체크"
+    },
+    {
+      "id": 3,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-03T19:00:00",
+      "amount": 48000,
+      "category": "쇼핑",
+      "memo": "유니클로 셔츠",
+      "payment": "신용/체크"
+    },
+    {
+      "id": 4,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-04T09:10:00",
+      "amount": 4500,
+      "category": "커피",
+      "memo": "스타벅스 아메리카노",
+      "payment": "카카오페이"
+    },
+    {
+      "id": 5,
+      "user_id": 1,
+      "flow_type": "수입",
+      "date": "2025-04-05T14:00:00",
+      "amount": 150000,
+      "category": "용돈",
+      "memo": "부모님 지원",
+      "payment": "계좌이체"
+    },
+    {
+      "id": 6,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-06T18:00:00",
+      "amount": 23000,
+      "category": "문화생활",
+      "memo": "영화관람 - 듄2",
+      "payment": "신용/체크"
+    },
+    {
+      "id": 7,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-06T19:30:00",
+      "amount": 31000,
+      "category": "식비",
+      "memo": "친구와 고기",
+      "payment": "현금"
+    },
+    {
+      "id": 8,
+      "user_id": 1,
+      "flow_type": "수입",
+      "date": "2025-04-07T10:00:00",
+      "amount": 50000,
+      "category": "기타",
+      "memo": "중고나라 판매",
+      "payment": "현금"
+    },
+    {
+      "id": 9,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-08T08:30:00",
+      "amount": 3500,
+      "category": "교통",
+      "memo": "지하철 요금",
+      "payment": "티머니"
+    },
+    {
+      "id": 10,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-08T12:45:00",
+      "amount": 17000,
+      "category": "식비",
+      "memo": "회사 점심 도시락",
+      "payment": "신용/체크"
+    },
+    {
+      "id": 11,
+      "user_id": 1,
+      "flow_type": "지출",
+      "date": "2025-04-08T19:20:00",
+      "amount": 27000,
+      "category": "쇼핑",
+      "memo": "다이소 생필품",
+      "payment": "카카오페이"
     }
   ],
-  "incomeCategory": [
-    { "id": 1, "name": "월급" },
-    { "id": 2, "name": "용돈" },
-    { "id": 3, "name": "이자" },
-    { "id": 4, "name": "기타수입" }
-  ],
-  "expenseCategory": [
-    { "id": 1, "name": "식비" },
-    { "id": 2, "name": "교통비" },
-    { "id": 3, "name": "취미생활" },
-    { "id": 4, "name": "공과금" }
-  ],
-  "periodicExpense": [
+  "users": [
     {
       "id": 1,
-      "date": "2025-04-01",
-      "type": "expense",
-      "category": "공과금",
-      "amout": 100000,
-      "memo": "전기요금 자동이체"
+      "nickname": "홍길동",
+      "birth": "1990-01-01",
+      "phone": "010-1234-5678",
+      "email": "hong@example.com",
+      "user_id": "hong123",
+      "user_pw": "securepassword"
     }
+  ],
+  "categories": [
+    { "id": 1, "name": "식비" },
+    { "id": 2, "name": "교통비" },
+    { "id": 3, "name": "유흥비" },
+    { "id": 4, "name": "교육비" }
+  ],
+  "paymentMethods": [
+    { "id": 1, "name": "신용/체크" },
+    { "id": 2, "name": "현금" },
+    { "id": 3, "name": "간편결제" },
+    { "id": 4, "name": "휴대폰소액결제" }
   ]
 }

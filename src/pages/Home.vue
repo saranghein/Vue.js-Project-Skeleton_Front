@@ -23,23 +23,25 @@
           <option value="amount">💰 금액순</option>
         </select>
       </div>
+
       <div v-for="item in topSortedBudget" :key="item.id" class="item">
         <div class="left">
           <strong>{{ item.category }}</strong>
           <p class="memo">{{ item.memo }}</p>
         </div>
-        <div :class="['right', item.type === 'income' ? 'blue' : 'red']">
-          {{ item.amout.toLocaleString() }}원
+        <div :class="['right', item.flow_type === '수입' ? 'blue' : 'red']">
+          {{ item.amount.toLocaleString() }}원
         </div>
       </div>
-
-      <!-- 자세히 보기 버튼 -->
       <div class="more-button-wrap">
         <button class="more-button" @click="goToDetails">자세히 보기</button>
       </div>
+      <IncomeExpenseChart :data="budget" />
+      <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+      <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
     </section>
 
-    <button class="fab">＋</button>
+    <button class="fab" @click="goToAdd">＋</button>
   </div>
 </template>
 
@@ -47,6 +49,8 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import IncomeExpenseChart from '@/components/Chart.vue';
+import DoughnutChart from '@/components/DoughnutChart.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
@@ -56,23 +60,23 @@ const sortBy = ref('date');
 const router = useRouter();
 
 onMounted(async () => {
-  const res = await axios.get('http://localhost:3000/budget');
+  const res = await axios.get('http://localhost:3000/money');
   budget.value = res.data;
 
   totalIncome.value = res.data
-    .filter((item) => item.type === 'income')
-    .reduce((sum, item) => sum + item.amout, 0);
+    .filter((item) => item.flow_type === '수입')
+    .reduce((sum, item) => sum + item.amount, 0);
 
   totalExpense.value = res.data
-    .filter((item) => item.type === 'expense')
-    .reduce((sum, item) => sum + item.amout, 0);
+    .filter((item) => item.flow_type === '지출')
+    .reduce((sum, item) => sum + item.amount, 0);
 });
 
 const topSortedBudget = computed(() => {
   const sorted = [...budget.value];
 
   if (sortBy.value === 'amount') {
-    sorted.sort((a, b) => b.amout - a.amout);
+    sorted.sort((a, b) => b.amount - a.amount);
   } else {
     sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
@@ -82,6 +86,10 @@ const topSortedBudget = computed(() => {
 
 const goToDetails = () => {
   router.push('/details');
+};
+
+const goToAdd = () => {
+  router.push('/add');
 };
 </script>
 
@@ -125,12 +133,6 @@ const goToDetails = () => {
   border-top: 1px solid #ccc;
   padding-top: 16px;
 }
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
 .item {
   display: flex;
   justify-content: space-between;
@@ -149,7 +151,6 @@ const goToDetails = () => {
   font-weight: bold;
 }
 
-/* 자세히 보기 버튼 */
 .more-button-wrap {
   display: flex;
   justify-content: flex-end;
@@ -163,7 +164,6 @@ const goToDetails = () => {
   cursor: pointer;
 }
 
-/* 우측 하단 고정 버튼 */
 .fab {
   position: fixed;
   bottom: 24px;
