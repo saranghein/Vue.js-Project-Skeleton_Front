@@ -4,6 +4,7 @@ span {
 
   color: black;
   border-radius: 20px;
+  cursor: pointer;
 }
 </style>
 
