@@ -35,6 +35,8 @@
       </div>
 
       <IncomeExpenseChart :data="budget" />
+      <DoughnutChart :data="budget" type="수입" />
+      <DoughnutChart :data="budget" type="지출" />
 
       <div class="more-button-wrap">
         <button class="more-button" @click="goToDetails">자세히 보기</button>
@@ -50,6 +52,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import IncomeExpenseChart from '@/components/Chart.vue';
+import DoughnutChart from '@/components/DoughnutChart.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
