@@ -32,7 +32,7 @@
 <script setup>
 import TransactionItem from './TransactionItem.vue';
 import { reactive, computed } from 'vue';
-import { formatDateToShort } from './formatDate.js';
+import { formatDateToShort } from '../../util/formatDate.js';
 
 const baseTransaction = {
   user_id: 1,
