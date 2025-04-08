@@ -2,18 +2,12 @@
   <div class="chart-wrapper">
     <h3>{{ type }} 카테고리 비율</h3>
 
-    <!-- 고정 높이로 감싸서 렌더 보장 -->
     <div class="chart-area">
-      <Doughnut
-        v-if="chartData"
-        :data="chartData"
-        :options="chartOptions"
-        @click="handleClick"
-      />
+      <Doughnut :data="chartData" :options="chartOptions" />
     </div>
 
     <div v-if="selectedCategory" class="detail-list">
-      <h4>{{ selectedCategory }} 상세 내역</h4>
+      <h4>📂 {{ selectedCategory }} 상세 내역</h4>
       <ul>
         <li v-for="item in filteredItems" :key="item.id">
           {{ item.date.slice(0, 10) }} - {{ item.memo }} -
@@ -25,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -37,49 +31,37 @@ import {
 } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
-
-// 전역 폰트 적용
 defaults.font.family = 'BMJUA_tff';
 
 const props = defineProps({
   data: Array,
-  type: String, // '수입' 또는 '지출'
+  type: String,
 });
 
 const selectedCategory = ref(null);
-const backgroundColors = ref([]);
 
-// 카테고리별 합계 계산
+// 색상 고정 배열
+const incomeColors = ['#FFB74D', '#FFD54F', '#81C784', '#4DB6AC', '#A1887F'];
+const expenseColors = ['#4FC3F7', '#64B5F6', '#BA68C8', '#E57373', '#F06292'];
+
 const categoryMap = computed(() => {
   const result = {};
   props.data
     .filter((item) => item.flow_type === props.type)
     .forEach((item) => {
-      if (!result[item.category]) {
-        result[item.category] = 0;
-      }
-      result[item.category] += item.amount;
+      result[item.category] = (result[item.category] || 0) + item.amount;
     });
-
-  // 정렬: 높은 금액부터
   return Object.entries(result).sort((a, b) => b[1] - a[1]);
 });
 
-// 색상은 categoryMap이 바뀔 때만 한 번 생성
-watch(
-  categoryMap,
-  (newVal) => {
-    backgroundColors.value = newVal.map(
-      () => `hsl(${Math.random() * 360}, 70%, 70%)`
-    );
-  },
-  { immediate: true }
-);
+const backgroundColors = computed(() => {
+  const palette = props.type === '수입' ? incomeColors : expenseColors;
+  return categoryMap.value.map((_, i) => palette[i % palette.length]);
+});
 
 const chartData = computed(() => {
   const labels = categoryMap.value.map(([cat]) => cat);
   const data = categoryMap.value.map(([, amt]) => amt);
-
   return {
     labels,
     datasets: [
@@ -92,32 +74,28 @@ const chartData = computed(() => {
   };
 });
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
-    legend: {
-      position: 'bottom',
-    },
-    title: {
-      display: false,
-    },
+    legend: { position: 'bottom' },
+    title: { display: false },
   },
-};
+  // ✅ 클릭 이벤트 Chart.js native로 등록
+  onClick: (e, elements, chart) => {
+    const index = chart.getElementsAtEventForMode(
+      e,
+      'nearest',
+      { intersect: true },
+      false
+    )[0]?.index;
 
-const handleClick = (event, elements) => {
-  const chart = event.chart;
-  const index = chart.getElementsAtEventForMode(
-    event.native,
-    'nearest',
-    { intersect: true },
-    true
-  )[0]?.index;
-
-  if (index !== undefined) {
-    selectedCategory.value = chart.data.labels[index];
-  }
-};
+    if (index !== undefined) {
+      const label = chart.data.labels[index];
+      selectedCategory.value = selectedCategory.value === label ? null : label;
+    }
+  },
+}));
 
 const filteredItems = computed(() => {
   if (!selectedCategory.value) return [];
@@ -136,21 +114,17 @@ const filteredItems = computed(() => {
   border-radius: 16px;
   background: #fdfdfd;
 }
-
 .chart-area {
   height: 300px;
   position: relative;
 }
-
 .detail-list {
   margin-top: 16px;
 }
-
 .detail-list ul {
   padding-left: 16px;
   line-height: 1.6;
 }
-
 h3,
 h4 {
   font-family: 'BMJUA_tff', sans-serif;
