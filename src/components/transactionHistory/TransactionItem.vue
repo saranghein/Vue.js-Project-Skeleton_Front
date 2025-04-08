@@ -11,7 +11,10 @@
     </div>
     <div class="transaction-item__right">
       <p class="transaction-item__amount">{{ data.transactionAmount }}원</p>
-      <i class="fa-solid fa-ellipsis-vertical" style="color: #aeaeae"></i>
+      <i
+        class="fa-solid fa-ellipsis-vertical"
+        style="color: #aeaeae; padding: 10px"
+      ></i>
     </div>
   </article>
 </template>
@@ -68,10 +71,13 @@ import { defineProps } from 'vue';
 const props = defineProps({
   data: {
     transactionId: Number,
-    transactionTitle: String,
+    userId: Number,
+    flowType: String,
     transactionDate: String,
-    transactionMemo: String,
     transactionAmount: Number,
+    transactionCategory: String,
+    transactionTitle: String,
+    transactionMemo: String,
   },
 });
 </script>
