@@ -1,12 +1,23 @@
 <style scoped>
 .sideBarContainer {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
 	width: 70dvw;
 	height: 100dvh;
 
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
 	background-color: white;
+	z-index: 20;
+	transform: translateX(-100%);
+	transition: transform 0.3s ease-in-out;
+}
+
+.sideBarContainer.active {
+	transform: translateX(0);
 }
 
 .sideBarHeader {
@@ -49,7 +60,7 @@ p {
 </style>
 
 <template>
-	<div class="sideBarContainer">
+	<div :class="['sideBarContainer', { active: isActive }]">
 		<section class="sideBarHeader">
 			<p>{{ username }}님, 안녕하세요!</p>
 		</section>
@@ -69,21 +80,30 @@ p {
 
 <script setup>
 import { COLORS } from "@/util/constants";
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 import { useRouter } from "vue-router";
+
+const emit = defineEmits(["close"]);
 
 const router = useRouter();
 const goToMypage = () => {
 	router.push({ name: "Mypage" });
+	emit("close");
 };
+
 const goToHome = () => {
 	router.push({ name: "Home" });
+	emit("close");
 };
 
 defineProps({
 	username: {
 		type: String,
 		required: true,
+	},
+	isActive: {
+		type: Boolean,
+		default: true,
 	},
 });
 </script>
