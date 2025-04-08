@@ -121,5 +121,17 @@
       "user_id": "hong123",
       "user_pw": "securepassword"
     }
+  ],
+  "categories": [
+    { "id": 1, "name": "식비" },
+    { "id": 2, "name": "교통비" },
+    { "id": 3, "name": "유흥비" },
+    { "id": 4, "name": "교육비" }
+  ],
+  "paymentMethods": [
+    { "id": 1, "name": "신용/체크" },
+    { "id": 2, "name": "현금" },
+    { "id": 3, "name": "간편결제" },
+    { "id": 4, "name": "휴대폰소액결제" }
   ]
 }
