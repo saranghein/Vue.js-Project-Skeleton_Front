@@ -25,9 +25,15 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set PR Preview Path
+        run: echo "PREVIEW_PATH=pr-preview/pr-${{ github.event.number }}" >> "$GITHUB_ENV"
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -40,10 +46,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Build Project Artifacts
+      - name: Build for Vercel
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Project Artifacts to Vercel
+      - name: Deploy to Vercel
         id: deploy
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
@@ -56,10 +62,15 @@ jobs:
 
           echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
-      - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      # GitHub Pages PR Preview 배포
+      - name: Deploy to GitHub Pages (PR Preview)
+        uses: rossjrw/pr-preview-action@v1.4.6
         with:
-          path: dist
+          token: ${{ secrets.GITHUB_TOKEN }}
+          source-dir: ./dist/
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto
 
       - name: Get changed files
         id: changed-files
@@ -84,7 +95,8 @@ jobs:
           {
             echo "🎉 구현한 기능 Preview:"
             echo "- **Vercel**: ${{ needs.deploy-preview.outputs.preview_url }}"
-            echo "- **GitHub Pages**: ${{ needs.deploy-gh-pages.outputs.page_url }}"
+            echo "- **GitHub Pages**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/
+
             echo ""
             echo "🧩 변경된 파일"
             echo ""
