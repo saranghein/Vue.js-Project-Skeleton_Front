@@ -69,7 +69,7 @@ jobs:
             echo ""
             echo "🧩 변경된 파일"
             echo ""
-            echo "${{ steps.changed-files.outputs.all_changed_files }}"
+            printf "%b\n" "${{ steps.changed-files.outputs.all_changed_files }}"
           } > comment.md
 
       - name: Comment PR with Preview URL and changed files

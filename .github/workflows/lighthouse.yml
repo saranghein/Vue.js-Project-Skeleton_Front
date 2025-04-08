@@ -53,8 +53,8 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
-          lhci collect --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
-          lhci upload --config=lighthouserc-mobile.js || echo 'Fail to Run Lighthouse CI 💦'
+          lhci collect --config=lighthouserc-mobile.cjs || echo 'Fail to Run Lighthouse CI 💦'
+          lhci upload --config=lighthouserc-mobile.cjs || echo 'Fail to Run Lighthouse CI 💦'
 
       - name: Generate Lighthouse Table Summary
         run: |
