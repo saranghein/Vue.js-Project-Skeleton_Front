@@ -33,12 +33,12 @@
           {{ item.amount.toLocaleString() }}원
         </div>
       </div>
-
-      <IncomeExpenseChart :data="budget" />
-
       <div class="more-button-wrap">
         <button class="more-button" @click="goToDetails">자세히 보기</button>
       </div>
+      <IncomeExpenseChart :data="budget" />
+      <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+      <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
     </section>
 
     <button class="fab" @click="goToAdd">＋</button>
@@ -50,6 +50,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import IncomeExpenseChart from '@/components/Chart.vue';
+import DoughnutChart from '@/components/DoughnutChart.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
