@@ -62,11 +62,6 @@ jobs:
         with:
           separator: '\n'
 
-      - name: Comment PR with Preview URL and changed files
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          filePath: comment.md
-
       - name: Generate comment body
         run: |
           {
@@ -76,3 +71,8 @@ jobs:
             echo ""
             echo "${{ steps.changed-files.outputs.all_changed_files }}"
           } > comment.md
+
+      - name: Comment PR with Preview URL and changed files
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: comment.md
