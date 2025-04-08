@@ -4,7 +4,7 @@
       <img class="transaction-item__img" src="" alt="" />
       <div class="transaction-item__content">
         <p class="transaction-item__title">{{ data.transactionTitle }}</p>
-        <p class="transaction-item__desc">
+        <p class="transaction-item__desc" :style="{ color: COLORS.GRAY02 }">
           {{ data.transactionDate }} | {{ data.transactionMemo }}
         </p>
       </div>
@@ -17,16 +17,19 @@
       ></i>
     </div>
   </article>
-  <div class="transaction-item__divider"></div>
+  <div
+    class="transaction-item__divider"
+    :style="{ backgroundColor: COLORS.GRAY00 }"
+  ></div>
 </template>
 
 <style scoped>
 .transaction-item {
-  display: flex;
-  justify-content: space-between;
-
   padding: 20px;
   padding-right: 30px;
+
+  display: flex;
+  justify-content: space-between;
 }
 
 .transaction-item__left {
@@ -53,7 +56,6 @@
 
 .transaction-item__desc {
   font-size: 10px;
-  color: #8d8d8d;
   padding: 0;
   margin: 4px 0 0 0;
 }
@@ -65,17 +67,19 @@
 }
 
 .transaction-item__amount {
+  padding: 0;
+  margin: 0;
   margin-right: 12px;
 }
 
 .transaction-item__divider {
   height: 2px;
-  background-color: #f7f7f7;
 }
 </style>
 
 <script setup>
 import { defineProps } from 'vue';
+import { COLORS } from '@/util/constants';
 
 const props = defineProps({
   data: {
