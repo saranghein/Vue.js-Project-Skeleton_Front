@@ -1,31 +1,50 @@
 <template>
-  <Header :pageName="'거래 내역'"></Header>
-  <section class="transaction-info">
-    <div class="transaction-info__badge">
-      <badge :name="'전체'" :color="'WHITE'" :bgColor="'GREEN02'"></badge>
-      <badge :name="'수입'" :color="'WHITE'" :bgColor="'GREEN02'"></badge>
-      <badge :name="'지출'" :color="'WHITE'" :bgColor="'GREEN02'"></badge>
-    </div>
-    <div class="transaction-info__balance">
-      <span class="transaction-info__balance__label">총 평가금액</span>
-      <span class="transaction-info__balance__amount">1,000,000</span>
-    </div>
-  </section>
-  <section class="transaction-list">
-    <div class="transaction-list__filter">
-      <span class="transaction-list__filter__label">최신순</span>
-      <i
-        class="fa-solid fa-angle-down icon"
-        style="color: #dedede; padding: 3px"
-      ></i>
-    </div>
-    <transaction-list />
-  </section>
+  <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
+    <Header :pageName="'거래 내역'"></Header>
+    <section class="transaction-info">
+      <div class="transaction-info__badge">
+        <badge :name="'전체'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
+        <badge :name="'수입'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
+        <badge :name="'지출'" :color="'GRAY02'" :bgColor="'GREEN01'"></badge>
+      </div>
+      <div
+        class="transaction-info__balance"
+        :style="{ backgroundColor: COLORS.GREEN01 }"
+      >
+        <span
+          class="transaction-info__balance__label"
+          :style="{ color: COLORS.GRAY02 }"
+          >총 평가금액</span
+        >
+        <span class="transaction-info__balance__amount">1,000,000</span>
+      </div>
+    </section>
+    <section
+      class="transaction-list"
+      :style="{ backgroundColor: COLORS.WHITE }"
+    >
+      <div class="transaction-list__filter">
+        <span
+          class="transaction-list__filter__label"
+          :style="{ color: COLORS.GRAY02 }"
+          >최신순</span
+        >
+        <i
+          class="fa-solid fa-angle-down icon"
+          style="color: #dedede; padding: 3px; margin-right: 25px"
+        ></i>
+      </div>
+      <transaction-list />
+    </section>
+  </div>
 </template>
 
 <style scoped>
 .transaction-info {
   margin-top: 20px;
+  margin-left: 16px;
+  margin-right: 16px;
+
   display: flex;
   flex-direction: column;
 }
@@ -35,21 +54,16 @@
 }
 
 .transaction-info__balance {
-  padding-top: 22px;
-  padding-bottom: 22px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 22px 20px;
   margin-top: 20px;
-
-  background-color: #cef9ed;
   border-radius: 16px;
+
   display: flex;
   justify-content: space-between;
 }
 
 .transaction-info__balance__label {
   font-size: 12px;
-  color: #8d8d8d;
 }
 
 .transaction-info__balance__amount {
@@ -57,22 +71,24 @@
 }
 
 .transaction-list {
-  margin-top: 25px;
   width: 100%;
+  margin-top: 25px;
+  padding-top: 15px;
+  border-radius: 16px 16px 0 0;
 }
 
 .transaction-list__filter {
-  display: flex;
   width: 100%;
-  justify-content: right;
   margin-left: auto;
-  align-items: center;
   margin-top: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: right;
 }
 
 .transaction-list__filter__label {
   font-size: 12px;
-  color: #8d8d8d;
 }
 </style>
 
