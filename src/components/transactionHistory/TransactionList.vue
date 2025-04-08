@@ -24,7 +24,7 @@
 <style scoped>
 .transaction-list {
   list-style: none;
-  padding: 10px 0;
+  padding: 0;
   margin: 0;
 }
 </style>

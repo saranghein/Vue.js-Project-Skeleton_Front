@@ -17,12 +17,16 @@
       ></i>
     </div>
   </article>
+  <div class="transaction-item__divider"></div>
 </template>
 
 <style scoped>
 .transaction-item {
   display: flex;
   justify-content: space-between;
+
+  padding: 20px;
+  padding-right: 30px;
 }
 
 .transaction-item__left {
@@ -62,6 +66,11 @@
 
 .transaction-item__amount {
   margin-right: 12px;
+}
+
+.transaction-item__divider {
+  height: 2px;
+  background-color: #f7f7f7;
 }
 </style>
 
