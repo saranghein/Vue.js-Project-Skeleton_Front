@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../pages/Home.vue';
+import Registration from '@/pages/Registration.vue';
 import Mypage from '@/pages/Mypage.vue';
 
 const router = createRouter({
@@ -7,8 +7,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home,
+      name: 'Registration',
+      component: Registration,
     },
     {
       path: '/mypage',
