@@ -10,6 +10,19 @@ const inputAmount = ref('');
 const onTypeChange = (type) => {
   selectedType.value = type;
 };
+import { onMounted } from 'vue';
+
+import { useOptionStore } from '@/stores/useOptionStore';
+import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
+
+const store = useOptionStore();
+
+const category = ref('');
+const paymentMethod = ref('');
+
+onMounted(() => {
+  store.fetchOptions();
+});
 </script>
 
 <template>
@@ -96,36 +109,14 @@ const onTypeChange = (type) => {
     </div>
 
     <!-- 카테고리 -->
-    <div class="row mb-4">
+    <div class="row">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="category" class="form-label">카테고리</label>
-        <div class="input-group">
-          <input
-            id="category"
-            type="button"
-            class="form-control"
-            aria-label="Text input with segmented dropdown button"
-            spellcheck="false"
-            data-ms-editor="true"
-            placeholder="카테고리 선택"
-          />
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i class="fa-solid fa-chevron-down"></i>
-            <span class="visually-hidden">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">식비</a></li>
-            <li><a class="dropdown-item" href="#">교통비</a></li>
-            <li><a class="dropdown-item" href="#">유흥비</a></li>
-            <!-- <li><hr class="dropdown-divider" /></li> -->
-            <li><a class="dropdown-item" href="#">교육비k</a></li>
-          </ul>
-        </div>
+        <DropdownSelector
+          label="카테고리"
+          placeholder="카테고리 선택"
+          :options="store.categories"
+          v-model="category"
+        />
       </div>
     </div>
 
@@ -145,36 +136,15 @@ const onTypeChange = (type) => {
       </div>
     </div>
 
-    <div class="row mb-4">
+    <!-- 거래 수단 -->
+    <div class="row">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="pay" class="form-label">거래수단</label>
-        <div class="input-group">
-          <input
-            id="pay"
-            type="button"
-            class="form-control"
-            aria-label="Text input with segmented dropdown button"
-            spellcheck="false"
-            data-ms-editor="true"
-            placeholder="현금"
-          />
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i class="fa-solid fa-chevron-down"></i>
-            <span class="visually-hidden">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">신용/체크</a></li>
-            <li><a class="dropdown-item" href="#">현금</a></li>
-            <li><a class="dropdown-item" href="#">간편결제</a></li>
-            <!-- <li><hr class="dropdown-divider" /></li> -->
-            <li><a class="dropdown-item" href="#">휴대폰소액결제</a></li>
-          </ul>
-        </div>
+        <DropdownSelector
+          label="거래수단"
+          placeholder="현금"
+          :options="store.paymentMethods"
+          v-model="paymentMethod"
+        />
       </div>
     </div>
     <!-- 메모 입력 -->
