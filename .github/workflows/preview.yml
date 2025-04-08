@@ -56,16 +56,35 @@ jobs:
 
           echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: dist
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
           separator: '\n'
 
+  deploy-gh-pages:
+    needs: deploy-preview
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
+
       - name: Generate comment body
         run: |
           {
-            echo "🎉 구현한 기능 Preview: ${{ steps.deploy.outputs.preview_url }}"
+            echo "🎉 구현한 기능 Preview:"
+            echo "- **Vercel**: ${{ needs.deploy-preview.outputs.preview_url }}"
+            echo "- **GitHub Pages**: ${{ needs.deploy-gh-pages.outputs.page_url }}"
             echo ""
             echo "🧩 변경된 파일"
             echo ""
