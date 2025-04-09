@@ -20,7 +20,7 @@ div {
 
 <template>
   <div
-    @click="clickHandler ? clickHandler : () => {}"
+    @click="handleClick"
     :style="{
       backgroundColor: bgColor ? COLORS[bgColor] : COLORS.GRAY01,
       color: color ? COLORS[color] : 'black',
@@ -32,19 +32,17 @@ div {
 
 <script setup>
 import { COLORS } from '@/util/constants';
-defineProps({
-  name: {
-    type: String,
-    required: true, // name만 필수요소
-  },
-  bgColor: {
-    type: String,
-  },
-  color: {
-    type: String,
-  },
-  clickHandler: {
-    type: Function,
-  },
+
+const props = defineProps({
+  name: { type: String, required: true },
+  bgColor: String,
+  color: String,
+  clickHandler: Function,
 });
+
+const handleClick = () => {
+  if (props.clickHandler) {
+    props.clickHandler();
+  }
+};
 </script>
