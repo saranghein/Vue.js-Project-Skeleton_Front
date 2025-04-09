@@ -38,16 +38,45 @@ const categoryOptions = computed(() => {
     return cat.type === selectedType.value || cat.type === 'both';
   });
 });
-// 수입, 지출에 따라 거래수단 출력 달라지도록
 
+// 수입, 지출에 따라 거래수단 출력 달라지도록
 const paymentMethodOptions = computed(() => {
   if (!selectedType.value) return [];
 
-  return store.paymentMethods.filter((method) => {
-    return method.type === selectedType.value || method.type === 'both';
+  return store.paymentMethods.filter((pay) => {
+    return pay.type === selectedType.value || pay.type === 'both';
   });
 });
 
+// 에러 상태
+const errors = ref({
+  date: false,
+  time: false,
+  amount: false,
+  category: false,
+  depositor: false,
+});
+
+// 등록 버튼 클릭했을 때 유효성 검사
+const handleSubmit = () => {
+  const newErrors = {
+    date: !selectedDate.value,
+    time: !selectedTime.value,
+    amount: !inputAmount.value,
+    category: !category.value,
+    depositor: !depositor.value,
+  };
+
+  errors.value = newErrors;
+
+  if (Object.values(newErrors).some(Boolean)) return;
+
+  alert('등록 완료!');
+};
+const handleCancel = () => {
+  // 뒤로가기 또는 폼 초기화
+  console.log('취소 클릭');
+};
 onMounted(() => {
   store.fetchOptions();
 });
@@ -55,6 +84,7 @@ onMounted(() => {
 
 <template>
   <div class="row mt-5">
+    <!-- 헤더 -->
     <div class="col-10 col-md-6 mx-auto">
       <div class="row align-items-center">
         <!-- 왼쪽 아이콘 -->
@@ -94,8 +124,8 @@ onMounted(() => {
     <!-- 날짜 -->
     <div class="row mb-2">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="date" class="form-label">날짜 및 시간</label>
-        <div class="input-group w-50">
+        <label for="date" class="form-label">⁎ 날짜 및 시간</label>
+        <div class="input-group w-50" :class="{ shake: errors.date }">
           <input
             type="date"
             id="date"
@@ -103,12 +133,17 @@ onMounted(() => {
             v-model="selectedDate"
           />
         </div>
+        <small
+          class="text-danger ms-1"
+          :style="{ visibility: errors.date ? 'visible' : 'hidden' }"
+          >날짜를 선택해 주세요</small
+        >
       </div>
     </div>
     <!-- 시간 -->
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
-        <div class="input-group w-50">
+        <div class="input-group w-50" :class="{ shake: errors.time }">
           <input
             type="time"
             id="time"
@@ -116,14 +151,20 @@ onMounted(() => {
             v-model="selectedTime"
           />
         </div>
+        <small
+          class="text-danger ms-1"
+          :style="{ visibility: errors.time ? 'visible' : 'hidden' }"
+        >
+          시간을 선택해 주세요
+        </small>
       </div>
     </div>
 
     <!-- 금액 입력 -->
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="amount" class="form-label">금액</label>
-        <div class="input-group">
+        <label for="amount" class="form-label">⁎ 금액</label>
+        <div class="input-group" :class="{ shake: errors.amount }">
           <input
             type="text"
             id="amount"
@@ -134,6 +175,12 @@ onMounted(() => {
           />
           <span class="my-2 ms-2">원</span>
         </div>
+        <small
+          class="text-danger ms-1"
+          :style="{ visibility: errors.amount ? 'visible' : 'hidden' }"
+        >
+          금액을 입력해 주세요
+        </small>
       </div>
     </div>
 
@@ -141,12 +188,14 @@ onMounted(() => {
     <div class="row">
       <div class="col-10 col-md-6 mx-auto">
         <DropdownSelector
-          label="카테고리"
+          :class="{ shake: errors.category }"
+          label="⁎ 카테고리"
           placeholder="카테고리 선택"
           :options="categoryOptions"
           option-label="name"
           option-value="id"
           v-model="category"
+          error-message="카테고리를 선택해 주세요"
         />
       </div>
     </div>
@@ -154,8 +203,8 @@ onMounted(() => {
     <!-- 출처 입력 -->
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="list" class="form-label">출처</label>
-        <div class="input-group">
+        <label for="list" class="form-label">⁎ 출처</label>
+        <div class="input-group" :class="{ shake: errors.depositor }">
           <input
             type="text"
             id="list"
@@ -164,6 +213,12 @@ onMounted(() => {
             :placeholder="getDepositorPlaceholder"
           />
         </div>
+        <small
+          class="text-danger ms-1"
+          :style="{ visibility: errors.depositor ? 'visible' : 'hidden' }"
+        >
+          출처를 입력해 주세요
+        </small>
       </div>
     </div>
 
@@ -198,14 +253,27 @@ onMounted(() => {
     </div>
 
     <!-- 버튼 -->
+    <!-- 등록 버튼 -->
     <div class="row mb-2 mt-3">
       <div class="col-10 col-md-6 mx-auto">
-        <Button name="등록" bgColor="GREEN02" color="BLACK"></Button>
+        <Button
+          type="button"
+          name="등록"
+          bgColor="GREEN02"
+          color="BLACK"
+          :click-handler="handleSubmit()"
+        ></Button>
       </div>
     </div>
+    <!-- 취소 버튼 -->
     <div class="row mb-2">
       <div class="col-10 col-md-6 mx-auto">
-        <Button name="취소" color="WHITE"></Button>
+        <Button
+          name="취소"
+          color="WHITE"
+          bgColor="GRAY01"
+          :click-handler="handleCancel()"
+        ></Button>
       </div>
     </div>
   </div>
