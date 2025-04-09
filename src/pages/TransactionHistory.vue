@@ -65,6 +65,19 @@
           style="color: #dedede; padding: 6px; margin-right: 25px"
         ></i>
       </div>
+
+      <div v-if="filteredTransactions.length === 0" class="empty-view">
+        <p
+          :style="{
+            color: COLORS.GRAY02,
+            textAlign: 'center',
+            marginTop: '40px',
+          }"
+        >
+          거래 내역이 없습니다 😢
+        </p>
+      </div>
+
       <transaction-list
         :transactions="filteredTransactions"
         @open="openEditModal"
