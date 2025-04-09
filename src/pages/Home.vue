@@ -1,10 +1,23 @@
 <template>
-  <div class="container">
-    <header class="header">
-      <button class="menu-btn">☰</button>
-      <h2>Payday? Mayday!</h2>
-    </header>
+  <div class="container" @scroll.passive="handleScroll">
+    <!-- 공통 헤더 -->
+    <HomeHeader />
 
+    <!-- 수입 지출 비교 탭 -->
+    <div class="balance-summary" @click="goToDetails">
+      <div class="balance-text">
+        <p v-if="totalIncome > totalExpense">
+          💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
+        </p>
+        <p v-else-if="totalExpense > totalIncome">
+          😢 {{ (totalExpense - totalIncome).toLocaleString() }}원 적자입니다
+        </p>
+        <p v-else>수입과 지출이 같아요</p>
+        <span class="hint">클릭해서 자세히 보기</span>
+      </div>
+    </div>
+
+    <!-- 요약 영역 -->
     <section class="summary">
       <div class="box">
         <p>수입</p>
@@ -16,46 +29,65 @@
       </div>
     </section>
 
-    <section class="list">
-      <div class="select-wrap">
-        <select v-model="sortBy" class="custom-select">
-          <option value="date">📅 최신순</option>
-          <option value="amount">💰 금액순</option>
-        </select>
-      </div>
-
-      <div v-for="item in topSortedBudget" :key="item.id" class="item">
-        <div class="left">
-          <strong>{{ item.category }}</strong>
-          <p class="memo">{{ item.memo }}</p>
-        </div>
-        <div :class="['right', item.flow_type === '수입' ? 'blue' : 'red']">
-          {{ item.amount.toLocaleString() }}원
-        </div>
-      </div>
-      <div class="more-button-wrap">
-        <button class="more-button" @click="goToDetails">자세히 보기</button>
-      </div>
-      <IncomeExpenseChart :data="budget" />
+    <!-- 그래프 간 간격 추가 -->
+    <div class="graph-spacing">
+      <IncomeExpenseChart :data="budget" class="scroll-appear" />
+    </div>
+    <div class="graph-spacing">
       <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+    </div>
+    <div class="graph-spacing">
       <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
-    </section>
+    </div>
 
-    <button class="fab" @click="goToAdd">＋</button>
+    <!-- 더보기 텍스트 + 아이콘 -->
+    <div v-show="showMoreHint" class="more-hint">
+      <div class="more-text">더보기</div>
+      <svg
+        class="more-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        viewBox="0 96 960 960"
+        width="24"
+      >
+        <path
+          d="M480 774 285 579l42-42 153 153 153-153 42 42-195 195Zm0-192L285 387l42-42 153 153 153-153 42 42-195 195Z"
+        />
+      </svg>
+    </div>
+
+    <!-- FAB 아이콘 버튼 -->
+    <div class="fab" @click="goToAdd">
+      <svg
+        class="fab-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12c0 5.52
+             4.48 10 10 10s10-4.48 10-10C22
+             6.48 17.52 2 12 2zm5 11h-4v4h-2
+             v-4H7v-2h4V7h2v4h4v2z"
+        />
+      </svg>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+
+// 공통 컴포넌트
+import HomeHeader from '@/components/common/HomeHeader.vue';
 import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
-const sortBy = ref('date');
+const showMoreHint = ref(true);
 
 const router = useRouter();
 
@@ -70,27 +102,25 @@ onMounted(async () => {
   totalExpense.value = res.data
     .filter((item) => item.flow_type === '지출')
     .reduce((sum, item) => sum + item.amount, 0);
+
+  window.addEventListener('scroll', handleScroll);
 });
 
-const topSortedBudget = computed(() => {
-  const sorted = [...budget.value];
+function handleScroll() {
+  const bottomThreshold = 100;
+  const scrollBottom =
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - bottomThreshold;
+  showMoreHint.value = !scrollBottom;
+}
 
-  if (sortBy.value === 'amount') {
-    sorted.sort((a, b) => b.amount - a.amount);
-  } else {
-    sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
-  }
-
-  return sorted.slice(0, 5);
-});
-
-const goToDetails = () => {
+function goToDetails() {
   router.push('/details');
-};
+}
 
-const goToAdd = () => {
+function goToAdd() {
   router.push('/add');
-};
+}
 </script>
 
 <style scoped>
@@ -101,27 +131,71 @@ const goToAdd = () => {
   position: relative;
 }
 
-.header {
+/* 불필요한 .header, .menu-btn 스타일 제거 */
+
+.balance-summary {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-.menu-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
+  flex-direction: column;
+  justify-content: center; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+
+  text-align: center;
+  background: #cef9ed;
+  border-radius: 12px;
+  height: 150px;
+  padding: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-weight: bold;
+  font-size: 25px;
   cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.balance-summary .hint {
+  font-size: 12px;
+  font-weight: normal;
+  color: #888;
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+}
+
+.balance-text p {
+  margin: 0;
+}
+
+.balance-summary:hover {
+  background: rgb(105, 195, 173);
 }
 
 .summary {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
+  gap: 12px; /* 각각의 박스 간격 추가 */
+
+  background: #fff; /* 흰색 배경 */
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
+
 .box {
   text-align: center;
+  background: #f4fdfb; /* 연한 민트 느낌 배경 */
+  border-radius: 12px;
+  padding: 12px;
+  flex: 1;
+  transition: transform 0.2s ease;
+  cursor: default;
 }
+
+.box:hover {
+  transform: scale(1.03);
+}
+
 .blue {
   color: #007aff;
 }
@@ -129,79 +203,81 @@ const goToAdd = () => {
   color: #ff3b30;
 }
 
-.list {
-  border-top: 1px solid #ccc;
-  padding-top: 16px;
+.graph-spacing {
+  margin-top: 75px;
+  margin-bottom: 75px;
 }
-.item {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+
+.scroll-appear {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slide-up-fade 0.6s ease forwards;
 }
-.left {
+@keyframes slide-up-fade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 더보기 아이콘 + 텍스트 */
+.more-hint {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 1.5s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 10;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
-.memo {
-  font-size: 13px;
-  color: #777;
-}
-.right {
-  font-weight: bold;
-}
-
-.more-button-wrap {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-.more-button {
-  background: none;
-  border: none;
-  color: #999;
+.more-text {
   font-size: 14px;
-  cursor: pointer;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.35);
+  margin-bottom: -7px;
+}
+.more-icon {
+  width: 32px;
+  height: 32px;
+  fill: rgba(0, 0, 0, 0.35);
+  transform: scaleX(1.5);
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 8px);
+  }
 }
 
+/* FAB: 파란 원형 + 아이콘 */
 .fab {
   position: fixed;
   bottom: 24px;
   right: 24px;
   width: 56px;
   height: 56px;
-  background-color: #007aff;
-  color: white;
-  border: none;
+  background-color: #55efc4;
   border-radius: 50%;
-  font-size: 28px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  z-index: 20;
+  transition: background-color 0.2s ease;
 }
-.select-wrap {
-  position: relative;
-  width: fit-content;
+.fab:hover {
+  background-color: rgb(52, 191, 156);
 }
-
-.custom-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 8px 36px 8px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  cursor: pointer;
-  transition: border 0.2s ease;
-}
-
-.custom-select:focus {
-  outline: none;
-  border-color: #007aff;
-  background-color: #fff;
+.fab-icon {
+  width: 28px;
+  height: 28px;
+  fill: white;
 }
 </style>
