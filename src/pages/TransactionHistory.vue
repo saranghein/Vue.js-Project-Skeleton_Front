@@ -57,11 +57,12 @@
         <span
           class="transaction-list__filter__label"
           :style="{ color: COLORS.GRAY02 }"
-          >최신순</span
+          >{{ filters.type }} | {{ filters.category }} |
+          {{ filters.date }}</span
         >
         <i
           class="fa-solid fa-angle-down icon"
-          style="color: #dedede; padding: 3px; margin-right: 25px"
+          style="color: #dedede; padding: 6px; margin-right: 25px"
         ></i>
       </div>
       <transaction-list
