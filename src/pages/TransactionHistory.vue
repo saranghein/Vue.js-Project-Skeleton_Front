@@ -63,7 +63,11 @@
       :isOpen="isFilterModalOpen"
       @close="closeFilterModal"
     />
-    <bottom-modal :isOpen="isEditModalOpen" @close="closeEditModal" />
+    <bottom-modal
+      :isOpen="isEditModalOpen"
+      @close="closeEditModal"
+      @delete="deleteTransaction"
+    />
   </div>
 </template>
 
@@ -151,6 +155,7 @@ const selectedType = ref('전체');
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const transactions = ref([]);
+const transactionId = ref(null);
 
 const fetchTransactions = async () => {
   try {
@@ -158,6 +163,14 @@ const fetchTransactions = async () => {
     transactions.value = response.data;
   } catch (error) {
     console.error('거래내역 가져오기 실패:', error);
+  }
+};
+
+const deleteTransaction = async () => {
+  try {
+    await TransactionService.delete(transactionId.value);
+  } catch (error) {
+    console.error('거래내역 삭제 실패:', error);
   }
 };
 
@@ -177,8 +190,9 @@ const openFilterModal = () => {
   isFilterModalOpen.value = true;
 };
 
-const openEditModal = () => {
+const openEditModal = (id) => {
   isEditModalOpen.value = true;
+  transactionId.value = id;
 };
 
 const closeFilterModal = () => {
