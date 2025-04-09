@@ -184,7 +184,7 @@ onMounted(() => {
 
 <style scoped>
 .data-text {
-  font-size: 15px;
+  font-size: 16px;
 }
 .registry-title {
   font-size: 18px;
