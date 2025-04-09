@@ -32,8 +32,14 @@ jobs:
       - run: echo "PREVIEW_PATH=pr-preview/pr-${{ github.event.number }}" >> "$GITHUB_ENV"
 
       # 종속성 설치 및 프로젝트 빌드
-      - name: Install and Build
-        run: npm install && npm run build
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build with custom base path
+        run: |
+          export VITE_BASE_PATH="/${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/"
+          echo "VITE_BASE_PATH=$VITE_BASE_PATH"
+          VITE_BASE_PATH=$VITE_BASE_PATH npm run build
 
       # PR 프리뷰 배포
       - name: Deploy PR Preview
