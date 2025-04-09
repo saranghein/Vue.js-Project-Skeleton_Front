@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [vue(), vueDevTools()],
   base: process.env.VERCEL ? './' : '/Vue.js-Project-Skeleton_Front/',
   build: {
-    outDir: process.env.VERCEL ? '.vercel/output/static' : 'dist',
+    outDir: 'dist',
   },
   resolve: {
     alias: {
