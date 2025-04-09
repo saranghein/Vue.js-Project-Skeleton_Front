@@ -7,11 +7,9 @@
   justify-content: center;
   align-items: center;
 
-  background-color: lightgray;
-
   border-radius: 50%;
   object-fit: contain;
-  color: black;
+  color: white;
 }
 </style>
 
@@ -19,9 +17,7 @@
   <div
     class="categoryIconContainer"
     :style="{
-      backgroundColor: isIncome
-        ? incomeIcons[incomeType][1]
-        : expenseIcons[expenseType][1],
+      backgroundColor,
     }"
   >
     <i :class="`fa-solid fa-${icon}`"></i>
@@ -32,12 +28,12 @@
 import { computed } from 'vue';
 import { defineProps } from 'vue';
 
-defineProps({
+const props = defineProps({
   //'수입' 혹은 '지출'
   categoryType: {
     type: String,
     default: '',
-    default: true,
+    required: true,
   },
   // 수입이라면 어떤 카테고리인지
   incomeType: {
@@ -53,27 +49,34 @@ defineProps({
 
 // 추후 상수 파일로 옮길 예정
 const incomeIcons = {
-  월급: ['briefcase'],
-  용돈: 'sack-dollar',
-  기타: 'folder-plus',
+  월급: ['briefcase', '#4CAF50'], // 녹색
+  용돈: ['sack-dollar', '#FFC107'], // 노란색
+  기타: ['folder-plus', '#03A9F4'], // 파란색
 };
 
 const expenseIcons = {
-  식비: 'utensils',
-  쇼핑: 'basket-shopping',
-  커피: 'mug-hot',
-  문화생활: 'masks-theater',
-  교통: 'car-side',
-  기타: 'folder-minus',
+  식비: ['utensils', '#FF5722'], // 주황색
+  쇼핑: ['basket-shopping', '#9C27B0'], // 보라색
+  커피: ['mug-hot', '#795548'], // 갈색
+  문화생활: ['masks-theater', '#673AB7'], // 진한 보라색
+  교통: ['car-side', '#2196F3'], // 파란색
+  기타: ['folder-minus', '#607D8B'], // 회색
 };
 
 // 수입인지 지출인지 저장
-const isIncome = categoryType;
+const isIncome = computed(() => props.categoryType === '수입');
 
 // 수입 지출 여부에 따라 아이콘 매칭
 const icon = computed(() => {
-  return isIncome.value === '수입'
-    ? incomeIcons[incomeType][0] || 'folder-plus'
-    : expenseIcons[expenseType][0] || 'folder-minus';
+  return isIncome.value
+    ? incomeIcons[props.incomeType]?.[0] || 'folder-plus'
+    : expenseIcons[props.expenseType]?.[0] || 'folder-minus';
+});
+
+// 수입 지출 여부에 따라 배경색 매칭
+const backgroundColor = computed(() => {
+  return isIncome.value
+    ? incomeIcons[props.incomeType]?.[1] || '#03A9F4' // 기본값: 파란색
+    : expenseIcons[props.expenseType]?.[1] || '#607D8B'; // 기본값: 회색
 });
 </script>
