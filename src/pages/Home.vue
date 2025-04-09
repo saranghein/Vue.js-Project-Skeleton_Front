@@ -66,20 +66,6 @@
 
     <!-- FAB 아이콘 버튼 -->
     <div class="fab-group">
-      <div class="fab" @click="goToAdd">
-        <svg
-          class="fab-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M12 2C6.48 2 2 6.48 2 12c0 5.52
-               4.48 10 10 10s10-4.48 10-10C22
-               6.48 17.52 2 12 2zm5 11h-4v4h-2
-               v-4H7v-2h4V7h2v4h4v2z"
-          />
-        </svg>
-      </div>
       <div class="fab calendar" @click="toggleCalendar">
         <svg
           class="fab-icon"
@@ -91,6 +77,20 @@
               0-2 .9-2 2v14c0 1.1.9 2 2
               2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0
               16H5V9h14v11zm0-13H5V6h14v1z"
+          />
+        </svg>
+      </div>
+      <div class="fab" @click="goToAdd">
+        <svg
+          class="fab-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12c0 5.52
+               4.48 10 10 10s10-4.48 10-10C22
+               6.48 17.52 2 12 2zm5 11h-4v4h-2
+               v-4H7v-2h4V7h2v4h4v2z"
           />
         </svg>
       </div>

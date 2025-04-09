@@ -5,14 +5,15 @@
       <h2 class="modal-title">가계부 달력</h2>
 
       <!-- 달력 (단일 날짜 모드) -->
-      <VCalendar
-        v-model="calendarModel"
-        :attributes="attributes"
-        :locale="customLocale"
-        mode="single"
-        @dayclick="onDayClick"
-      />
-
+      <div class="calendar-wrapper">
+        <VCalendar
+          v-model="calendarModel"
+          :attributes="attributes"
+          :locale="customLocale"
+          mode="single"
+          @dayclick="onDayClick"
+        />
+      </div>
       <!-- 선택된 날짜의 거래 내역 표시 -->
       <div v-if="filteredEvents.length > 0" class="event-list">
         <h3>{{ displayDate }} 내역</h3>
@@ -153,6 +154,11 @@ const attributes = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 .calendar-modal {
