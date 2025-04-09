@@ -1,9 +1,7 @@
 <template>
   <div class="container" @scroll.passive="handleScroll">
-    <header class="header">
-      <button class="menu-btn">☰</button>
-      <h2>Payday? Mayday!</h2>
-    </header>
+    <!-- 공통 헤더 -->
+    <HomeHeader />
 
     <!-- 수입 지출 비교 탭 -->
     <div class="balance-summary" @click="goToDetails">
@@ -58,21 +56,37 @@
       </svg>
     </div>
 
-    <button class="fab" @click="goToAdd">＋</button>
+    <!-- FAB 아이콘 버튼 -->
+    <div class="fab" @click="goToAdd">
+      <svg
+        class="fab-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12c0 5.52
+             4.48 10 10 10s10-4.48 10-10C22
+             6.48 17.52 2 12 2zm5 11h-4v4h-2
+             v-4H7v-2h4V7h2v4h4v2z"
+        />
+      </svg>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+
+// 공통 컴포넌트
+import HomeHeader from '@/components/common/HomeHeader.vue';
 import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
-const sortBy = ref('date');
 const showMoreHint = ref(true);
 
 const router = useRouter();
@@ -92,32 +106,20 @@ onMounted(async () => {
   window.addEventListener('scroll', handleScroll);
 });
 
-const topSortedBudget = computed(() => {
-  const sorted = [...budget.value];
-
-  if (sortBy.value === 'amount') {
-    sorted.sort((a, b) => b.amount - a.amount);
-  } else {
-    sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
-  }
-
-  return sorted.slice(0, 5);
-});
-
-const goToDetails = () => {
-  router.push('/details');
-};
-
-const goToAdd = () => {
-  router.push('/add');
-};
-
 function handleScroll() {
   const bottomThreshold = 100;
   const scrollBottom =
     window.innerHeight + window.scrollY >=
     document.body.offsetHeight - bottomThreshold;
   showMoreHint.value = !scrollBottom;
+}
+
+function goToDetails() {
+  router.push('/details');
+}
+
+function goToAdd() {
+  router.push('/add');
 }
 </script>
 
@@ -129,25 +131,15 @@ function handleScroll() {
   position: relative;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 32px;
-}
-.menu-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
+/* 불필요한 .header, .menu-btn 스타일 제거 */
 
 .balance-summary {
   text-align: center;
-  background: #f1f4f8;
+  background: #cef9ed;
   border-radius: 12px;
   padding: 20px;
-  margin-bottom: 32px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
@@ -155,7 +147,7 @@ function handleScroll() {
   position: relative;
 }
 .balance-summary:hover {
-  background: #e1e8f0;
+  background: rgb(105, 195, 173);
 }
 .balance-summary .hint {
   font-size: 12px;
@@ -182,7 +174,8 @@ function handleScroll() {
 }
 
 .graph-spacing {
-  margin-bottom: 48px;
+  margin-top: 75px;
+  margin-bottom: 75px;
 }
 
 .scroll-appear {
@@ -232,19 +225,29 @@ function handleScroll() {
   }
 }
 
+/* FAB: 파란 원형 + 아이콘 */
 .fab {
   position: fixed;
   bottom: 24px;
   right: 24px;
   width: 56px;
   height: 56px;
-  background-color: #007aff;
-  color: white;
-  border: none;
+  background-color: #55efc4;
   border-radius: 50%;
-  font-size: 28px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   z-index: 20;
+  transition: background-color 0.2s ease;
+}
+.fab:hover {
+  background-color: rgb(52, 191, 156);
+}
+.fab-icon {
+  width: 28px;
+  height: 28px;
+  fill: white;
 }
 </style>
