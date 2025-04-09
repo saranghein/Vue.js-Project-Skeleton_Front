@@ -8,12 +8,9 @@
         class="transaction-info__balance"
         :style="{ backgroundColor: COLORS.GREEN01 }"
       >
-        <span
-          class="transaction-info__balance__label"
-          :style="{ color: COLORS.GRAY02 }"
-          >총 평가금액</span
-        >
-        <span class="transaction-info__balance__amount">1,000,000</span>
+        <span class="transaction-info__balance__amount">{{
+          calculateTotalAmount()
+        }}</span>
       </div>
       <div class="transaction-info__summary">
         <div
@@ -26,7 +23,12 @@
         >
           <span>수입</span>
           <br />
-          <span>10000원</span>
+          <span
+            :style="{
+              color: selectedType === '수입' ? COLORS.WHITE : COLORS.BLUE,
+            }"
+            >{{ sumTransactionsAmount('수입') }}원</span
+          >
         </div>
         <div
           :style="{
@@ -38,7 +40,12 @@
         >
           <span>지출</span>
           <br />
-          <span>10000원</span>
+          <span
+            :style="{
+              color: selectedType === '지출' ? COLORS.WHITE : COLORS.RED,
+            }"
+            >{{ sumTransactionsAmount('지출') }}원</span
+          >
         </div>
       </div>
     </section>
@@ -88,16 +95,12 @@
   padding: 22px 20px;
   margin-top: 20px;
   border-radius: 16px;
-
-  display: flex;
-  justify-content: space-between;
-}
-
-.transaction-info__balance__label {
-  font-size: 12px;
 }
 
 .transaction-info__balance__amount {
+  font-size: 20px;
+
+  display: flex;
   justify-content: center;
 }
 
@@ -175,6 +178,23 @@ const deleteTransaction = async () => {
     );
   } catch (error) {
     console.error('거래내역 삭제 실패:', error);
+  }
+};
+
+const sumTransactionsAmount = (type) => {
+  return transactions.value
+    .filter((tx) => tx.flow_type === type)
+    .reduce((acc, tx) => acc + tx.amount, 0);
+};
+
+const calculateTotalAmount = () => {
+  const total = sumTransactionsAmount('수입') - sumTransactionsAmount('지출');
+  if (total > 0) {
+    return `💰 ${total}원 벌었어요`;
+  } else if (total < 0) {
+    return `😢 ${-total}원 더 썼어요 ㅠㅠ`;
+  } else {
+    return '수입과 지출이 같아요';
   }
 };
 
