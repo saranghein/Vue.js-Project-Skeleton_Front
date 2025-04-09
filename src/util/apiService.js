@@ -82,4 +82,8 @@ export const TransactionService = {
   get() {
     return ApiService.get('money');
   },
+
+  delete(id) {
+    return ApiService.delete(`money/${id}`);
+  },
 };

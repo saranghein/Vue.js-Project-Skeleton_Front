@@ -16,7 +16,7 @@
           transactionTitle: transaction.memo,
           transactionMemo: transaction.payment,
         }"
-        @open="openModal"
+        @open="openModal(transaction.id)"
       />
     </li>
   </ul>
@@ -47,7 +47,7 @@ const formattedTransactions = computed(() =>
 
 const emit = defineEmits(['open']);
 
-const openModal = () => {
-  emit('open');
+const openModal = (id) => {
+  emit('open', id);
 };
 </script>
