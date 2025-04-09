@@ -1,6 +1,8 @@
 <template>
   <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
-    <Header :pageName="'거래 내역'"></Header>
+    <header>
+      <Header :pageName="'거래 내역'"></Header>
+    </header>
     <section class="transaction-info">
       <div
         class="transaction-info__balance"
@@ -44,7 +46,7 @@
       class="transaction-list"
       :style="{ backgroundColor: COLORS.WHITE }"
     >
-      <div class="transaction-list__filter">
+      <div class="transaction-list__filter pointer" @click="openFilterModal">
         <span
           class="transaction-list__filter__label"
           :style="{ color: COLORS.GRAY02 }"
@@ -55,8 +57,13 @@
           style="color: #dedede; padding: 3px; margin-right: 25px"
         ></i>
       </div>
-      <transaction-list />
+      <transaction-list @open="openEditModal" />
     </section>
+    <filter-bottom-modal
+      :isOpen="isFilterModalOpen"
+      @close="closeFilterModal"
+    />
+    <bottom-modal :isOpen="isEditModalOpen" @close="closeEditModal" />
   </div>
 </template>
 
@@ -134,7 +141,9 @@
 <script setup>
 import TransactionList from '@/components/transactionHistory/TransactionList.vue';
 import Header from '@/components/common/Header.vue';
-import Badge from '@/components/common/Badge.vue';
+import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
+import BottomModal from '@/components/transactionHistory/BottomModal.vue';
+
 import { COLORS } from '@/util/constants';
 import { ref } from 'vue';
 
@@ -142,5 +151,24 @@ const selectedType = ref('전체');
 
 const selectType = (type) => {
   selectedType.value = type;
+};
+
+const isFilterModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+
+const openFilterModal = () => {
+  isFilterModalOpen.value = true;
+};
+
+const openEditModal = () => {
+  isEditModalOpen.value = true;
+};
+
+const closeFilterModal = () => {
+  isFilterModalOpen.value = false;
+};
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false;
 };
 </script>
