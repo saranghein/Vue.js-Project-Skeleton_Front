@@ -44,6 +44,9 @@ jobs:
           npm install
           npm run build
 
+      - name: Vercel Build (Generates .vercel/output)
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy to Vercel (Static dist/)
         id: deploy
         run: |
