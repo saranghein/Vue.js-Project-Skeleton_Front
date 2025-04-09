@@ -59,11 +59,11 @@
       </div>
       <transaction-list @open="openEditModal" />
     </section>
-    <transaction-history-filter-modal
+    <filter-bottom-modal
       :isOpen="isFilterModalOpen"
       @close="closeFilterModal"
     />
-    <BottomModal :isOpen="isEditModalOpen" @close="closeEditModal" />
+    <bottom-modal :isOpen="isEditModalOpen" @close="closeEditModal" />
   </div>
 </template>
 
@@ -141,7 +141,7 @@
 <script setup>
 import TransactionList from '@/components/transactionHistory/TransactionList.vue';
 import Header from '@/components/common/Header.vue';
-import TransactionHistoryFilterModal from '@/components/transactionHistory/TransactionHistoryFilterModal.vue';
+import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
 import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 
 import { COLORS } from '@/util/constants';
