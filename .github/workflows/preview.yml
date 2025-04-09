@@ -47,7 +47,7 @@ jobs:
       - name: Deploy to Vercel (Static dist/)
         id: deploy
         run: |
-          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --confirm --cwd=dist > vercel-output.txt
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
 
           echo "🔍 Raw vercel-output.txt content:"
           cat vercel-output.txt
