@@ -22,7 +22,7 @@
         {{ data.transactionAmount }}원
       </p>
       <i
-        class="fa-solid fa-ellipsis-vertical"
+        class="fa-solid fa-ellipsis-vertical pointer"
         style="color: #aeaeae; padding: 10px"
         @click="openModal"
       ></i>

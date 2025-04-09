@@ -8,7 +8,7 @@
         calculateTotalAmount()
       }}</span>
     </div>
-    <div class="transaction-info__summary">
+    <div class="transaction-info__summary pointer">
       <div
         :style="{
           backgroundColor:
@@ -56,7 +56,7 @@
 .transaction-info__balance {
   padding: 22px 20px;
   margin-top: 20px;
-  border-radius: 16px;
+  border-radius: 12px;
 }
 .transaction-info__balance__amount {
   font-size: 20px;
@@ -71,9 +71,12 @@
 .transaction-info__summary > div {
   width: 100%;
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 12px;
   text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
+
 .transaction-info__summary > div:first-child {
   margin-right: 20px;
 }

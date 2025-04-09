@@ -107,11 +107,10 @@ main {
 
   .transaction-list {
     margin-top: 0;
-    padding: 24px;
-    border-radius: 24px;
     flex: 1 1 60%;
-    border: 1px solid rgba(0, 0, 0, 0.06); /* 테두리 추가 */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   }
 
   .transaction-list__filter__label {
