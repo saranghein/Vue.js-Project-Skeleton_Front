@@ -34,18 +34,22 @@
 import TransactionItem from './TransactionItem.vue';
 import { computed } from 'vue';
 import { formatDateToShort } from '../../util/formatDate.js';
-import { inject } from 'vue';
 
-const { transactions } = inject('transactionHistory');
+const props = defineProps({
+  transactions: {
+    type: Array,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['open']);
 
 const formattedTransactions = computed(() =>
-  transactions.value.map((tx) => ({
+  props.transactions.map((tx) => ({
     ...tx,
     date: formatDateToShort(tx.date),
   }))
 );
-
-const emit = defineEmits(['open']);
 
 const openModal = (id) => {
   emit('open', id);

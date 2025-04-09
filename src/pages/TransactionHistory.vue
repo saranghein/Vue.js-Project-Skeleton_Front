@@ -64,9 +64,13 @@
           style="color: #dedede; padding: 3px; margin-right: 25px"
         ></i>
       </div>
-      <transaction-list @open="openEditModal" />
+      <transaction-list
+        :transactions="filteredTransactions"
+        @open="openEditModal"
+      />
     </section>
     <filter-bottom-modal
+      :type="filters.type"
       :isOpen="isFilterModalOpen"
       @close="closeFilterModal"
     />
@@ -151,14 +155,20 @@ import Header from '@/components/common/Header.vue';
 import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
 import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 import { COLORS } from '@/util/constants';
-import { ref, provide, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import { TransactionService } from '@/util/apiService';
 
-const selectedType = ref('전체');
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const transactions = ref([]);
 const transactionId = ref(null);
+const filters = reactive({
+  type: null,
+  category: null,
+  date: null,
+});
+
+const selectedType = computed(() => filters.type || '전체');
 
 const fetchTransactions = async () => {
   try {
@@ -167,6 +177,36 @@ const fetchTransactions = async () => {
   } catch (error) {
     console.error('거래내역 가져오기 실패:', error);
   }
+};
+
+//필터링 및 정렬된 거래내역
+const filteredTransactions = computed(() => {
+  return transactions.value
+    .filter((tx) => {
+      //type 필터
+      if (filters.type && filters.type !== '전체') {
+        return tx.flow_type === filters.type;
+      }
+      return true;
+    })
+    .filter((tx) => {
+      //category 필터
+      if (filters.category && filters.category !== '전체') {
+        return tx.category === filters.category;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      //정렬: 최신순 또는 오래된순
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (filters.date === '오래된 순') return dateA - dateB;
+      return dateB - dateA; // 최신순이 기본
+    });
+});
+
+const selectType = (type) => {
+  filters.type = type;
 };
 
 const deleteTransaction = async () => {
@@ -202,14 +242,6 @@ onMounted(() => {
   fetchTransactions();
 });
 
-provide('transactionHistory', {
-  transactions,
-});
-
-const selectType = (type) => {
-  selectedType.value = type;
-};
-
 const openFilterModal = () => {
   isFilterModalOpen.value = true;
 };
@@ -219,8 +251,11 @@ const openEditModal = (id) => {
   transactionId.value = id;
 };
 
-const closeFilterModal = () => {
+const closeFilterModal = (selectedFilters) => {
   isFilterModalOpen.value = false;
+  filters.type = selectedFilters.type;
+  filters.category = selectedFilters.category;
+  filters.date = selectedFilters.date;
 };
 
 const closeEditModal = () => {
