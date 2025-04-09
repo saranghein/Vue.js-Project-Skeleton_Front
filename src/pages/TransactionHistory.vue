@@ -143,18 +143,35 @@ import TransactionList from '@/components/transactionHistory/TransactionList.vue
 import Header from '@/components/common/Header.vue';
 import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
 import BottomModal from '@/components/transactionHistory/BottomModal.vue';
-
 import { COLORS } from '@/util/constants';
-import { ref } from 'vue';
+import { ref, provide, onMounted } from 'vue';
+import { TransactionService } from '@/util/apiService';
 
 const selectedType = ref('전체');
+const isFilterModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+const transactions = ref([]);
+
+const fetchTransactions = async () => {
+  try {
+    const response = await TransactionService.get();
+    transactions.value = response.data;
+  } catch (error) {
+    console.error('거래내역 가져오기 실패:', error);
+  }
+};
+
+onMounted(() => {
+  fetchTransactions();
+});
+
+provide('transactionHistory', {
+  transactions,
+});
 
 const selectType = (type) => {
   selectedType.value = type;
 };
-
-const isFilterModalOpen = ref(false);
-const isEditModalOpen = ref(false);
 
 const openFilterModal = () => {
   isFilterModalOpen.value = true;

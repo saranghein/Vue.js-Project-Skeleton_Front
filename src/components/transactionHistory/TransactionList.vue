@@ -13,8 +13,8 @@
           transactionDate: transaction.date,
           transactionAmount: transaction.amount,
           transactionCategory: transaction.category,
-          transactionTitle: transaction.category,
-          transactionMemo: transaction.memo,
+          transactionTitle: transaction.memo,
+          transactionMemo: transaction.payment,
         }"
         @open="openModal"
       />
@@ -32,28 +32,14 @@
 
 <script setup>
 import TransactionItem from './TransactionItem.vue';
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { formatDateToShort } from '../../util/formatDate.js';
+import { inject } from 'vue';
 
-const baseTransaction = {
-  user_id: 1,
-  flow_type: '지출',
-  date: '2025-04-02T12:30:00',
-  amount: 12000,
-  category: '식비',
-  memo: '회사 근처 식당',
-  payment: '신용/체크',
-};
-
-const state = reactive({
-  transactions: Array.from({ length: 10 }, (_, i) => ({
-    ...baseTransaction,
-    id: i + 1,
-  })),
-});
+const { transactions } = inject('transactionHistory');
 
 const formattedTransactions = computed(() =>
-  state.transactions.map((tx) => ({
+  transactions.value.map((tx) => ({
     ...tx,
     date: formatDateToShort(tx.date),
   }))
