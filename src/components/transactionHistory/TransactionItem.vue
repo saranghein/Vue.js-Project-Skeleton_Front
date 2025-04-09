@@ -14,6 +14,7 @@
       <i
         class="fa-solid fa-ellipsis-vertical"
         style="color: #aeaeae; padding: 10px"
+        @click="openModal"
       ></i>
     </div>
   </article>
@@ -93,4 +94,10 @@ const props = defineProps({
     transactionMemo: String,
   },
 });
+
+const emit = defineEmits(['open']);
+
+const openModal = () => {
+  emit('open');
+};
 </script>
