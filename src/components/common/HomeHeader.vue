@@ -13,6 +13,7 @@
   width: 100%;
   height: 56px;
   border-radius: 12px;
+
   display: flex;
   justify-content: left;
   align-items: center;
@@ -51,7 +52,8 @@ import { ref } from 'vue';
 import Sidebar from '@/components/common/Sidebar.vue';
 import { COLORS } from '@/util/constants';
 
-defineProps(['username']);
+defineProps({ username: { type: String, required: true } }); //사이드바에 넣을 유저네임 필수요소
+
 const isSidebarOpen = ref(false);
 
 function toggleSidebar() {

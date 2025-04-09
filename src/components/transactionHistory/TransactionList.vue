@@ -16,6 +16,7 @@
           transactionTitle: transaction.category,
           transactionMemo: transaction.memo,
         }"
+        @open="openModal"
       />
     </li>
   </ul>
@@ -57,4 +58,10 @@ const formattedTransactions = computed(() =>
     date: formatDateToShort(tx.date),
   }))
 );
+
+const emit = defineEmits(['open']);
+
+const openModal = () => {
+  emit('open');
+};
 </script>
