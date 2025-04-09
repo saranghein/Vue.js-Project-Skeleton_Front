@@ -97,10 +97,12 @@ const closeModal = () => {
 
 const deleteTransaction = () => {
   emit('delete');
+  closeModal();
 };
 
 const editTransaction = () => {
   emit('edit');
+  closeModal();
 };
 
 const onTouchStart = (event) => {
@@ -108,10 +110,11 @@ const onTouchStart = (event) => {
 };
 
 const onTouchEnd = (event) => {
-  const modal = event.target.closest('.bottomModal');
-  if (!modal) return; // 모달 요소가 아닌 경우 무시
-  modal.style.transform = 'translateY(100%)'; // 화면 아래로 이동
-  setTimeout(() => closeModal(), 300); // 애니메이션 후 모달 닫기
+  const diffY = event.changedTouches[0].clientY - startY.value;
+  if (diffY > 50) {
+    // 어느 정도 아래로 스와이프했을 때만 닫기
+    closeModal();
+  }
 };
 
 // 마우스 이벤트
@@ -120,9 +123,9 @@ const onMouseDown = (event) => {
 };
 
 const onMouseUp = (event) => {
-  const modal = event.target.closest('.bottomModal');
-  if (!modal) return; // 모달 요소가 아닌 경우 무시
-  modal.style.transform = 'translateY(100%)'; // 화면 아래로 이동
-  setTimeout(() => closeModal(), 300); // 애니메이션 후 모달 닫기
+  const diffY = event.clientY - startY.value;
+  if (diffY > 50) {
+    closeModal();
+  }
 };
 </script>
