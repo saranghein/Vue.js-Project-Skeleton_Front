@@ -82,7 +82,7 @@ jobs:
         run: |
           {
             echo "🎉 구현한 기능 Preview:"
-            echo "- **Vercel**: ${{ needs.deploy-preview.outputs.preview_url }}"
+            echo "- **Vercel**: ${{ steps.deploy.outputs.preview_url }}"
             echo "- **GitHub Pages**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/"
 
             echo ""
