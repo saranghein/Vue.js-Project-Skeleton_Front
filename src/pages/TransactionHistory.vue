@@ -1,63 +1,79 @@
 <template>
-  <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
+  <div class="layout">
     <header>
       <Header :pageName="'거래 내역'" />
     </header>
 
-    <TransactionSummary
-      :selectedType="selectedType"
-      :calculateTotalAmount="calculateTotalAmount"
-      :sumTransactionsAmount="sumTransactionsAmount"
-      @selectType="selectType"
-    />
-
-    <section
-      class="transaction-list"
-      :style="{ backgroundColor: COLORS.WHITE }"
-    >
-      <div class="transaction-list__filter pointer" @click="openFilterModal">
-        <span
-          class="transaction-list__filter__label"
-          :style="{ color: COLORS.GRAY02 }"
-        >
-          {{ filters.type || '전체' }} | {{ filters.category || '전체' }} |
-          {{ filters.date || '최신순' }}
-        </span>
-        <i
-          class="fa-solid fa-angle-down icon"
-          style="color: #dedede; padding: 6px; margin-right: 25px"
-        />
-      </div>
-
-      <EmptyView v-if="filteredTransactions.length === 0" />
-
-      <TransactionList
-        v-else
-        :transactions="filteredTransactions"
-        @open="openEditModal"
+    <main>
+      <TransactionSummary
+        class="test"
+        :selectedType="selectedType"
+        :calculateTotalAmount="calculateTotalAmount"
+        :sumTransactionsAmount="sumTransactionsAmount"
+        @selectType="selectType"
       />
-    </section>
 
-    <FilterBottomModal
-      :type="filters.type"
-      :isOpen="isFilterModalOpen"
-      @close="closeFilterModal"
-    />
-    <BottomModal
-      :isOpen="isEditModalOpen"
-      @close="closeEditModal"
-      @delete="deleteTransaction"
-    />
+      <section
+        class="transaction-list"
+        :style="{ backgroundColor: COLORS.WHITE }"
+      >
+        <div class="transaction-list__filter pointer" @click="openFilterModal">
+          <span
+            class="transaction-list__filter__label"
+            :style="{ color: COLORS.GRAY02 }"
+          >
+            {{ filters.type || '전체' }} | {{ filters.category || '전체' }} |
+            {{ filters.date || '최신순' }}
+          </span>
+          <i
+            class="fa-solid fa-angle-down icon"
+            style="color: #dedede; padding: 6px; margin-right: 25px"
+          />
+        </div>
+
+        <EmptyView v-if="filteredTransactions.length === 0" />
+
+        <TransactionList
+          v-else
+          :transactions="filteredTransactions"
+          @open="openEditModal"
+        />
+      </section>
+
+      <FilterBottomModal
+        :type="filters.type"
+        :isOpen="isFilterModalOpen"
+        @close="closeFilterModal"
+      />
+      <BottomModal
+        :isOpen="isEditModalOpen"
+        @close="closeEditModal"
+        @delete="deleteTransaction"
+      />
+    </main>
   </div>
 </template>
 
 <style scoped>
+.layout {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background-color: v-bind('COLORS.GREEN02');
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+
 .transaction-list {
   width: 100%;
   margin-top: 15px;
   padding-top: 15px;
   border-radius: 16px 16px 0 0;
 }
+
 .transaction-list__filter {
   width: 100%;
   margin-left: auto;
@@ -66,8 +82,41 @@
   align-items: center;
   justify-content: right;
 }
+
 .transaction-list__filter__label {
   font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    background-color: white;
+  }
+
+  main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  .test {
+    flex: 1 1 40%;
+  }
+
+  .transaction-list {
+    margin-top: 0;
+    padding: 24px;
+    border-radius: 24px;
+    flex: 1 1 60%;
+    border: 1px solid rgba(0, 0, 0, 0.06); /* 테두리 추가 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  }
+
+  .transaction-list__filter__label {
+    font-size: 14px;
+  }
 }
 </style>
 
