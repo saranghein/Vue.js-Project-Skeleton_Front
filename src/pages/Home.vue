@@ -134,21 +134,25 @@ function goToAdd() {
 /* 불필요한 .header, .menu-btn 스타일 제거 */
 
 .balance-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+
   text-align: center;
   background: #cef9ed;
   border-radius: 12px;
+  height: 150px;
   padding: 20px;
   margin-top: 40px;
   margin-bottom: 40px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 25px;
   cursor: pointer;
   transition: background 0.2s;
   position: relative;
 }
-.balance-summary:hover {
-  background: rgb(105, 195, 173);
-}
+
 .balance-summary .hint {
   font-size: 12px;
   font-weight: normal;
@@ -158,14 +162,40 @@ function goToAdd() {
   bottom: 8px;
 }
 
+.balance-text p {
+  margin: 0;
+}
+
+.balance-summary:hover {
+  background: rgb(105, 195, 173);
+}
+
 .summary {
   display: flex;
   justify-content: space-around;
   margin-bottom: 40px;
+  gap: 12px; /* 각각의 박스 간격 추가 */
+
+  background: #fff; /* 흰색 배경 */
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
+
 .box {
   text-align: center;
+  background: #f4fdfb; /* 연한 민트 느낌 배경 */
+  border-radius: 12px;
+  padding: 12px;
+  flex: 1;
+  transition: transform 0.2s ease;
+  cursor: default;
 }
+
+.box:hover {
+  transform: scale(1.03);
+}
+
 .blue {
   color: #007aff;
 }
