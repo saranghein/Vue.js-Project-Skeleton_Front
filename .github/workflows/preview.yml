@@ -1,10 +1,8 @@
 name: pr-preview-vercel
+
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
+    types: [opened, reopened, synchronize]
     branches: ['main', 'develop']
 
 permissions:
@@ -46,27 +44,23 @@ jobs:
           npm install
           npm run build
 
-      - name: Build for Vercel
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel (Static dist/)
         id: deploy
         run: |
-          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
+          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --confirm --cwd=dist > vercel-output.txt
 
           echo "🔍 Raw vercel-output.txt content:"
           cat vercel-output.txt
 
-          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt)
+          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt | head -n 1)
           echo "🔍 Extracted preview_url: $preview_url"
 
           echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
-      # PR 프리뷰 배포
-      - name: Deploy PR Preview
+      - name: Deploy PR Preview to GitHub Pages
         uses: rossjrw/pr-preview-action@v1.4.6
         with:
-          token: ${{ secrets.AUTH_TOKEN}}
+          token: ${{ secrets.AUTH_TOKEN }}
           source-dir: ./dist/
           preview-branch: gh-pages
           umbrella-dir: pr-preview
