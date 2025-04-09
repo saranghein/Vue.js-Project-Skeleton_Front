@@ -4,6 +4,10 @@ import { ref, onMounted, computed } from 'vue';
 import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
+import { RegisterService } from '@/api/RegisterService';
+
+import CategorySelector from '@/components/Registration/CategorySelector.vue';
+import PaymentMethodSelector from '@/components/Registration/PaymentMethodSelector.vue';
 import Button from '@/components/common/Button.vue';
 import DateInput from '@/components/Registration/DateInput.vue';
 const selectedDate = ref(''); // 날짜
@@ -59,7 +63,20 @@ const errors = ref({
 });
 
 // 등록 버튼 클릭했을 때 유효성 검사
-const handleSubmit = () => {
+// const handleSubmit = () => {
+//   const newErrors = {
+//     date: !selectedDate.value,
+//     time: !selectedTime.value,
+//     amount: !inputAmount.value,
+//     category: !category.value,
+//     depositor: !depositor.value,
+//   };
+
+//   errors.value = newErrors;
+
+//   return !Object.values(newErrors).some(Boolean); // true면 유효
+// };
+const handleSubmit = async () => {
   const newErrors = {
     date: !selectedDate.value,
     time: !selectedTime.value,
@@ -70,9 +87,47 @@ const handleSubmit = () => {
 
   errors.value = newErrors;
 
-  if (Object.values(newErrors).some(Boolean)) return;
+  const isValid = !Object.values(newErrors).some(Boolean);
+  if (!isValid) return;
 
-  alert('등록 완료!');
+  // 등록 요청
+  const payload = {
+    date: selectedDate.value,
+    time: selectedTime.value,
+    amount: Number(inputAmount.value),
+    categoryId: category.value,
+    source: depositor.value,
+    paymentMethodId: paymentMethod.value,
+    memo: memo.value,
+    type: selectedType.value, // 'income' or 'expense'
+  };
+
+  try {
+    const response = await RegisterService.create(payload);
+    console.log('등록 성공:', response.data);
+    // 초기화 또는 이동 처리
+    resetForm(); // 선택 사항
+  } catch (error) {
+    console.error('등록 실패:', error);
+  }
+};
+// 초기화
+const resetForm = () => {
+  selectedDate.value = '';
+  selectedTime.value = '';
+  inputAmount.value = '';
+  category.value = '';
+  depositor.value = '';
+  paymentMethod.value = '';
+  memo.value = '';
+  selectedType.value = '';
+  errors.value = {
+    date: false,
+    time: false,
+    amount: false,
+    category: false,
+    depositor: false,
+  };
 };
 
 // 뒤로가기 또는 폼 초기화
@@ -125,50 +180,72 @@ onMounted(() => {
 
     <!-- 날짜 및 시간 -->
     <!-- 날짜 -->
-    <DateInput v-model="selectedDate" :error="errors.date" />
+    <DateInput
+      v-model="selectedDate"
+      :error="errors.date"
+      @update:modelValue="
+        (val) => {
+          selectedDate = val;
+          if (val) errors.date = false;
+        }
+      "
+    />
 
     <!-- 시간 -->
-    <TimeInput v-model="selectedTime" :error="errors.time" />
+    <TimeInput
+      v-model="selectedTime"
+      :error="errors.time"
+      @update:modelValue="
+        (val) => {
+          selectedTime = val;
+          if (val) errors.time = false;
+        }
+      "
+    />
 
     <!-- 금액 입력 -->
-    <AmountInput v-model="inputAmount" :error="errors.amount" />
+    <AmountInput
+      v-model="inputAmount"
+      :error="errors.amount"
+      @update:modelValue="
+        (val) => {
+          inputAmount = val;
+          if (val) errors.amount = false;
+        }
+      "
+    />
 
     <!-- 카테고리 -->
-    <div class="row">
-      <div class="col-10 col-md-6 mx-auto">
-        <DropdownSelector
-          :class="{ shake: errors.category }"
-          label="⁎ 카테고리"
-          placeholder="카테고리 선택"
-          :options="categoryOptions"
-          option-label="name"
-          option-value="id"
-          v-model="category"
-          error-message="카테고리를 선택해 주세요"
-        />
-      </div>
-    </div>
+    <CategorySelector
+      v-model="category"
+      :selected-type="selectedType"
+      :error="errors.category"
+      @update:modelValue="
+        (val) => {
+          category = val;
+          if (val) errors.category = false;
+        }
+      "
+    />
 
     <!-- 출처 입력 -->
     <SourceInput
       v-model="depositor"
       :error="errors.depositor"
       :placeholder="getDepositorPlaceholder"
+      @update:modelValue="
+        (val) => {
+          depositor = val;
+          if (val) errors.depositor = false;
+        }
+      "
     />
 
     <!-- 거래 수단 -->
-    <div class="row">
-      <div class="col-10 col-md-6 mx-auto">
-        <DropdownSelector
-          label="거래수단"
-          placeholder="거래수단 선택"
-          :options="paymentMethodOptions"
-          option-label="name"
-          option-value="id"
-          v-model="paymentMethod"
-        />
-      </div>
-    </div>
+    <PaymentMethodSelector
+      v-model="paymentMethod"
+      :selected-type="selectedType"
+    />
 
     <!-- 메모 입력 -->
     <MemoInput v-model="memo" />
@@ -182,7 +259,7 @@ onMounted(() => {
           name="등록"
           bgColor="GREEN02"
           color="BLACK"
-          :click-handler="handleSubmit()"
+          :click-handler="handleSubmit"
         ></Button>
       </div>
     </div>
@@ -191,10 +268,11 @@ onMounted(() => {
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
         <Button
+          type="button"
           name="취소"
           color="WHITE"
           bgColor="GRAY01"
-          :click-handler="handleCancel()"
+          :click-handler="handleCancel"
         ></Button>
       </div>
     </div>

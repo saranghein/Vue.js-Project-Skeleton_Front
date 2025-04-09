@@ -1,5 +1,5 @@
 <template>
-  <div class="row mb-2">
+  <div class="row mb-4">
     <div class="col-10 col-md-6 mx-auto">
       <label for="memo" class="form-label">메모</label>
       <div class="input-group">
