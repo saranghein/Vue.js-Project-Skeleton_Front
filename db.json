@@ -121,5 +121,22 @@
       "user_id": "hong123",
       "user_pw": "securepassword"
     }
+  ],
+  "categories": [
+    { "id": 1, "name": "식비", "type": "expense" },
+    { "id": 2, "name": "교통비", "type": "expense" },
+    { "id": 3, "name": "유흥비", "type": "expense" },
+    { "id": 4, "name": "교육비", "type": "expense" },
+    { "id": 5, "name": "월급", "type": "income" },
+    { "id": 6, "name": "용돈", "type": "income" },
+    { "id": 7, "name": "기타", "type": "both" }
+  ],
+  "paymentMethods": [
+    { "id": 1, "name": "신용/체크", "type": "expense" },
+    { "id": 2, "name": "현금", "type": "both" },
+    { "id": 3, "name": "간편결제", "type": "expense" },
+    { "id": 4, "name": "휴대폰소액결제", "type": "expense" },
+    { "id": 5, "name": "계좌이체", "type": "income" },
+    { "id": 6, "name": "기타", "type": "both" }
   ]
 }
