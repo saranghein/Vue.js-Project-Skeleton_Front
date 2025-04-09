@@ -3,41 +3,49 @@
     <!-- 공통 헤더 -->
     <HomeHeader />
 
-    <!-- 수입 지출 비교 탭 -->
-    <div class="balance-summary" @click="goToDetails">
-      <div class="balance-text">
-        <p v-if="totalIncome > totalExpense">
-          💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
-        </p>
-        <p v-else-if="totalExpense > totalIncome">
-          😢 {{ (totalExpense - totalIncome).toLocaleString() }}원 적자입니다
-        </p>
-        <p v-else>수입과 지출이 같아요</p>
-        <span class="hint">클릭해서 자세히 보기</span>
-      </div>
-    </div>
+    <!-- 요약 + 그래프: 반응형 구성 -->
+    <div class="responsive-summary-graph">
+      <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
+      <div>
+        <!-- 수입 지출 비교 탭 -->
+        <div class="balance-summary" @click="goToDetails">
+          <div class="balance-text">
+            <p v-if="totalIncome > totalExpense">
+              💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
+            </p>
+            <p v-else-if="totalExpense > totalIncome">
+              😢 {{ (totalExpense - totalIncome).toLocaleString() }}원
+              적자입니다
+            </p>
+            <p v-else>수입과 지출이 같아요</p>
+            <span class="hint">클릭해서 자세히 보기</span>
+          </div>
+        </div>
 
-    <!-- 요약 영역 -->
-    <section class="summary">
-      <div class="box">
-        <p>수입</p>
-        <h3 class="blue">{{ totalIncome.toLocaleString() }}원</h3>
+        <section class="summary">
+          <div class="box">
+            <p>수입</p>
+            <h3 class="blue">{{ totalIncome.toLocaleString() }}원</h3>
+          </div>
+          <div class="box">
+            <p>지출</p>
+            <h3 class="red">{{ totalExpense.toLocaleString() }}원</h3>
+          </div>
+          <div class="graph-spacing">
+            <IncomeExpenseChart :data="budget" class="scroll-appear" />
+          </div>
+        </section>
       </div>
-      <div class="box">
-        <p>지출</p>
-        <h3 class="red">{{ totalExpense.toLocaleString() }}원</h3>
-      </div>
-    </section>
 
-    <!-- 그래프 간 간격 추가 -->
-    <div class="graph-spacing">
-      <IncomeExpenseChart :data="budget" class="scroll-appear" />
-    </div>
-    <div class="graph-spacing">
-      <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
-    </div>
-    <div class="graph-spacing">
-      <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
+      <!-- 오른쪽 컬럼: 그래프들 -->
+      <div class="graph-group">
+        <div class="graph-spacing">
+          <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+        </div>
+        <div class="graph-spacing">
+          <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
+        </div>
+      </div>
     </div>
 
     <!-- 더보기 텍스트 + 아이콘 -->
@@ -125,21 +133,20 @@ function goToAdd() {
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 1200px;
   margin: auto;
   padding: 16px;
   position: relative;
 }
 
-/* 불필요한 .header, .menu-btn 스타일 제거 */
-
+/* 수입 지출 비교 탭 */
 .balance-summary {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 수직 가운데 정렬 */
-  align-items: center; /* 수평 가운데 정렬 */
+  justify-content: center;
+  align-items: flex-start; /* 왼쪽 정렬 */
 
-  text-align: center;
+  text-align: left;
   background: #cef9ed;
   border-radius: 12px;
   height: 150px;
@@ -152,7 +159,9 @@ function goToAdd() {
   transition: background 0.2s;
   position: relative;
 }
-
+.balance-summary:hover {
+  background: rgb(105, 195, 173);
+}
 .balance-summary .hint {
   font-size: 12px;
   font-weight: normal;
@@ -161,53 +170,60 @@ function goToAdd() {
   right: 12px;
   bottom: 8px;
 }
-
 .balance-text p {
   margin: 0;
 }
 
-.balance-summary:hover {
-  background: rgb(105, 195, 173);
+/* 반응형으로 요약 + 그래프 배치 */
+.responsive-summary-graph {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+@media screen and (min-width: 768px) {
+  .responsive-summary-graph {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 왼쪽 1, 오른쪽 2 배 */
+    align-items: start;
+    gap: 32px;
+  }
 }
 
+/* 수입/지출 요약 영역 */
 .summary {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 40px;
-  gap: 12px; /* 각각의 박스 간격 추가 */
+  gap: 12px;
 
-  background: #fff; /* 흰색 배경 */
+  background: #fff;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
 .box {
   text-align: center;
-  background: #f4fdfb; /* 연한 민트 느낌 배경 */
+  background: #f4fdfb;
   border-radius: 12px;
   padding: 12px;
-  flex: 1;
+  flex: 1 1 45%;
   transition: transform 0.2s ease;
   cursor: default;
 }
-
 .box:hover {
   transform: scale(1.03);
 }
 
-.blue {
-  color: #007aff;
+/* 그래프들 */
+.graph-group {
 }
-.red {
-  color: #ff3b30;
-}
-
 .graph-spacing {
-  margin-top: 75px;
-  margin-bottom: 75px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
+/* 애니메이션 */
 .scroll-appear {
   opacity: 0;
   transform: translateY(30px);
@@ -220,7 +236,15 @@ function goToAdd() {
   }
 }
 
-/* 더보기 아이콘 + 텍스트 */
+/* 수입, 지출 색상 */
+.blue {
+  color: #007aff;
+}
+.red {
+  color: #ff3b30;
+}
+
+/* 더보기 텍스트 + 아이콘 */
 .more-hint {
   position: fixed;
   bottom: 16px;
@@ -255,7 +279,7 @@ function goToAdd() {
   }
 }
 
-/* FAB: 파란 원형 + 아이콘 */
+/* FAB 아이콘 버튼 */
 .fab {
   position: fixed;
   bottom: 24px;
