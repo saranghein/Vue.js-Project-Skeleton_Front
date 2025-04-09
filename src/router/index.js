@@ -10,7 +10,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: TransactionHistory,
+      component: Home,
     },
     {
       path: '/register',
