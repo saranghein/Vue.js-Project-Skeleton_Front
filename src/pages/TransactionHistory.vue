@@ -1,6 +1,8 @@
 <template>
   <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
-    <Header :pageName="'거래 내역'"></Header>
+    <header>
+      <Header :pageName="'거래 내역'"></Header>
+    </header>
     <section class="transaction-info">
       <div
         class="transaction-info__balance"
@@ -44,7 +46,7 @@
       class="transaction-list"
       :style="{ backgroundColor: COLORS.WHITE }"
     >
-      <div class="transaction-list__filter pointer" @click="openModal">
+      <div class="transaction-list__filter pointer" @click="openFilterModal">
         <span
           class="transaction-list__filter__label"
           :style="{ color: COLORS.GRAY02 }"
@@ -55,12 +57,13 @@
           style="color: #dedede; padding: 3px; margin-right: 25px"
         ></i>
       </div>
-      <transaction-list />
+      <transaction-list @open="openEditModal" />
     </section>
     <transaction-history-filter-modal
-      :isOpen="isModalOpen"
-      @close="closeModal"
+      :isOpen="isFilterModalOpen"
+      @close="closeFilterModal"
     />
+    <BottomModal :isOpen="isEditModalOpen" @close="closeEditModal" />
   </div>
 </template>
 
@@ -139,6 +142,7 @@
 import TransactionList from '@/components/transactionHistory/TransactionList.vue';
 import Header from '@/components/common/Header.vue';
 import TransactionHistoryFilterModal from '@/components/transactionHistory/TransactionHistoryFilterModal.vue';
+import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 
 import { COLORS } from '@/util/constants';
 import { ref } from 'vue';
@@ -149,13 +153,22 @@ const selectType = (type) => {
   selectedType.value = type;
 };
 
-const isModalOpen = ref(false);
+const isFilterModalOpen = ref(false);
+const isEditModalOpen = ref(false);
 
-const openModal = () => {
-  isModalOpen.value = true;
+const openFilterModal = () => {
+  isFilterModalOpen.value = true;
 };
 
-const closeModal = () => {
-  isModalOpen.value = false;
+const openEditModal = () => {
+  isEditModalOpen.value = true;
+};
+
+const closeFilterModal = () => {
+  isFilterModalOpen.value = false;
+};
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false;
 };
 </script>
