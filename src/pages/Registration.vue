@@ -5,21 +5,22 @@ import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
 import Button from '@/components/common/Button.vue';
-import { COLORS } from '@/util/constants';
-
+import DateInput from '@/components/Registration/DateInput.vue';
 const selectedDate = ref(''); // 날짜
 const selectedTime = ref(''); // 시간
 const memo = ref(''); // 메모
 const depositor = ref(''); // 입금자명
 const inputAmount = ref(''); // 금액
-
-const store = useOptionStore();
-const category = ref(''); //카테고리 선택
+const category = ref(''); // 카테고리 선택
 const paymentMethod = ref(''); // 지출 방식
-
+const store = useOptionStore(); // 스토어 정의
 const selectedType = ref(''); // 지출인지 수입인지('income' 또는 'expense')
+import TimeInput from '@/components/Registration/TimeInput.vue';
+import AmountInput from '@/components/Registration/AmountInput.vue';
+import SourceInput from '@/components/Registration/SourceInput.vue';
+import MemoInput from '@/components/Registration/MemoInput.vue';
+//이벤트 핸들러
 const onTypeChange = (type) => {
-  //이벤트 핸들러
   selectedType.value = type;
 };
 
@@ -73,8 +74,10 @@ const handleSubmit = () => {
 
   alert('등록 완료!');
 };
+
+// 뒤로가기 또는 폼 초기화
 const handleCancel = () => {
-  // 뒤로가기 또는 폼 초기화
+  //TODO: API 연결
   console.log('취소 클릭');
 };
 onMounted(() => {
@@ -122,67 +125,13 @@ onMounted(() => {
 
     <!-- 날짜 및 시간 -->
     <!-- 날짜 -->
-    <div class="row mb-2">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="date" class="form-label">⁎ 날짜 및 시간</label>
-        <div class="input-group w-50" :class="{ shake: errors.date }">
-          <input
-            type="date"
-            id="date"
-            class="form-control"
-            v-model="selectedDate"
-          />
-        </div>
-        <small
-          class="text-danger ms-1"
-          :style="{ visibility: errors.date ? 'visible' : 'hidden' }"
-          >날짜를 선택해 주세요</small
-        >
-      </div>
-    </div>
+    <DateInput v-model="selectedDate" :error="errors.date" />
+
     <!-- 시간 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <div class="input-group w-50" :class="{ shake: errors.time }">
-          <input
-            type="time"
-            id="time"
-            class="form-control"
-            v-model="selectedTime"
-          />
-        </div>
-        <small
-          class="text-danger ms-1"
-          :style="{ visibility: errors.time ? 'visible' : 'hidden' }"
-        >
-          시간을 선택해 주세요
-        </small>
-      </div>
-    </div>
+    <TimeInput v-model="selectedTime" :error="errors.time" />
 
     <!-- 금액 입력 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="amount" class="form-label">⁎ 금액</label>
-        <div class="input-group" :class="{ shake: errors.amount }">
-          <input
-            type="text"
-            id="amount"
-            class="form-control no-default-icon"
-            v-model.number="inputAmount"
-            placeholder="금액 입력"
-            style="text-align: right"
-          />
-          <span class="my-2 ms-2">원</span>
-        </div>
-        <small
-          class="text-danger ms-1"
-          :style="{ visibility: errors.amount ? 'visible' : 'hidden' }"
-        >
-          금액을 입력해 주세요
-        </small>
-      </div>
-    </div>
+    <AmountInput v-model="inputAmount" :error="errors.amount" />
 
     <!-- 카테고리 -->
     <div class="row">
@@ -201,26 +150,11 @@ onMounted(() => {
     </div>
 
     <!-- 출처 입력 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="list" class="form-label">⁎ 출처</label>
-        <div class="input-group" :class="{ shake: errors.depositor }">
-          <input
-            type="text"
-            id="list"
-            class="form-control no-default-icon"
-            v-model="depositor"
-            :placeholder="getDepositorPlaceholder"
-          />
-        </div>
-        <small
-          class="text-danger ms-1"
-          :style="{ visibility: errors.depositor ? 'visible' : 'hidden' }"
-        >
-          출처를 입력해 주세요
-        </small>
-      </div>
-    </div>
+    <SourceInput
+      v-model="depositor"
+      :error="errors.depositor"
+      :placeholder="getDepositorPlaceholder"
+    />
 
     <!-- 거래 수단 -->
     <div class="row">
@@ -237,20 +171,7 @@ onMounted(() => {
     </div>
 
     <!-- 메모 입력 -->
-    <div class="row mb-2">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="memo" class="form-label">메모</label>
-        <div class="input-group">
-          <input
-            type="text"
-            id="memo"
-            class="form-control no-default-icon"
-            v-model.number="memo"
-            placeholder="메모를 입력해주세요"
-          />
-        </div>
-      </div>
-    </div>
+    <MemoInput v-model="memo" />
 
     <!-- 버튼 -->
     <!-- 등록 버튼 -->
@@ -265,8 +186,9 @@ onMounted(() => {
         ></Button>
       </div>
     </div>
+
     <!-- 취소 버튼 -->
-    <div class="row mb-2">
+    <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
         <Button
           name="취소"
