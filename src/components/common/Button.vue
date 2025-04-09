@@ -33,18 +33,18 @@ div {
 <script setup>
 import { COLORS } from '@/util/constants';
 defineProps({
-  name: String,
+  name: {
+    type: String,
+    required: true, // name만 필수요소
+  },
   bgColor: {
     type: String,
-    default: false,
   },
   color: {
     type: String,
-    default: false,
   },
   clickHandler: {
     type: Function,
-    default: false,
   },
 });
 </script>
