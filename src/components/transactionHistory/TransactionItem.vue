@@ -10,7 +10,14 @@
       </div>
     </div>
     <div class="transaction-item__right">
-      <p class="transaction-item__amount">{{ data.transactionAmount }}원</p>
+      <p
+        class="transaction-item__amount"
+        :style="{
+          color: data.transactionFlowType === '지출' ? COLORS.RED : COLORS.BLUE,
+        }"
+      >
+        {{ data.transactionAmount }}원
+      </p>
       <i
         class="fa-solid fa-ellipsis-vertical"
         style="color: #aeaeae; padding: 10px"
@@ -86,7 +93,7 @@ const props = defineProps({
   data: {
     transactionId: Number,
     userId: Number,
-    flowType: String,
+    transactionFlowType: String,
     transactionDate: String,
     transactionAmount: Number,
     transactionCategory: String,

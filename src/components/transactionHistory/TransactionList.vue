@@ -8,7 +8,7 @@
       <transaction-item
         :data="{
           transactionId: transaction.id,
-          transactionUserId: transaction.user_id,
+          userId: transaction.user_id,
           transactionFlowType: transaction.flow_type,
           transactionDate: transaction.date,
           transactionAmount: transaction.amount,
