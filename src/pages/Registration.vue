@@ -5,21 +5,22 @@ import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
 import Button from '@/components/common/Button.vue';
-import { COLORS } from '@/util/constants';
-
+import DateInput from '@/components/Registration/DateInput.vue';
 const selectedDate = ref(''); // 날짜
 const selectedTime = ref(''); // 시간
 const memo = ref(''); // 메모
 const depositor = ref(''); // 입금자명
 const inputAmount = ref(''); // 금액
-
-const store = useOptionStore();
-const category = ref(''); //카테고리 선택
+const category = ref(''); // 카테고리 선택
 const paymentMethod = ref(''); // 지출 방식
-
+const store = useOptionStore(); // 스토어 정의
 const selectedType = ref(''); // 지출인지 수입인지('income' 또는 'expense')
+import TimeInput from '@/components/Registration/TimeInput.vue';
+import AmountInput from '@/components/Registration/AmountInput.vue';
+import SourceInput from '@/components/Registration/SourceInput.vue';
+import MemoInput from '@/components/Registration/MemoInput.vue';
+//이벤트 핸들러
 const onTypeChange = (type) => {
-  //이벤트 핸들러
   selectedType.value = type;
 };
 
@@ -38,16 +39,47 @@ const categoryOptions = computed(() => {
     return cat.type === selectedType.value || cat.type === 'both';
   });
 });
-// 수입, 지출에 따라 거래수단 출력 달라지도록
 
+// 수입, 지출에 따라 거래수단 출력 달라지도록
 const paymentMethodOptions = computed(() => {
   if (!selectedType.value) return [];
 
-  return store.paymentMethods.filter((method) => {
-    return method.type === selectedType.value || method.type === 'both';
+  return store.paymentMethods.filter((pay) => {
+    return pay.type === selectedType.value || pay.type === 'both';
   });
 });
 
+// 에러 상태
+const errors = ref({
+  date: false,
+  time: false,
+  amount: false,
+  category: false,
+  depositor: false,
+});
+
+// 등록 버튼 클릭했을 때 유효성 검사
+const handleSubmit = () => {
+  const newErrors = {
+    date: !selectedDate.value,
+    time: !selectedTime.value,
+    amount: !inputAmount.value,
+    category: !category.value,
+    depositor: !depositor.value,
+  };
+
+  errors.value = newErrors;
+
+  if (Object.values(newErrors).some(Boolean)) return;
+
+  alert('등록 완료!');
+};
+
+// 뒤로가기 또는 폼 초기화
+const handleCancel = () => {
+  //TODO: API 연결
+  console.log('취소 클릭');
+};
 onMounted(() => {
   store.fetchOptions();
 });
@@ -55,6 +87,7 @@ onMounted(() => {
 
 <template>
   <div class="row mt-5">
+    <!-- 헤더 -->
     <div class="col-10 col-md-6 mx-auto">
       <div class="row align-items-center">
         <!-- 왼쪽 아이콘 -->
@@ -92,80 +125,36 @@ onMounted(() => {
 
     <!-- 날짜 및 시간 -->
     <!-- 날짜 -->
-    <div class="row mb-2">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="date" class="form-label">날짜 및 시간</label>
-        <div class="input-group w-50">
-          <input
-            type="date"
-            id="date"
-            class="form-control"
-            v-model="selectedDate"
-          />
-        </div>
-      </div>
-    </div>
+    <DateInput v-model="selectedDate" :error="errors.date" />
+
     <!-- 시간 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <div class="input-group w-50">
-          <input
-            type="time"
-            id="time"
-            class="form-control"
-            v-model="selectedTime"
-          />
-        </div>
-      </div>
-    </div>
+    <TimeInput v-model="selectedTime" :error="errors.time" />
 
     <!-- 금액 입력 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="amount" class="form-label">금액</label>
-        <div class="input-group">
-          <input
-            type="text"
-            id="amount"
-            class="form-control no-default-icon"
-            v-model.number="inputAmount"
-            placeholder="금액 입력"
-            style="text-align: right"
-          />
-          <span class="my-2 ms-2">원</span>
-        </div>
-      </div>
-    </div>
+    <AmountInput v-model="inputAmount" :error="errors.amount" />
 
     <!-- 카테고리 -->
     <div class="row">
       <div class="col-10 col-md-6 mx-auto">
         <DropdownSelector
-          label="카테고리"
+          :class="{ shake: errors.category }"
+          label="⁎ 카테고리"
           placeholder="카테고리 선택"
           :options="categoryOptions"
           option-label="name"
           option-value="id"
           v-model="category"
+          error-message="카테고리를 선택해 주세요"
         />
       </div>
     </div>
 
     <!-- 출처 입력 -->
-    <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="list" class="form-label">출처</label>
-        <div class="input-group">
-          <input
-            type="text"
-            id="list"
-            class="form-control no-default-icon"
-            v-model="depositor"
-            :placeholder="getDepositorPlaceholder"
-          />
-        </div>
-      </div>
-    </div>
+    <SourceInput
+      v-model="depositor"
+      :error="errors.depositor"
+      :placeholder="getDepositorPlaceholder"
+    />
 
     <!-- 거래 수단 -->
     <div class="row">
@@ -182,30 +171,31 @@ onMounted(() => {
     </div>
 
     <!-- 메모 입력 -->
-    <div class="row mb-2">
+    <MemoInput v-model="memo" />
+
+    <!-- 버튼 -->
+    <!-- 등록 버튼 -->
+    <div class="row mb-2 mt-3">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="memo" class="form-label">메모</label>
-        <div class="input-group">
-          <input
-            type="text"
-            id="memo"
-            class="form-control no-default-icon"
-            v-model.number="memo"
-            placeholder="메모를 입력해주세요"
-          />
-        </div>
+        <Button
+          type="button"
+          name="등록"
+          bgColor="GREEN02"
+          color="BLACK"
+          :click-handler="handleSubmit()"
+        ></Button>
       </div>
     </div>
 
-    <!-- 버튼 -->
-    <div class="row mb-2 mt-3">
+    <!-- 취소 버튼 -->
+    <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
-        <Button name="등록" bgColor="GREEN02" color="BLACK"></Button>
-      </div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-10 col-md-6 mx-auto">
-        <Button name="취소" color="WHITE"></Button>
+        <Button
+          name="취소"
+          color="WHITE"
+          bgColor="GRAY01"
+          :click-handler="handleCancel()"
+        ></Button>
       </div>
     </div>
   </div>

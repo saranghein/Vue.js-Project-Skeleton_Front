@@ -1,20 +1,36 @@
-<!-- src/components/Registration/DropdownSelector.vue -->
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { errorMessages } from 'vue/compiler-sfc';
+const props = defineProps({
   label: String, // 라벨 이름
   placeholder: String, // 기본 표시 텍스트
   options: Array, // 드롭다운 항목 배열
-  modelValue: String, // v-model 바인딩용
+  modelValue: [String, Number], // v-model 바인딩용
+  optionValue: {
+    type: String,
+    default: 'id',
+  },
+  optionLabel: {
+    type: String,
+    default: 'name',
+  },
+  errorMessage: {
+    type: String,
+    default: '',
+  },
 });
 const emit = defineEmits(['update:modelValue']);
 
 const selectOption = (value) => {
   emit('update:modelValue', value);
 };
-import { computed } from 'vue';
-import { useOptionStore } from '@/stores/useOptionStore';
-
-const store = useOptionStore();
+// option label 기준으로 출력되도록
+const selectedLabel = computed(() => {
+  const match = props.options.find(
+    (opt) => opt[props.optionValue] === props.modelValue
+  );
+  return match ? match[props.optionLabel] : '';
+});
 </script>
 
 <template>
@@ -24,8 +40,10 @@ const store = useOptionStore();
       <input
         type="button"
         class="form-control"
-        :placeholder="modelValue || placeholder"
+        :value="selectedLabel || placeholder"
         readonly
+        data-bs-toggle="dropdown"
+        style="text-align: left"
       />
       <button
         type="button"
@@ -37,16 +55,26 @@ const store = useOptionStore();
         <span class="visually-hidden">Toggle Dropdown</span>
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li v-for="(option, idx) in options" :key="option.id">
-          <a
+        <li v-for="(option, idx) in options" :key="option[optionValue]">
+          <span
             class="dropdown-item"
             href="#"
-            @click.prevent="selectOption(option.name)"
+            @click.prevent="selectOption(option[optionValue])"
           >
-            {{ option.name }}
-          </a>
+            {{ option[optionLabel] }}
+          </span>
         </li>
       </ul>
     </div>
+    <!-- 에러 메시지 -->
+    <small
+      v-if="!modelValue && errorMessage"
+      class="text-danger ms-1"
+      :style="{
+        visibility: !modelValue && errorMessage ? 'visible' : 'hidden',
+      }"
+    >
+      {{ errorMessage }}
+    </small>
   </div>
 </template>
