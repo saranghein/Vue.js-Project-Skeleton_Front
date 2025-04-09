@@ -22,6 +22,7 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL: '1'
 
     outputs:
       preview_url: ${{ steps.deploy.outputs.preview_url }}

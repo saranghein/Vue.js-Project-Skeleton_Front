@@ -6,8 +6,11 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Vue.js-Project-Skeleton_Front/',
   plugins: [vue(), vueDevTools()],
+  base: process.env.VERCEL ? './' : '/Vue.js-Project-Skeleton_Front/',
+  build: {
+    outDir: process.env.VERCEL ? '.vercel/output/static' : 'dist',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
