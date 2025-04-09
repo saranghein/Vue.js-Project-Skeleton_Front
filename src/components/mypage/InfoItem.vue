@@ -8,12 +8,12 @@
 }
 
 .subjectText {
-  font-size: 16px;
+  font-size: 15px;
   text-align: left;
 }
 
 .subjectContent {
-  font-size: 14px;
+  font-size: 15px;
   text-align: right;
 }
 
