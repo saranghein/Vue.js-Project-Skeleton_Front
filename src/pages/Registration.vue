@@ -1,24 +1,27 @@
 <script setup>
 import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Button1 from '@/assets/Registration/Button1.svg';
-
-const selectedDate = ref('');
-const selectedTime = ref('');
-const selectedType = ref(''); // 'income' 또는 'expense'
-const inputAmount = ref('');
-const onTypeChange = (type) => {
-  selectedType.value = type;
-};
-import { onMounted } from 'vue';
-
 import { useOptionStore } from '@/stores/useOptionStore';
 import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
+import Button from '@/components/common/Button.vue';
+const selectedDate = ref(''); // 날짜
+const selectedTime = ref(''); // 시간
+const memo = ref(''); // 메모
+const depositor = ref(''); // 입금자명
+import { COLORS } from '@/util/constants';
+
+const selectedType = ref(''); // 지출인지 수입인지('income' 또는 'expense')
+const onTypeChange = (type) => {
+  //이벤트 핸들러
+  selectedType.value = type;
+};
+
+const inputAmount = ref(''); // 금액
 
 const store = useOptionStore();
-
-const category = ref('');
-const paymentMethod = ref('');
+const category = ref(''); //카테고리 선택
+const paymentMethod = ref(''); // 지출 방식
 
 onMounted(() => {
   store.fetchOptions();
@@ -30,7 +33,7 @@ onMounted(() => {
     <div class="col-10 col-md-6 mx-auto">
       <div class="row align-items-center">
         <!-- 왼쪽 아이콘 -->
-        <div class="col-auto pointer">
+        <div class="col-auto pointer" @click="">
           <i class="fa-solid fa-chevron-left"></i>
         </div>
 
@@ -47,7 +50,6 @@ onMounted(() => {
     </div>
 
     <!-- 지출 버튼 -->
-
     <div class="d-flex justify-content-center my-3 px-3">
       <RegistrationButton
         label="수입"
@@ -62,7 +64,9 @@ onMounted(() => {
         @click="onTypeChange('expense')"
       />
     </div>
+
     <!-- 날짜 및 시간 -->
+    <!-- 날짜 -->
     <div class="row mb-2">
       <div class="col-10 col-md-6 mx-auto">
         <label for="date" class="form-label">날짜 및 시간</label>
@@ -76,7 +80,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
+    <!-- 시간 -->
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
         <div class="input-group w-50">
@@ -129,7 +133,7 @@ onMounted(() => {
             type="text"
             id="list"
             class="form-control no-default-icon"
-            v-model.number="inputAmount"
+            v-model.number="depositor"
             placeholder="입금자 명을 입력하세요"
           />
         </div>
@@ -147,6 +151,7 @@ onMounted(() => {
         />
       </div>
     </div>
+
     <!-- 메모 입력 -->
     <div class="row mb-2">
       <div class="col-10 col-md-6 mx-auto">
@@ -156,7 +161,7 @@ onMounted(() => {
             type="text"
             id="memo"
             class="form-control no-default-icon"
-            v-model.number="inputAmount"
+            v-model.number="memo"
             placeholder="메모를 입력해주세요"
           />
         </div>
@@ -164,10 +169,14 @@ onMounted(() => {
     </div>
 
     <!-- 버튼 -->
+    <div class="row mb-2 mt-3">
+      <div class="col-10 col-md-6 mx-auto">
+        <Button name="등록" bgColor="GREEN02" color="BLACK"></Button>
+      </div>
+    </div>
     <div class="row mb-2">
       <div class="col-10 col-md-6 mx-auto">
-        <div>등록 버튼</div>
-        <div>취소 버튼</div>
+        <Button name="취소" color="WHITE"></Button>
       </div>
     </div>
   </div>
@@ -178,7 +187,7 @@ onMounted(() => {
   font-size: 15px;
 }
 .registry-title {
-  font-size: 16px;
+  font-size: 18px;
   margin: 0px auto;
 }
 </style>
