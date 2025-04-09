@@ -206,6 +206,9 @@ const filteredTransactions = computed(() => {
 });
 
 const selectType = (type) => {
+  if (filters.type !== type) {
+    filters.category = '전체';
+  }
   filters.type = type;
 };
 
