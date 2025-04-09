@@ -1,7 +1,10 @@
 <template>
   <article class="transaction-item">
     <div class="transaction-item__left">
-      <img class="transaction-item__img" src="" alt="" />
+      <category-icon
+        :categoryType="data.transactionFlowType"
+        :expenseType="data.transactionCategory"
+      />
       <div class="transaction-item__content">
         <p class="transaction-item__title">{{ data.transactionTitle }}</p>
         <p class="transaction-item__desc" :style="{ color: COLORS.GRAY02 }">
@@ -88,6 +91,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { COLORS } from '@/util/constants';
+import CategoryIcon from '@/components/common/CategoryIcon.vue';
 
 const props = defineProps({
   data: {
