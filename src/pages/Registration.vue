@@ -1,15 +1,21 @@
 <script setup>
 import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
 import Button from '@/components/common/Button.vue';
+import { COLORS } from '@/util/constants';
+
 const selectedDate = ref(''); // 날짜
 const selectedTime = ref(''); // 시간
 const memo = ref(''); // 메모
 const depositor = ref(''); // 입금자명
-import { COLORS } from '@/util/constants';
+const inputAmount = ref(''); // 금액
+
+const store = useOptionStore();
+const category = ref(''); //카테고리 선택
+const paymentMethod = ref(''); // 지출 방식
 
 const selectedType = ref(''); // 지출인지 수입인지('income' 또는 'expense')
 const onTypeChange = (type) => {
@@ -17,11 +23,30 @@ const onTypeChange = (type) => {
   selectedType.value = type;
 };
 
-const inputAmount = ref(''); // 금액
+// 수입, 지출에 따라 출처 출력 달라지도록
+const getDepositorPlaceholder = computed(() => {
+  if (selectedType.value === 'income') return '수입의 출처를 입력하세요';
+  if (selectedType.value === 'expense') return '사용처를 입력하세요';
+  return ''; // 아무것도 선택되지 않은 경우
+});
 
-const store = useOptionStore();
-const category = ref(''); //카테고리 선택
-const paymentMethod = ref(''); // 지출 방식
+// 수입, 지출에 따라 카테고리 출력 달라지도록
+const categoryOptions = computed(() => {
+  if (!selectedType.value) return [];
+
+  return store.categories.filter((cat) => {
+    return cat.type === selectedType.value || cat.type === 'both';
+  });
+});
+// 수입, 지출에 따라 거래수단 출력 달라지도록
+
+const paymentMethodOptions = computed(() => {
+  if (!selectedType.value) return [];
+
+  return store.paymentMethods.filter((method) => {
+    return method.type === selectedType.value || method.type === 'both';
+  });
+});
 
 onMounted(() => {
   store.fetchOptions();
@@ -118,23 +143,25 @@ onMounted(() => {
         <DropdownSelector
           label="카테고리"
           placeholder="카테고리 선택"
-          :options="store.categories"
+          :options="categoryOptions"
+          option-label="name"
+          option-value="id"
           v-model="category"
         />
       </div>
     </div>
 
-    <!-- 내역 입력 -->
+    <!-- 출처 입력 -->
     <div class="row mb-4">
       <div class="col-10 col-md-6 mx-auto">
-        <label for="list" class="form-label">내역</label>
+        <label for="list" class="form-label">출처</label>
         <div class="input-group">
           <input
             type="text"
             id="list"
             class="form-control no-default-icon"
-            v-model.number="depositor"
-            placeholder="입금자 명을 입력하세요"
+            v-model="depositor"
+            :placeholder="getDepositorPlaceholder"
           />
         </div>
       </div>
@@ -145,8 +172,10 @@ onMounted(() => {
       <div class="col-10 col-md-6 mx-auto">
         <DropdownSelector
           label="거래수단"
-          placeholder="현금"
-          :options="store.paymentMethods"
+          placeholder="거래수단 선택"
+          :options="paymentMethodOptions"
+          option-label="name"
+          option-value="id"
           v-model="paymentMethod"
         />
       </div>
