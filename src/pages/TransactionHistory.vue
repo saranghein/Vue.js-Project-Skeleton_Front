@@ -169,6 +169,10 @@ const fetchTransactions = async () => {
 const deleteTransaction = async () => {
   try {
     await TransactionService.delete(transactionId.value);
+
+    transactions.value = transactions.value.filter(
+      (tx) => tx.id !== transactionId.value
+    );
   } catch (error) {
     console.error('거래내역 삭제 실패:', error);
   }
