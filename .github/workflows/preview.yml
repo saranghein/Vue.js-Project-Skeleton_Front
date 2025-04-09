@@ -1,10 +1,8 @@
 name: pr-preview-vercel
+
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
+    types: [opened, reopened, synchronize]
     branches: ['main', 'develop']
 
 permissions:
@@ -24,6 +22,7 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL: '1'
 
     outputs:
       preview_url: ${{ steps.deploy.outputs.preview_url }}
@@ -46,10 +45,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Build for Vercel
+      - name: Vercel Build (Generates .vercel/output)
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel (Static dist/)
         id: deploy
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
@@ -57,16 +56,15 @@ jobs:
           echo "🔍 Raw vercel-output.txt content:"
           cat vercel-output.txt
 
-          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt)
+          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt | head -n 1)
           echo "🔍 Extracted preview_url: $preview_url"
 
           echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
 
-      # PR 프리뷰 배포
-      - name: Deploy PR Preview
+      - name: Deploy PR Preview to GitHub Pages
         uses: rossjrw/pr-preview-action@v1.4.6
         with:
-          token: ${{ secrets.TOKEN}}
+          token: ${{ secrets.AUTH_TOKEN }}
           source-dir: ./dist/
           preview-branch: gh-pages
           umbrella-dir: pr-preview
@@ -82,7 +80,7 @@ jobs:
         run: |
           {
             echo "🎉 구현한 기능 Preview:"
-            echo "- **Vercel**: ${{ needs.deploy-preview.outputs.preview_url }}"
+            echo "- **Vercel**: ${{ steps.deploy.outputs.preview_url }}"
             echo "- **GitHub Pages**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/"
 
             echo ""
