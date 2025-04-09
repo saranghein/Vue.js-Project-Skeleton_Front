@@ -23,14 +23,17 @@ span {
 import { COLORS } from '@/util/constants';
 
 defineProps({
-  name: String,
+  name: {
+    type: String,
+    required: true, // name만 필수요소
+  },
   bgColor: {
     type: String,
-    default: false,
+    default: '',
   },
   color: {
     type: String,
-    default: false,
+    default: '',
   },
 });
 </script>

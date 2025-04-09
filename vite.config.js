@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), vueDevTools()],
-  base: process.env.VERCEL ? './' : '/Vue.js-Project-Skeleton_Front/',
+  base: process.env.VITE_BASE_PATH || '/',
   build: {
     outDir: 'dist',
   },
