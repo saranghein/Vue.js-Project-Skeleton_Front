@@ -11,6 +11,10 @@ const emit = defineEmits(['update:modelValue']);
 const selectOption = (value) => {
   emit('update:modelValue', value);
 };
+import { computed } from 'vue';
+import { useOptionStore } from '@/stores/useOptionStore';
+
+const store = useOptionStore();
 </script>
 
 <template>
