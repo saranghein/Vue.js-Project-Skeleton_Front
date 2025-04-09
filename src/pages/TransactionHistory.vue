@@ -44,7 +44,7 @@
       class="transaction-list"
       :style="{ backgroundColor: COLORS.WHITE }"
     >
-      <div class="transaction-list__filter">
+      <div class="transaction-list__filter pointer" @click="openModal">
         <span
           class="transaction-list__filter__label"
           :style="{ color: COLORS.GRAY02 }"
@@ -57,6 +57,10 @@
       </div>
       <transaction-list />
     </section>
+    <transaction-history-filter-modal
+      :isOpen="isModalOpen"
+      @close="closeModal"
+    />
   </div>
 </template>
 
@@ -134,7 +138,8 @@
 <script setup>
 import TransactionList from '@/components/transactionHistory/TransactionList.vue';
 import Header from '@/components/common/Header.vue';
-import Badge from '@/components/common/Badge.vue';
+import TransactionHistoryFilterModal from '@/components/transactionHistory/TransactionHistoryFilterModal.vue';
+
 import { COLORS } from '@/util/constants';
 import { ref } from 'vue';
 
@@ -142,5 +147,15 @@ const selectedType = ref('전체');
 
 const selectType = (type) => {
   selectedType.value = type;
+};
+
+const isModalOpen = ref(false);
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
 };
 </script>
