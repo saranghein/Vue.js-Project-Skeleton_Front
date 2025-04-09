@@ -8,7 +8,7 @@
 }
 
 .subjectText {
-  font-size: 14px;
+  font-size: 16px;
   text-align: left;
 }
 

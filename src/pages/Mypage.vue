@@ -3,7 +3,9 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+
+  padding-bottom: 61px;
 }
 
 .mypageImgDiv {
@@ -25,6 +27,10 @@
   column-gap: 5px;
 }
 
+.usernameSpan {
+  font-size: 18px;
+}
+
 .editIcon {
   color: gray;
   cursor: pointer;
@@ -43,11 +49,12 @@
 
 .infoContainer {
   width: 323px;
+  height: 475px;
   display: flex;
   flex-direction: column;
 
-  padding: 0 10px 17px 10px;
-  margin-top: 160px;
+  padding: 85px 10px 17px 10px;
+  margin-top: 75px;
 
   background-color: white;
 }
@@ -57,18 +64,27 @@
 
   border: 1px solid #d9d9d9;
 }
+
+.barcodeImg {
+  width: 250px;
+  margin-bottom: 25px;
+  align-self: center;
+}
 </style>
 <template>
   <Header :pageName="'마이페이지'"></Header>
   <div class="mypageImgDiv">
     <img class="mypageImg" src="" alt="profile-img" />
     <div class="nameContainer">
-      <span>{{ username }}</span>
+      <span class="usernameSpan">{{ username }}</span>
       <i class="fa-solid fa-pencil editIcon"></i>
     </div>
   </div>
-  <div class="mypageContainer" :style="COLORS.GRAY01">
-    <section class="infoContainer" :style="COLORS.WHITE">
+  <div class="mypageContainer" :style="{ 'background-color': COLORS.GRAY00 }">
+    <section
+      class="infoContainer"
+      :style="{ 'background-color': COLORS.WHITE }"
+    >
       <InfoItem
         :icons="'fa-solid fa-cake-candles'"
         :subject="'생년월일'"
@@ -85,7 +101,7 @@
         :contents="'example@naver.com'"
       />
       <div class="borderline"></div>
-      <img :src="BarcodeImg" alt="barcode" />
+      <img class="barcodeImg" :src="BarcodeImg" alt="barcode" />
     </section>
   </div>
 </template>
