@@ -14,8 +14,8 @@
               💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
             </p>
             <p v-else-if="totalExpense > totalIncome">
-              😢 {{ (totalExpense - totalIncome).toLocaleString() }}원
-              적자입니다
+              😢 {{ (totalExpense - totalIncome).toLocaleString() }}원 더 썼어요
+              ㅠㅠ
             </p>
             <p v-else>수입과 지출이 같아요</p>
             <span class="hint">클릭해서 자세히 보기</span>
@@ -65,20 +65,39 @@
     </div>
 
     <!-- FAB 아이콘 버튼 -->
-    <div class="fab" @click="goToAdd">
-      <svg
-        class="fab-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M12 2C6.48 2 2 6.48 2 12c0 5.52
-             4.48 10 10 10s10-4.48 10-10C22
-             6.48 17.52 2 12 2zm5 11h-4v4h-2
-             v-4H7v-2h4V7h2v4h4v2z"
-        />
-      </svg>
+    <div class="fab-group">
+      <div class="fab calendar" @click="toggleCalendar">
+        <svg
+          class="fab-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1
+              0-2 .9-2 2v14c0 1.1.9 2 2
+              2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0
+              16H5V9h14v11zm0-13H5V6h14v1z"
+          />
+        </svg>
+      </div>
+      <div class="fab" @click="goToAdd">
+        <svg
+          class="fab-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12c0 5.52
+               4.48 10 10 10s10-4.48 10-10C22
+               6.48 17.52 2 12 2zm5 11h-4v4h-2
+               v-4H7v-2h4V7h2v4h4v2z"
+          />
+        </svg>
+      </div>
     </div>
+
+    <!-- Calendar 모달 -->
+    <Calendar v-if="showCalendar" :budget="budget" @close="toggleCalendar" />
   </div>
 </template>
 
@@ -91,11 +110,13 @@ import { useRouter } from 'vue-router';
 import HomeHeader from '@/components/common/HomeHeader.vue';
 import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
+import Calendar from '@/components/Calendar.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
 const showMoreHint = ref(true);
+const showCalendar = ref(false);
 
 const router = useRouter();
 
@@ -129,6 +150,10 @@ function goToDetails() {
 function goToAdd() {
   router.push('/add');
 }
+
+function toggleCalendar() {
+  showCalendar.value = !showCalendar.value;
+}
 </script>
 
 <style scoped>
@@ -144,7 +169,7 @@ function goToAdd() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; /* 왼쪽 정렬 */
+  align-items: center; /* 왼쪽 정렬 */
 
   text-align: left;
   background: #cef9ed;
@@ -279,11 +304,16 @@ function goToAdd() {
   }
 }
 
-/* FAB 아이콘 버튼 */
-.fab {
+.fab-group {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  display: flex;
+  gap: 12px;
+  z-index: 20;
+}
+
+.fab {
   width: 56px;
   height: 56px;
   background-color: #55efc4;
@@ -293,11 +323,16 @@ function goToAdd() {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 20;
   transition: background-color 0.2s ease;
 }
 .fab:hover {
   background-color: rgb(52, 191, 156);
+}
+.fab.calendar {
+  background-color: #81ecec;
+}
+.fab.calendar:hover {
+  background-color: #00cec9;
 }
 .fab-icon {
   width: 28px;
