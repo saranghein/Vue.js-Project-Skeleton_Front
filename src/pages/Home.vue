@@ -1,10 +1,25 @@
 <template>
-  <div class="container">
+  <div class="container" @scroll.passive="handleScroll">
     <header class="header">
       <button class="menu-btn">☰</button>
       <h2>Payday? Mayday!</h2>
     </header>
 
+    <!-- 수입 지출 비교 탭 -->
+    <div class="balance-summary" @click="goToDetails">
+      <div class="balance-text">
+        <p v-if="totalIncome > totalExpense">
+          💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
+        </p>
+        <p v-else-if="totalExpense > totalIncome">
+          😢 {{ (totalExpense - totalIncome).toLocaleString() }}원 적자입니다
+        </p>
+        <p v-else>수입과 지출이 같아요</p>
+        <span class="hint">클릭해서 자세히 보기</span>
+      </div>
+    </div>
+
+    <!-- 요약 영역 -->
     <section class="summary">
       <div class="box">
         <p>수입</p>
@@ -16,30 +31,32 @@
       </div>
     </section>
 
-    <section class="list">
-      <div class="select-wrap">
-        <select v-model="sortBy" class="custom-select">
-          <option value="date">📅 최신순</option>
-          <option value="amount">💰 금액순</option>
-        </select>
-      </div>
-
-      <div v-for="item in topSortedBudget" :key="item.id" class="item">
-        <div class="left">
-          <strong>{{ item.category }}</strong>
-          <p class="memo">{{ item.memo }}</p>
-        </div>
-        <div :class="['right', item.flow_type === '수입' ? 'blue' : 'red']">
-          {{ item.amount.toLocaleString() }}원
-        </div>
-      </div>
-      <div class="more-button-wrap">
-        <button class="more-button" @click="goToDetails">자세히 보기</button>
-      </div>
-      <IncomeExpenseChart :data="budget" />
+    <!-- 그래프 간 간격 추가 -->
+    <div class="graph-spacing">
+      <IncomeExpenseChart :data="budget" class="scroll-appear" />
+    </div>
+    <div class="graph-spacing">
       <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+    </div>
+    <div class="graph-spacing">
       <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
-    </section>
+    </div>
+
+    <!-- 더보기 텍스트 + 아이콘 -->
+    <div v-show="showMoreHint" class="more-hint">
+      <div class="more-text">더보기</div>
+      <svg
+        class="more-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        viewBox="0 96 960 960"
+        width="24"
+      >
+        <path
+          d="M480 774 285 579l42-42 153 153 153-153 42 42-195 195Zm0-192L285 387l42-42 153 153 153-153 42 42-195 195Z"
+        />
+      </svg>
+    </div>
 
     <button class="fab" @click="goToAdd">＋</button>
   </div>
@@ -56,6 +73,7 @@ const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
 const sortBy = ref('date');
+const showMoreHint = ref(true);
 
 const router = useRouter();
 
@@ -70,6 +88,8 @@ onMounted(async () => {
   totalExpense.value = res.data
     .filter((item) => item.flow_type === '지출')
     .reduce((sum, item) => sum + item.amount, 0);
+
+  window.addEventListener('scroll', handleScroll);
 });
 
 const topSortedBudget = computed(() => {
@@ -91,6 +111,14 @@ const goToDetails = () => {
 const goToAdd = () => {
   router.push('/add');
 };
+
+function handleScroll() {
+  const bottomThreshold = 100;
+  const scrollBottom =
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - bottomThreshold;
+  showMoreHint.value = !scrollBottom;
+}
 </script>
 
 <style scoped>
@@ -105,7 +133,7 @@ const goToAdd = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 .menu-btn {
   font-size: 24px;
@@ -114,10 +142,34 @@ const goToAdd = () => {
   cursor: pointer;
 }
 
+.balance-summary {
+  text-align: center;
+  background: #f1f4f8;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+.balance-summary:hover {
+  background: #e1e8f0;
+}
+.balance-summary .hint {
+  font-size: 12px;
+  font-weight: normal;
+  color: #888;
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+}
+
 .summary {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 .box {
   text-align: center;
@@ -129,39 +181,55 @@ const goToAdd = () => {
   color: #ff3b30;
 }
 
-.list {
-  border-top: 1px solid #ccc;
-  padding-top: 16px;
-}
-.item {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
-}
-.left {
-  display: flex;
-  flex-direction: column;
-}
-.memo {
-  font-size: 13px;
-  color: #777;
-}
-.right {
-  font-weight: bold;
+.graph-spacing {
+  margin-bottom: 48px;
 }
 
-.more-button-wrap {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
+.scroll-appear {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slide-up-fade 0.6s ease forwards;
 }
-.more-button {
-  background: none;
-  border: none;
-  color: #999;
+@keyframes slide-up-fade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 더보기 아이콘 + 텍스트 */
+.more-hint {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 1.5s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.more-text {
   font-size: 14px;
-  cursor: pointer;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.35);
+  margin-bottom: -7px;
+}
+.more-icon {
+  width: 32px;
+  height: 32px;
+  fill: rgba(0, 0, 0, 0.35);
+  transform: scaleX(1.5);
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 8px);
+  }
 }
 
 .fab {
@@ -177,31 +245,6 @@ const goToAdd = () => {
   font-size: 28px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-}
-.select-wrap {
-  position: relative;
-  width: fit-content;
-}
-
-.custom-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 8px 36px 8px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  cursor: pointer;
-  transition: border 0.2s ease;
-}
-
-.custom-select:focus {
-  outline: none;
-  border-color: #007aff;
-  background-color: #fff;
+  z-index: 20;
 }
 </style>
