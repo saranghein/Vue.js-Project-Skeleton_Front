@@ -6740,15 +6740,15 @@
       "flow_type": "지출"
     },
     {
-      "id": "7ff1",
       "user_id": "test_user",
       "date": "2025-04-01",
       "time": "10:56",
       "amount": 444,
-      "category": "월급",
+      "category": "식비",
       "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
       "memo": "테스트",
-      "flow_type": "수입"
+      "flow_type": "지출",
+      "id": "7ff1"
     }
   ],
   "users": [

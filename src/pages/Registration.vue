@@ -1,6 +1,6 @@
 <script setup>
 import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import { RegisterService } from '@/api/RegisterService';
@@ -23,8 +23,9 @@ import TimeInput from '@/components/Registration/TimeInput.vue';
 import AmountInput from '@/components/Registration/AmountInput.vue';
 import SourceInput from '@/components/Registration/SourceInput.vue';
 import MemoInput from '@/components/Registration/MemoInput.vue';
-const selectedCategory = ref(null); // { id, name, type }
+const selectedCategory = ref({}); // { id, name, type }
 const selectedPaymentMethod = ref(null); // { id, name, type }
+const isLoading = ref(false); // 초기 로딩 플래그
 
 //이벤트 핸들러
 const onTypeChange = (type) => {
@@ -37,23 +38,16 @@ const router = useRouter();
 const id = route.params.id; // id 값 가져옴
 const isEditMode = computed(() => !!id); //id 값 있으면 편집모드
 
-/*
-"id": 1,
-"user_id": 1,
-"flow_type": "수입",
-"date": "2025-04-01T00:00:00",
-"amount": 3000000,
-"category": "월급",
-"memo": "4월 급여",
-"payment": "계좌이체"      
-*/
-// const form = ref({
-//   memo: '',
-//   amount: 0,
-//   source: '',
-//   date: '',
-//   time: '',
-// });
+// 수정시 "수입", "지출" 버튼 바꾸면 드롭다운 메뉴 초기화
+watch(selectedType, () => {
+  if (!isLoading.value) {
+    isLoading.value = true;
+    return;
+  }
+  selectedCategory.value = null;
+  selectedPaymentMethod.value = null;
+});
+
 // 수입, 지출에 따라 출처 출력 달라지도록
 const getDepositorPlaceholder = computed(() => {
   if (selectedType.value === 'income') return '수입의 출처를 입력하세요';
@@ -88,20 +82,6 @@ const errors = ref({
   depositor: false,
 });
 
-// 등록 버튼 클릭했을 때 유효성 검사
-// const handleSubmit = () => {
-//   const newErrors = {
-//     date: !selectedDate.value,
-//     time: !selectedTime.value,
-//     amount: !inputAmount.value,
-//     category: !category.value,
-//     depositor: !depositor.value,
-//   };
-
-//   errors.value = newErrors;
-
-//   return !Object.values(newErrors).some(Boolean); // true면 유효
-// };
 const handleSubmit = async () => {
   const newErrors = {
     date: !selectedDate.value,
@@ -169,6 +149,8 @@ const loadData = async () => {
     } catch (error) {
       console.error('데이터 불러오기 실패:', error);
     }
+
+    isLoading.value = false;
   }
 };
 // 초기화
