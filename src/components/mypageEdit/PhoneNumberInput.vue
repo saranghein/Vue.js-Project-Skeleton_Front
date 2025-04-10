@@ -1,5 +1,10 @@
+<style scoped>
+.inputWrapper {
+  width: 100dvw;
+}
+</style>
 <template>
-  <div class="row mb-2">
+  <div class="row mb-2 inputWrapper">
     <div class="col-10 col-md-6 mx-auto">
       <div class="mb-2">
         <label for="phone" class="form-label">⁎ 전화번호</label>
@@ -10,7 +15,7 @@
             class="form-control"
             :value="inputValue"
             @input="onInput"
-            placeholder="010-1234-5678"
+            placeholder="전화번호를 입력하세요(숫자만 입력)"
           />
         </div>
         <small

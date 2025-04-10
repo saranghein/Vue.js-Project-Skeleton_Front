@@ -83,3 +83,23 @@ export const TransactionService = {
     return ApiService.get('money');
   },
 };
+
+export const UsersService = {
+  /**
+   * 거래 내역 전체를 조회합니다.
+   * @returns {Promise<AxiosResponse>} - 유저 데이터 리스트 반환
+   */
+  get() {
+    return ApiService.get('users');
+  },
+  post() {
+    return ApiService.put('users', {
+      nickname: params.nickname,
+      birth: params.birth,
+      phone: params.phone,
+      email: params.email,
+      user_id: params.user_id,
+      user_pw: params.user_pw,
+    });
+  },
+};
