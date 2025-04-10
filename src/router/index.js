@@ -19,6 +19,11 @@ const router = createRouter({
       component: Registration,
     },
     {
+      path: '/register/:id',
+      name: 'RegisterEdit',
+      component: () => import('@/pages/Registration.vue'), // 또는 RegistrationEdit.vue
+    },
+    {
       path: '/mypage/:id',
       name: 'Mypage',
       component: Mypage,

@@ -85,6 +85,29 @@ const chartOptions = {
       display: true,
       text: '날짜별 수입/지출 추이',
     },
+    tooltip: {
+      displayColors: false,
+      callbacks: {
+        title: (tooltipItems) => `날짜: ${tooltipItems[0].label}`,
+        label: (tooltipItem) => {
+          const date = tooltipItem.label;
+          const flowType = tooltipItem.dataset.label; // '수입' or '지출'
+
+          const matchedItems = props.data.filter(
+            (item) =>
+              item.date.slice(0, 10) === date && item.flow_type === flowType
+          );
+
+          if (matchedItems.length === 0) return '거래 없음';
+
+          return matchedItems.map((item) => {
+            const label = item.source || item.memo || '거래';
+            const value = item.amount.toLocaleString();
+            return `${label}: ${value}원`;
+          });
+        },
+      },
+    },
   },
 };
 </script>
