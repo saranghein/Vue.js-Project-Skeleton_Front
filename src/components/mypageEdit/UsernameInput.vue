@@ -2,7 +2,7 @@
   <div class="row mb-4">
     <div class="col-10 col-md-6 mx-auto">
       <label for="username" class="form-label">⁎ 이름</label>
-      <div class="input-group" :class="{ shake: error }">
+      <div class="input-group w-50" :class="{ shake: error }">
         <input
           type="text"
           id="username"
