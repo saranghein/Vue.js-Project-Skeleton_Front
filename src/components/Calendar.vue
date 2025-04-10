@@ -328,7 +328,7 @@ const attributes = computed(() => {
   --vc-border: #cceee5;
 }
 :deep(.is-active) {
-  color: orange;
+  color: #1c927b;
 }
 :deep(.is-current) {
   color: black;
