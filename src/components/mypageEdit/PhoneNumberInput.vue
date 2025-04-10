@@ -15,7 +15,7 @@
             class="form-control"
             :value="inputValue"
             @input="onInput"
-            placeholder="숫자만 입력하세요"
+            placeholder="123-4567-8910"
           />
         </div>
         <small
@@ -44,7 +44,7 @@ const inputValue = ref(props.modelValue);
 // 입력값 검증 함수
 function validateInput(value) {
   // 전화번호가 비어있거나 형식에 맞지 않으면 에러
-  const phoneRegex = /^010-\d{4}-\d{4}$/; // 010-1234-5678 형식
+  const phoneRegex = /^\d{3}-\d{4}-\d{4}$/; // 010-1234-5678 형식
   const hasError = !phoneRegex.test(value);
 
   // 부모 컴포넌트에 에러 상태 전달

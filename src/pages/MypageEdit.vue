@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useOptionStore } from '@/stores/useOptionStore';
 import Button from '@/components/common/Button.vue';
 
@@ -29,6 +29,18 @@ const errors = reactive({
   email: false,
   phone: false,
   profileImg: false,
+});
+
+// 모든 입력값이 유효한지 확인하는 계산된 속성
+const isFormValid = computed(() => {
+  return (
+    selectedBirthday.value &&
+    inputProfileImg.value &&
+    inputEmail.value &&
+    inputPhone.value &&
+    inputUsername.value &&
+    !Object.values(errors).some((error) => error)
+  );
 });
 
 // 등록 버튼 클릭했을 때 유효성 검사
@@ -83,16 +95,21 @@ onMounted(() => {
     />
 
     <!-- 이메일 주소 입력 -->
-    <EmailInput v-model="inputEmail" :error="errors.email" />
-    <!-- 등록 버튼 -->
+    <EmailInput
+      v-model="inputEmail"
+      :error="errors.email"
+      @update:error="(value) => (errors.email = value)"
+    />
+    <!-- 등록 버튼(입력 조건 만족했을 때만 버튼 활성화) -->
     <div class="row mb-2 mt-3">
       <div class="col-10 col-md-6 mx-auto">
         <Button
           type="button"
           name="등록"
-          bgColor="GREEN02"
+          :bgColor="isFormValid ? 'GREEN02' : 'GRAY01'"
           color="BLACK"
           :click-handler="handleSubmit"
+          :disabled="!isFormValid"
         ></Button>
       </div>
     </div>
