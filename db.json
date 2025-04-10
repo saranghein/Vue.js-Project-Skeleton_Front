@@ -1,7 +1,7 @@
 {
   "money": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 1,
       "flow_type": "수입",
       "date": "2025-04-01T00:00:00",
@@ -11,7 +11,7 @@
       "payment": "계좌이체"
     },
     {
-      "id": 2,
+      "id": "2",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-02T12:30:00",
@@ -21,7 +21,7 @@
       "payment": "신용/체크"
     },
     {
-      "id": 3,
+      "id": "3",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-03T19:00:00",
@@ -31,7 +31,7 @@
       "payment": "신용/체크"
     },
     {
-      "id": 4,
+      "id": "4",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-04T09:10:00",
@@ -41,7 +41,7 @@
       "payment": "카카오페이"
     },
     {
-      "id": 5,
+      "id": "5",
       "user_id": 1,
       "flow_type": "수입",
       "date": "2025-04-05T14:00:00",
@@ -51,7 +51,7 @@
       "payment": "계좌이체"
     },
     {
-      "id": 6,
+      "id": "6",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-06T18:00:00",
@@ -61,7 +61,7 @@
       "payment": "신용/체크"
     },
     {
-      "id": 7,
+      "id": "7",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-06T19:30:00",
@@ -71,7 +71,7 @@
       "payment": "현금"
     },
     {
-      "id": 8,
+      "id": "8",
       "user_id": 1,
       "flow_type": "수입",
       "date": "2025-04-07T10:00:00",
@@ -81,7 +81,7 @@
       "payment": "현금"
     },
     {
-      "id": 9,
+      "id": "9",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-08T08:30:00",
@@ -91,7 +91,7 @@
       "payment": "티머니"
     },
     {
-      "id": 10,
+      "id": "10",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-08T12:45:00",
@@ -101,7 +101,7 @@
       "payment": "신용/체크"
     },
     {
-      "id": 11,
+      "id": "11",
       "user_id": 1,
       "flow_type": "지출",
       "date": "2025-04-08T19:20:00",
@@ -6687,11 +6687,73 @@
       "paymentMethodId": 2,
       "memo": "",
       "type": "income"
+    },
+    {
+      "id": "8b00",
+      "date": "2025-04-04",
+      "time": "09:31",
+      "amount": 444,
+      "categoryId": 1,
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "paymentMethodId": 1,
+      "memo": "테스트",
+      "type": "expense"
+    },
+    {
+      "id": "4954",
+      "date": "2025-04-02",
+      "time": "09:41",
+      "amount": 444,
+      "category": "월급",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "테스트",
+      "flow_type": "수입"
+    },
+    {
+      "id": "41af",
+      "date": "2025-04-02",
+      "time": "10:41",
+      "amount": 444,
+      "category": "용돈",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "",
+      "flow_type": "수입"
+    },
+    {
+      "id": "43e7",
+      "date": "2025-04-01",
+      "time": "10:42",
+      "amount": 444,
+      "category": "월급",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "",
+      "flow_type": "수입"
+    },
+    {
+      "id": "adc7",
+      "date": "2025-04-01",
+      "time": "10:45",
+      "amount": 444,
+      "category": "식비",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "",
+      "flow_type": "지출"
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-04-01",
+      "time": "10:56",
+      "amount": 444444444,
+      "category": "월급",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "테스트",
+      "flow_type": "수입",
+      "id": "7ff1"
     }
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "nickname": "홍길동",
       "birth": "1990-01-01",
       "phone": "010-1234-5678",
@@ -6702,74 +6764,74 @@
   ],
   "categories": [
     {
-      "id": 1,
+      "id": "1",
       "name": "식비",
       "type": "expense"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "교통",
       "type": "expense"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "쇼핑",
       "type": "expense"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "커피",
       "type": "expense"
     },
     {
-      "id": 4,
+      "id": "5",
       "name": "문화생활",
       "type": "expense"
     },
     {
-      "id": 5,
+      "id": "6",
       "name": "월급",
       "type": "income"
     },
     {
-      "id": 6,
+      "id": "7",
       "name": "용돈",
       "type": "income"
     },
     {
-      "id": 7,
+      "id": "8",
       "name": "기타",
       "type": "both"
     }
   ],
   "paymentMethods": [
     {
-      "id": 1,
+      "id": "1",
       "name": "신용/체크",
       "type": "expense"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "현금",
       "type": "both"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "간편결제",
       "type": "expense"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "휴대폰소액결제",
       "type": "expense"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "계좌이체",
       "type": "income"
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "기타",
       "type": "both"
     }

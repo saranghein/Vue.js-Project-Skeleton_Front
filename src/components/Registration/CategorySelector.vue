@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useOptionStore } from '@/stores/useOptionStore';
 
 const props = defineProps({
-  modelValue: [String, Number],
+  modelValue: Object,
   selectedType: String, // 'income' or 'expense'
   error: Boolean,
 });
@@ -22,10 +22,12 @@ const select = (value) => {
   emit('update:modelValue', value);
 };
 
-const selectedLabel = computed(() => {
-  const match = options.value.find((opt) => opt.id === props.modelValue);
-  return match ? match.name : '';
-});
+const selectedLabel = computed(() => props.modelValue?.name || '');
+
+// const selectedLabel = computed(() => {
+//   const match = options.value.find((opt) => opt.id === props.modelValue);
+//   return match ? match.name : '';
+// });
 </script>
 
 <template>
@@ -51,7 +53,7 @@ const selectedLabel = computed(() => {
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <li v-for="option in options" :key="option.id">
-            <span class="dropdown-item" @click.prevent="select(option.id)">
+            <span class="dropdown-item" @click.prevent="select(option)">
               {{ option.name }}
             </span>
           </li>
