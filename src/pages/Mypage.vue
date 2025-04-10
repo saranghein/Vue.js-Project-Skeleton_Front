@@ -77,7 +77,7 @@
     <img class="mypageImg" src="" alt="profile-img" />
     <div class="nameContainer">
       <span class="usernameSpan">{{ username }}</span>
-      <i class="fa-solid fa-pencil editIcon"></i>
+      <i class="fa-solid fa-pencil editIcon" @click="onClickEdit"></i>
     </div>
   </div>
   <div class="mypageContainer" :style="{ 'background-color': COLORS.GRAY00 }">
@@ -106,10 +106,16 @@
   </div>
 </template>
 <script setup>
+import { useRouter } from 'vue-router';
 import { COLORS } from '@/util/constants';
 import Header from '@/components/common/Header.vue';
 import InfoItem from '@/components/mypage/InfoItem.vue';
 import BarcodeImg from '@/assets/barcode.png';
 
+const route = useRouter();
+
+function onClickEdit() {
+  route.push('/mypage-edit');
+}
 const username = '홍길동';
 </script>

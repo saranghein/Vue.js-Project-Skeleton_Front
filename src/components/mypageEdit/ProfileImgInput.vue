@@ -1,7 +1,7 @@
 <style scoped>
 .previewProfileImgWrapper {
-  width: 150px;
-  height: 150px;
+  width: 90px;
+  height: 90px;
 
   display: flex;
   justify-content: center;
@@ -14,7 +14,7 @@
 .previewProfileImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 </style>
 
