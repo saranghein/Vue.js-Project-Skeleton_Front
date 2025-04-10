@@ -144,15 +144,19 @@ const filteredBudget = computed(() =>
     dayjs(item.date).isSame(currentMonth.value, 'month')
   )
 );
+import { API_URL } from '@/util/constants';
 
 onMounted(async () => {
   const currentUserId = 'test_user'; // ✅ 로그인된 유저 ID
 
   // ✅ 3개 데이터 병렬 fetch
   const [moneyRes, categoryRes, paymentMethodRes] = await Promise.all([
-    axios.get('http://localhost:3000/money'),
-    axios.get('http://localhost:3000/categories'),
-    axios.get('http://localhost:3000/paymentMethods'),
+    // axios.get('http://localhost:3000/money'),
+    // axios.get('http://localhost:3000/categories'),
+    // axios.get('http://localhost:3000/paymentMethods'),
+    axios.get(`${API_URL}money`),
+    axios.get(`${API_URL}categories`),
+    axios.get(`${API_URL}paymentMethods`),
   ]);
 
   categories.value = categoryRes.data;
