@@ -1,12 +1,16 @@
 <style scoped>
 .headerContainer {
-  position: fixed;
+  position: sticky;
   width: 100dvw;
   height: 56px;
+  top: 0;
+  left: 0;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  z-index: 1000;
 }
 p {
   color: black;

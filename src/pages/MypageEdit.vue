@@ -3,7 +3,6 @@ import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/useUserStore';
 import Button from '@/components/common/Button.vue';
-import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
 const user = ref(null);
 const userStore = useUserStore();
@@ -116,7 +115,7 @@ onMounted(async () => {
 
 <template>
   <Header :pageName="'마이페이지 수정'" :whiteBg="true"></Header>
-  <div class="row mt-5">
+  <div class="row mt-3">
     <!-- 프로필 이미지 입력 -->
     <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />
 
