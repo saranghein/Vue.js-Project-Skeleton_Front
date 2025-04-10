@@ -1,7 +1,7 @@
 <template>
   <div class="row mb-2">
     <div class="col-10 col-md-6 mx-auto">
-      <div class="mb-2">
+      <div class="mb-0">
         <label for="date" class="form-label">⁎ 날짜 및 시간</label>
         <div class="input-group w-50" :class="{ shake: error }">
           <input
