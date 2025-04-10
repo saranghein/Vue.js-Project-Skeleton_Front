@@ -9,6 +9,7 @@
       @mouseup="onMouseUp"
     >
       <div class="modalBar" :style="{ backgroundColor: COLORS.GRAY04 }"></div>
+
       <section class="modalContent">
         <div class="modalOption">거래 유형</div>
         <div class="modalBadge">
@@ -21,6 +22,7 @@
             @click="selectType(item.name, typeState, true)"
           />
         </div>
+
         <div class="modalOption">카테고리</div>
         <div class="modalBadge">
           <badge
@@ -32,6 +34,7 @@
             @click="selectType(item.name, categoryState)"
           />
         </div>
+
         <div class="modalOption cursor">거래 내역 정렬</div>
         <div class="modalBadge">
           <badge
@@ -44,6 +47,7 @@
           />
         </div>
       </section>
+
       <Button :name="'확인'" :bgColor="'GREEN01'" @click="closeModal" />
     </div>
   </div>
@@ -52,25 +56,31 @@
 <style scoped>
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+
   width: 100vw;
   height: 100vh;
+  top: 0;
+  left: 0;
+
   background-color: rgba(0, 0, 0, 0.5);
+
   z-index: 999;
 }
 
 .bottomModal {
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   bottom: 0;
   padding: 0 36px 30px 36px;
   left: 0;
   right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
   border-radius: 16px 16px 0 0;
   background-color: white;
+
   z-index: 1000;
   transform: translateY(100%);
   transition: transform 0.3s ease-in-out;
@@ -80,7 +90,9 @@
   width: 42px;
   height: 4px;
   margin: 16px 0;
+
   border-radius: 2px;
+
   cursor: pointer;
 }
 
@@ -89,25 +101,28 @@
 }
 
 .modalContent {
-  width: 100%;
   display: flex;
   flex-direction: column;
+
+  width: 100%;
 }
 
 .modalOption {
+  text-align: left;
+
   width: 100%;
   padding: 16px 0;
   margin-top: 5px;
-  text-align: left;
+
   font-size: 16px;
 }
 
 .modalBadge {
-  gap: 10px;
-  margin-bottom: 20px;
-
   display: flex;
   flex-wrap: wrap;
+
+  gap: 10px;
+  margin-bottom: 20px;
 }
 </style>
 
@@ -124,6 +139,8 @@ const props = defineProps({
   },
   type: String, //수입, 지출, 전체
 });
+
+const emit = defineEmits(['close']);
 
 const typeState = reactive({
   types: [
@@ -154,6 +171,9 @@ const dateState = reactive({
   ],
 });
 
+const previousType = ref(null);
+const startY = ref(0);
+
 const selectType = (selectedName, state, resetCategory = false) => {
   state.types.forEach((item) => {
     item.selected = item.name === selectedName;
@@ -165,8 +185,6 @@ const selectType = (selectedName, state, resetCategory = false) => {
     });
   }
 };
-
-const previousType = ref(null); // 이전 type 저장용
 
 watch(
   () => props.isOpen,
@@ -183,13 +201,6 @@ watch(
   }
 );
 
-const startY = ref(0);
-const emit = defineEmits(['close']);
-
-const closeModal = () => {
-  emit('close', getSelectedFilters());
-};
-
 //수입, 지출에 따라 카테고리 필터링
 const filteredCategories = computed(() => {
   const selectedType = typeState.types.find((type) => type.selected);
@@ -198,6 +209,23 @@ const filteredCategories = computed(() => {
     (cat) => (cat.type === selectedType.type) | (cat.type === 'both')
   );
 });
+
+// 선택된 필터 값 추출 함수
+const getSelectedFilters = () => {
+  const selectedType = typeState.types.find((type) => type.selected);
+  const selectedCategory = categoryState.types.find((cat) => cat.selected);
+  const selectedDate = dateState.types.find((date) => date.selected);
+
+  return {
+    type: selectedType ? selectedType.name : null,
+    category: selectedCategory ? selectedCategory.name : null,
+    date: selectedDate ? selectedDate.name : null,
+  };
+};
+
+const closeModal = () => {
+  emit('close', getSelectedFilters());
+};
 
 const onTouchStart = (event) => {
   startY.value = event.touches[0].clientY;
@@ -221,18 +249,5 @@ const onMouseUp = (event) => {
   if (diffY > 50) {
     closeModal();
   }
-};
-
-// 선택된 필터 값 추출 함수
-const getSelectedFilters = () => {
-  const selectedType = typeState.types.find((type) => type.selected);
-  const selectedCategory = categoryState.types.find((cat) => cat.selected);
-  const selectedDate = dateState.types.find((date) => date.selected);
-
-  return {
-    type: selectedType ? selectedType.name : null,
-    category: selectedCategory ? selectedCategory.name : null,
-    date: selectedDate ? selectedDate.name : null,
-  };
 };
 </script>
