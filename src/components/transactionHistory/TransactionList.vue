@@ -7,14 +7,14 @@
     <li>
       <transaction-item
         :data="{
-          transactionId: transaction.id,
           userId: transaction.user_id,
-          transactionFlowType: transaction.flow_type,
           transactionDate: transaction.date,
           transactionAmount: transaction.amount,
           transactionCategory: transaction.category,
-          transactionTitle: transaction.memo,
-          transactionMemo: transaction.payment,
+          transactionTitle: transaction.source,
+          transactionMemo: transaction.memo,
+          transactionFlowType: transaction.flow_type,
+          transactionId: transaction.id,
         }"
         @open="openModal(transaction.id)"
       />
