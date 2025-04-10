@@ -8,9 +8,9 @@
             type="tel"
             id="phone"
             class="form-control"
-            :value="modelValue"
+            :value="inputValue"
             @input="onInput"
-            placeholder="010-0000-0000"
+            placeholder="010-1234-5678"
           />
         </div>
         <small
@@ -25,13 +25,45 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watch } from 'vue';
+
+const props = defineProps({
   modelValue: String,
   error: Boolean,
 });
-defineEmits(['update:modelValue']);
+
+const emit = defineEmits(['update:modelValue']);
+
+const inputValue = ref(props.modelValue);
+
 function onInput(event) {
-  const value = event.target.value.replace(/[^0-9-]/g, ''); // 숫자와 '-'만 허용
-  $emit('update:modelValue', value);
+  let digits = event.target.value.replace(/\D/g, '');
+
+  // 2. 최대 숫자 길이를 11자로 제한 (01012345678)
+  if (digits.length > 11) {
+    event.target.value = inputValue.value;
+    return;
+  }
+
+  // 3. 형식화: 010-1234-5678
+  let formatted = '';
+  if (digits.length <= 3) {
+    formatted = digits;
+  } else if (digits.length <= 7) {
+    formatted = digits.replace(/(\d{3})(\d+)/, '$1-$2');
+  } else {
+    formatted = digits.replace(/(\d{3})(\d{4})(\d+)/, '$1-$2-$3');
+  }
+
+  inputValue.value = formatted;
+  emit('update:modelValue', formatted);
 }
+
+// modelValue가 외부에서 변경될 때 inputValue 업데이트
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    inputValue.value = newValue;
+  }
+);
 </script>

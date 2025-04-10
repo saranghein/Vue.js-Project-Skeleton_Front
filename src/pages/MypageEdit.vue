@@ -15,6 +15,7 @@ import UsernameInput from '@/components/mypageEdit/UsernameInput.vue';
 import PhoneNumberInput from '@/components/mypageEdit/PhoneNumberInput.vue';
 import EmailInput from '@/components/mypageEdit/EmailInput.vue';
 import Header from '@/components/common/Header.vue';
+import ProfileImgInput from '@/components/mypageEdit/ProfileImgInput.vue';
 
 //이벤트 핸들러
 const onTypeChange = (type) => {
@@ -63,43 +64,7 @@ onMounted(() => {
   <Header :pageName="'마이페이지 수정'" :whiteBg="true"></Header>
   <div class="row mt-5">
     <!-- 프로필 이미지 입력 -->
-    <div class="row mb-2">
-      <div class="col-10 col-md-6 mx-auto">
-        <label for="profileImg" class="form-label">⁎ 프로필 이미지</label>
-        <div class="mb-3 d-flex justify-content-center align-items-center">
-          <div
-            class="rounded-circle overflow-hidden"
-            style="
-              width: 150px;
-              height: 150px;
-              border: 2px solid #ccc;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            "
-          >
-            <img
-              :src="inputProfileImg ? URL.createObjectURL(inputProfileImg) : ''"
-              alt="프로필 이미지 미리보기"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-          </div>
-        </div>
-        <input
-          id="profileImg"
-          type="file"
-          class="form-control"
-          v-on:change="inputProfileImg = $event.target.files[0]"
-          placeholder="프로필 이미지를 업로드하세요"
-        />
-        <small
-          class="text-danger"
-          :style="{ visibility: errors.profileImg ? 'visible' : 'hidden' }"
-        >
-          프로필 이미지를 선택하세요.
-        </small>
-      </div>
-    </div>
+    <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />
 
     <!-- 이름 입력 -->
     <UsernameInput
