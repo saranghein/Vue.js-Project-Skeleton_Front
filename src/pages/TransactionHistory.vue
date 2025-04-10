@@ -1,126 +1,70 @@
 <template>
-  <div class="layout" :style="{ backgroundColor: COLORS.GREEN02 }">
+  <div class="layout">
     <header>
-      <Header :pageName="'거래 내역'"></Header>
+      <Header :pageName="'거래 내역'" />
     </header>
-    <section class="transaction-info">
-      <div
-        class="transaction-info__balance"
-        :style="{ backgroundColor: COLORS.GREEN01 }"
+
+    <main>
+      <TransactionSummary
+        class="transaction-summary"
+        :selectedType="selectedType"
+        :calculateTotalAmount="calculateTotalAmount"
+        :sumTransactionsAmount="sumTransactionsAmount"
+        @selectType="selectType"
+      />
+
+      <section
+        class="transaction-list"
+        :style="{ backgroundColor: COLORS.WHITE }"
       >
-        <span class="transaction-info__balance__amount">{{
-          calculateTotalAmount()
-        }}</span>
-      </div>
-      <div class="transaction-info__summary">
-        <div
-          :style="{
-            backgroundColor:
-              selectedType === '수입' ? COLORS.GRAY03 : COLORS.GREEN01,
-            color: selectedType === '수입' ? COLORS.WHITE : COLORS.GRAY02,
-          }"
-          @click="selectType('수입')"
-        >
-          <span>수입</span>
-          <br />
+        <div class="transaction-list__filter pointer" @click="openFilterModal">
           <span
-            :style="{
-              color: selectedType === '수입' ? COLORS.WHITE : COLORS.BLUE,
-            }"
-            >{{ sumTransactionsAmount('수입') }}원</span
+            class="transaction-list__filter__label"
+            :style="{ color: COLORS.GRAY02 }"
           >
+            {{ filters.type || '전체' }} | {{ filters.category || '전체' }} |
+            {{ filters.date || '최신순' }}
+          </span>
+          <i
+            class="fa-solid fa-angle-down icon"
+            style="color: #dedede; padding: 6px; margin-right: 25px"
+          />
         </div>
-        <div
-          :style="{
-            backgroundColor:
-              selectedType === '지출' ? COLORS.GRAY03 : COLORS.GREEN01,
-            color: selectedType === '지출' ? COLORS.WHITE : COLORS.GRAY02,
-          }"
-          @click="selectType('지출')"
-        >
-          <span>지출</span>
-          <br />
-          <span
-            :style="{
-              color: selectedType === '지출' ? COLORS.WHITE : COLORS.RED,
-            }"
-            >{{ sumTransactionsAmount('지출') }}원</span
-          >
-        </div>
-      </div>
-    </section>
-    <section
-      class="transaction-list"
-      :style="{ backgroundColor: COLORS.WHITE }"
-    >
-      <div class="transaction-list__filter pointer" @click="openFilterModal">
-        <span
-          class="transaction-list__filter__label"
-          :style="{ color: COLORS.GRAY02 }"
-          >최신순</span
-        >
-        <i
-          class="fa-solid fa-angle-down icon"
-          style="color: #dedede; padding: 3px; margin-right: 25px"
-        ></i>
-      </div>
-      <transaction-list @open="openEditModal" />
-    </section>
-    <filter-bottom-modal
-      :isOpen="isFilterModalOpen"
-      @close="closeFilterModal"
-    />
-    <bottom-modal
-      :isOpen="isEditModalOpen"
-      @close="closeEditModal"
-      @delete="deleteTransaction"
-    />
+
+        <EmptyView v-if="filteredTransactions.length === 0" />
+
+        <TransactionList
+          v-else
+          :transactions="filteredTransactions"
+          @open="openEditModal"
+        />
+      </section>
+
+      <FilterBottomModal
+        :type="filters.type"
+        :isOpen="isFilterModalOpen"
+        @close="closeFilterModal"
+      />
+      <BottomModal
+        :isOpen="isEditModalOpen"
+        @close="closeEditModal"
+        @delete="deleteTransaction"
+      />
+    </main>
   </div>
 </template>
 
 <style scoped>
-.transaction-info {
-  margin-left: 16px;
-  margin-right: 16px;
-
+.layout {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  background-color: v-bind('COLORS.GREEN02');
 }
 
-.transaction-info__badge > * {
-  margin-right: 10px;
-}
-
-.transaction-info__balance {
-  padding: 22px 20px;
-  margin-top: 20px;
-  border-radius: 16px;
-}
-
-.transaction-info__balance__amount {
-  font-size: 20px;
-
+main {
   display: flex;
-  justify-content: center;
-}
-
-.transaction-info__summary {
-  margin-bottom: 24px;
-  margin-top: 20px;
-
-  display: flex;
-  justify-content: space-around;
-}
-
-.transaction-info__summary > div {
-  width: 100%;
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-}
-
-.transaction-info__summary > div:first-child {
-  margin-right: 20px;
+  flex-direction: column;
 }
 
 .transaction-list {
@@ -134,7 +78,6 @@
   width: 100%;
   margin-left: auto;
   margin-top: 15px;
-
   display: flex;
   align-items: center;
   justify-content: right;
@@ -143,22 +86,65 @@
 .transaction-list__filter__label {
   font-size: 12px;
 }
+
+@media (min-width: 768px) {
+  .layout {
+    background-color: #fdfdfd;
+  }
+
+  main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .transaction-summary {
+    flex: 1 1 40%;
+    align-self: flex-start;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .transaction-list {
+    margin-top: 0;
+    flex: 1 1 60%;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 16px;
+  }
+
+  .transaction-list__filter__label {
+    font-size: 14px;
+  }
+}
 </style>
 
 <script setup>
-import TransactionList from '@/components/transactionHistory/TransactionList.vue';
 import Header from '@/components/common/Header.vue';
+import TransactionList from '@/components/transactionHistory/TransactionList.vue';
+import TransactionSummary from '@/components/transactionHistory/TransactionSummary.vue';
+import EmptyView from '@/components/transactionHistory/EmptyView.vue';
 import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
 import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 import { COLORS } from '@/util/constants';
-import { ref, provide, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import { TransactionService } from '@/util/apiService';
 
-const selectedType = ref('전체');
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const transactions = ref([]);
 const transactionId = ref(null);
+const filters = reactive({
+  type: null,
+  category: null,
+  date: null,
+});
+
+const selectedType = computed(() => filters.type || '전체');
 
 const fetchTransactions = async () => {
   try {
@@ -169,10 +155,38 @@ const fetchTransactions = async () => {
   }
 };
 
+const filteredTransactions = computed(() => {
+  return transactions.value
+    .filter((tx) => {
+      if (filters.type && filters.type !== '전체') {
+        return tx.flow_type === filters.type;
+      }
+      return true;
+    })
+    .filter((tx) => {
+      if (filters.category && filters.category !== '전체') {
+        return tx.category === filters.category;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (filters.date === '오래된 순') return dateA - dateB;
+      return dateB - dateA;
+    });
+});
+
+const selectType = (type) => {
+  if (filters.type !== type) {
+    filters.category = '전체';
+  }
+  filters.type = type;
+};
+
 const deleteTransaction = async () => {
   try {
     await TransactionService.delete(transactionId.value);
-
     transactions.value = transactions.value.filter(
       (tx) => tx.id !== transactionId.value
     );
@@ -202,14 +216,6 @@ onMounted(() => {
   fetchTransactions();
 });
 
-provide('transactionHistory', {
-  transactions,
-});
-
-const selectType = (type) => {
-  selectedType.value = type;
-};
-
 const openFilterModal = () => {
   isFilterModalOpen.value = true;
 };
@@ -219,8 +225,11 @@ const openEditModal = (id) => {
   transactionId.value = id;
 };
 
-const closeFilterModal = () => {
+const closeFilterModal = (selectedFilters) => {
   isFilterModalOpen.value = false;
+  filters.type = selectedFilters.type;
+  filters.category = selectedFilters.category;
+  filters.date = selectedFilters.date;
 };
 
 const closeEditModal = () => {

@@ -18,7 +18,7 @@
             :name="item.name"
             :color="item.selected ? 'WHITE' : 'GRAY02'"
             :bgColor="item.selected ? 'GRAY03' : 'GREEN01'"
-            @click="selectType(item.name, typeState)"
+            @click="selectType(item.name, typeState, true)"
           />
         </div>
         <div class="modalOption">카테고리</div>
@@ -112,7 +112,7 @@
 </style>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { COLORS } from '@/util/constants';
 import Badge from '../common/Badge.vue';
 import Button from '../common/Button.vue';
@@ -122,11 +122,12 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  type: String, //수입, 지출, 전체
 });
 
 const typeState = reactive({
   types: [
-    { name: '전체', type: 'both', selected: false },
+    { name: '전체', type: 'both', selected: true },
     { name: '수입', type: 'income', selected: false },
     { name: '지출', type: 'expense', selected: false },
   ],
@@ -134,6 +135,7 @@ const typeState = reactive({
 
 const categoryState = reactive({
   types: [
+    { name: '전체', type: 'both', selected: true },
     { name: '월급', type: 'income', selected: false },
     { name: '용돈', type: 'income', selected: false },
     { name: '식비', type: 'expense', selected: false },
@@ -147,22 +149,45 @@ const categoryState = reactive({
 
 const dateState = reactive({
   types: [
-    { name: '최신순', type: 'both', selected: false },
+    { name: '최신순', type: 'both', selected: true },
     { name: '오래된 순', type: 'both', selected: false },
   ],
 });
 
-const selectType = (selectedName, state) => {
-  state.types.forEach((type) => {
-    type.selected = type.name === selectedName;
+const selectType = (selectedName, state, resetCategory = false) => {
+  state.types.forEach((item) => {
+    item.selected = item.name === selectedName;
   });
+
+  if (state === typeState && resetCategory) {
+    categoryState.types.forEach((cat) => {
+      cat.selected = cat.name === '전체';
+    });
+  }
 };
+
+const previousType = ref(null); // 이전 type 저장용
+
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal && props.type) {
+      const isTypeChanged = props.type !== previousType.value;
+
+      // 이전 type과 다르면 카테고리 초기화도 수행
+      selectType(props.type, typeState, isTypeChanged);
+
+      // 현재 type을 저장해두기
+      previousType.value = props.type;
+    }
+  }
+);
 
 const startY = ref(0);
 const emit = defineEmits(['close']);
 
 const closeModal = () => {
-  emit('close');
+  emit('close', getSelectedFilters());
 };
 
 //수입, 지출에 따라 카테고리 필터링
@@ -196,5 +221,18 @@ const onMouseUp = (event) => {
   if (diffY > 50) {
     closeModal();
   }
+};
+
+// 선택된 필터 값 추출 함수
+const getSelectedFilters = () => {
+  const selectedType = typeState.types.find((type) => type.selected);
+  const selectedCategory = categoryState.types.find((cat) => cat.selected);
+  const selectedDate = dateState.types.find((date) => date.selected);
+
+  return {
+    type: selectedType ? selectedType.name : null,
+    category: selectedCategory ? selectedCategory.name : null,
+    date: selectedDate ? selectedDate.name : null,
+  };
 };
 </script>
