@@ -87,7 +87,7 @@ const emit = defineEmits(['close']);
 
 const router = useRouter();
 const goToMypage = () => {
-  router.push({ name: 'Mypage' });
+  router.push('/mypage/1');
   emit('close');
 };
 
