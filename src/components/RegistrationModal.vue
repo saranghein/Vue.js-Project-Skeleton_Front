@@ -29,7 +29,7 @@ const onClose = () => {
 .modal-content {
   background-color: white;
   border-radius: 12px;
-  padding: 24px;
+  padding: 0px;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
