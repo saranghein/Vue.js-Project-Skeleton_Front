@@ -67,11 +67,7 @@ onMounted(() => {
     <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />
 
     <!-- 이름 입력 -->
-    <UsernameInput
-      v-model="inputUsername"
-      :error="errors.username"
-      :placeholder="getDepositorPlaceholder"
-    />
+    <UsernameInput v-model="inputUsername" :error="errors.username" />
 
     <!-- 생년월일 입력-->
     <DateInput v-model="selectedBirthday" :error="errors.date" />
@@ -89,7 +85,7 @@ onMounted(() => {
           name="등록"
           bgColor="GREEN02"
           color="BLACK"
-          :click-handler="handleSubmit()"
+          :click-handler="handleSubmit"
         ></Button>
       </div>
     </div>
@@ -101,7 +97,7 @@ onMounted(() => {
           name="취소"
           color="WHITE"
           bgColor="GRAY01"
-          :click-handler="handleCancel()"
+          :click-handler="handleCancel"
         ></Button>
       </div>
     </div>

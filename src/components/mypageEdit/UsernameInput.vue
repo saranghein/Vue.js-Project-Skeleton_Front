@@ -9,7 +9,7 @@
           class="form-control no-default-icon"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
-          :placeholder="placeholder"
+          placeholder="이름을 입력하세요"
         />
       </div>
       <small
