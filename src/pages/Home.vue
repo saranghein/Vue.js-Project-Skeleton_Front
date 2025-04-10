@@ -8,7 +8,7 @@
       <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
       <div>
         <!-- 수입 지출 비교 탭 -->
-        <div class="balance-summary" @click="goToDetails">
+        <div class="balance-summary" @click="goToTransactionHistory">
           <div class="balance-text">
             <p v-if="totalIncome > totalExpense">
               💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
@@ -149,8 +149,8 @@ function handleScroll() {
   showMoreHint.value = !scrollBottom;
 }
 
-function goToDetails() {
-  router.push('/details');
+function goToTransactionHistory() {
+  router.push('/transaction-history');
 }
 
 function goToAdd() {
