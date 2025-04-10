@@ -1,6 +1,6 @@
 <style scoped>
 .headerContainer {
-  position: relative;
+  position: fixed;
   width: 100dvw;
   height: 56px;
 
