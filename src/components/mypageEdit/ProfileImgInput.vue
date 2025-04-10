@@ -26,7 +26,7 @@
         <div class="rounded-circle overflow-hidden previewProfileImgWrapper">
           <img
             v-if="previewUrl"
-            :src="previewUrl"
+            :src="defaultProfileImg"
             class="previewProfileImg"
             alt="프로필 이미지 미리보기"
           />
@@ -51,33 +51,31 @@
 
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue';
+import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
 const props = defineProps({
-  modelValue: [String, File],
+  modelValue: String,
   error: Boolean,
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-const previewUrl = ref(''); // 미리보기 URL
+const previewUrl = ref(defaultProfileImg); // 미리보기 URL
 let objectUrl = null; // URL.createObjectURL로 생성된 URL을 추적
 
 // 파일 변경 핸들러
 function onFileChange(event) {
   const file = event.target.files[0];
   if (file) {
-    // 부모 컴포넌트로 파일 객체 전달
-    emit('update:modelValue', file);
-
     // 기존 URL 해제
     if (objectUrl) {
       URL.revokeObjectURL(objectUrl);
-      objectUrl = null;
     }
 
-    // 새로운 URL 생성
     objectUrl = URL.createObjectURL(file);
     previewUrl.value = objectUrl;
+    // 부모 컴포넌트로 파일 객체 전달
+    emit('update:modelValue', objectUrl);
   }
 }
 
@@ -85,17 +83,7 @@ function onFileChange(event) {
 watch(
   () => props.modelValue,
   (newValue) => {
-    if (objectUrl) {
-      URL.revokeObjectURL(objectUrl); // 기존 URL 해제
-      objectUrl = null;
-    }
-
-    if (newValue instanceof File) {
-      objectUrl = URL.createObjectURL(newValue);
-      previewUrl.value = objectUrl;
-    } else {
-      previewUrl.value = newValue || '';
-    }
+    previewUrl.value = newValue || '';
   },
   { immediate: true } // 컴포넌트가 로드될 때도 실행
 );
@@ -104,7 +92,6 @@ watch(
 onBeforeUnmount(() => {
   if (objectUrl) {
     URL.revokeObjectURL(objectUrl);
-    objectUrl = null;
   }
 });
 </script>

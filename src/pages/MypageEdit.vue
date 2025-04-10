@@ -1,14 +1,19 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue';
-import { useOptionStore } from '@/stores/useOptionStore';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/useUserStore';
 import Button from '@/components/common/Button.vue';
 
+const user = ref(null);
+const userStore = useUserStore();
+const route = useRoute();
+const router = useRouter();
+
 const selectedBirthday = ref(''); // 생년월일
-const inputProfileImg = ref(''); // 프로필 이미지
+const inputProfileImg = ref('gallery07.png'); // 이미지 링크
 const inputEmail = ref(''); // 이메일 주소
 const inputPhone = ref(''); // 전화번호
 const inputUsername = ref(''); // 사용자 이름
-// const store = useOptionStore(); // 스토어 정의
 
 import UsernameInput from '@/components/mypageEdit/UsernameInput.vue';
 import PhoneNumberInput from '@/components/mypageEdit/PhoneNumberInput.vue';
@@ -16,11 +21,6 @@ import EmailInput from '@/components/mypageEdit/EmailInput.vue';
 import Header from '@/components/common/Header.vue';
 import ProfileImgInput from '@/components/mypageEdit/ProfileImgInput.vue';
 import BirthdayInput from '@/components/mypageEdit/BirthdayInput.vue';
-
-//이벤트 핸들러
-const onTypeChange = (type) => {
-  selectedType.value = type;
-};
 
 // 에러 상태
 const errors = reactive({
@@ -30,6 +30,10 @@ const errors = reactive({
   phone: true,
   profileImg: false,
 });
+
+function routeToMypage() {
+  router.push(`/mypage/${user.value.id}`);
+}
 
 // 모든 입력값이 유효한지 확인하는 계산된 속성
 const isFormValid = computed(() => {
@@ -44,13 +48,13 @@ const isFormValid = computed(() => {
 });
 
 // 등록 버튼 클릭했을 때 유효성 검사
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const newErrors = {
     birthday: errors.birthday,
     username: errors.username,
     email: errors.email,
-    phone: errors.phone, // PhoneNumberInput에서 전달된 에러 상태 사용
-    profileImg: errors.phone,
+    phone: errors.phone,
+    profileImg: errors.profileImg,
   };
 
   Object.assign(errors, newErrors);
@@ -60,7 +64,25 @@ const handleSubmit = () => {
     return;
   }
 
-  alert('등록 완료!');
+  try {
+    const updatedData = {
+      birth: selectedBirthday.value,
+      profileImg: inputProfileImg.value,
+      email: inputEmail.value,
+      phone: inputPhone.value,
+      user_id: inputUsername.value,
+      user_pw: 'securepassword',
+    };
+
+    const userId = 1;
+
+    await userStore.updateUser(userId, updatedData);
+    alert('등록 완료!');
+    routeToMypage();
+  } catch (error) {
+    console.error('업데이트 실패:', error);
+    alert('업데이트 중 오류가 발생했습니다.');
+  }
 };
 
 // 뒤로가기 또는 폼 초기화
@@ -69,15 +91,31 @@ const handleCancel = () => {
   console.log('취소 클릭');
 };
 
-onMounted(() => {
-  // 초기 데이터 로드 (예: 사용자 정보 가져오기)
-  // TODO: userStore.fetchUser(userId.value) 등을 호출하여 초기화
+// 컴포넌트가 마운트될 때 사용자 정보 가져오기
+onMounted(async () => {
+  const userId = route.params.id;
+  if (!userId) {
+    console.error('유저 ID가 전달되지 않았습니다.');
+    return;
+  }
+  try {
+    user.value = await userStore.fetchUsers(userId);
+
+    // 데이터가 로드된 후 초기값 설정
+    selectedBirthday.value = user.value.birth || '';
+    inputProfileImg.value = user.value.profileImg || '';
+    inputEmail.value = user.value.email || '';
+    inputPhone.value = user.value.phone || '';
+    inputUsername.value = user.value.user_id || '';
+  } catch (error) {
+    console.error('유저 정보를 가져오는 중 오류 발생:', error);
+  }
 });
 </script>
 
 <template>
-  <Header :pageName="'마이페이지 수정'" :whiteBg="true"></Header>
-  <div class="row mt-5">
+  <Header :pageName="'마이페이지 수정'" :whiteBg="true" id="1"></Header>
+  <div class="row mt-3">
     <!-- 프로필 이미지 입력 -->
     <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />
 
