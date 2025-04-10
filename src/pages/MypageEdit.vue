@@ -24,10 +24,10 @@ const onTypeChange = (type) => {
 
 // 에러 상태
 const errors = reactive({
-  birthday: false,
-  username: false,
-  email: false,
-  phone: false,
+  birthday: true,
+  username: true,
+  email: true,
+  phone: true,
   profileImg: false,
 });
 
@@ -46,11 +46,11 @@ const isFormValid = computed(() => {
 // 등록 버튼 클릭했을 때 유효성 검사
 const handleSubmit = () => {
   const newErrors = {
-    birthday: !selectedBirthday.value,
-    username: !inputUsername.value,
-    email: !inputEmail.value,
+    birthday: errors.birthday,
+    username: errors.username,
+    email: errors.email,
     phone: errors.phone, // PhoneNumberInput에서 전달된 에러 상태 사용
-    profileImg: !inputProfileImg.value,
+    profileImg: errors.phone,
   };
 
   Object.assign(errors, newErrors);
@@ -82,7 +82,11 @@ onMounted(() => {
     <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />
 
     <!-- 이름 입력 -->
-    <UsernameInput v-model="inputUsername" :error="errors.username" />
+    <UsernameInput
+      v-model="inputUsername"
+      :error="errors.username"
+      @update:error="(value) => (errors.username = value)"
+    />
 
     <!-- 생년월일 입력-->
     <BirthdayInput v-model="selectedBirthday" :error="errors.birthday" />
