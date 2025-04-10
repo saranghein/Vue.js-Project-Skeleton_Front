@@ -6,7 +6,7 @@
 
     <main>
       <TransactionSummary
-        class="test"
+        class="transaction-summary"
         :selectedType="selectedType"
         :calculateTotalAmount="calculateTotalAmount"
         :sumTransactionsAmount="sumTransactionsAmount"
@@ -89,7 +89,7 @@ main {
 
 @media (min-width: 768px) {
   .layout {
-    background-color: white;
+    background-color: #fdfdfd;
   }
 
   main {
@@ -98,19 +98,23 @@ main {
     margin: 50px auto;
     display: flex;
     flex-direction: row;
-    gap: 32px;
+    gap: 10px;
   }
 
-  .test {
+  .transaction-summary {
     flex: 1 1 40%;
+    align-self: flex-start;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   }
 
   .transaction-list {
     margin-top: 0;
     flex: 1 1 60%;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 16px;
   }
 
   .transaction-list__filter__label {
