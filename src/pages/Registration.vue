@@ -23,7 +23,7 @@ import TimeInput from '@/components/Registration/TimeInput.vue';
 import AmountInput from '@/components/Registration/AmountInput.vue';
 import SourceInput from '@/components/Registration/SourceInput.vue';
 import MemoInput from '@/components/Registration/MemoInput.vue';
-const selectedCategory = ref({}); // { id, name, type }
+const selectedCategory = ref(null); // { id, name, type }
 const selectedPaymentMethod = ref(null); // { id, name, type }
 const isLoading = ref(false); // 초기 로딩 플래그
 
@@ -87,7 +87,7 @@ const handleSubmit = async () => {
     date: !selectedDate.value,
     time: !selectedTime.value,
     amount: !inputAmount.value,
-    category: !category.value,
+    category: !selectedCategory.value || !selectedCategory.value.name,
     depositor: !depositor.value,
   };
 

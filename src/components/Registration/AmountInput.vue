@@ -35,6 +35,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
+
 const displayValue = ref('');
 const onKeyPress = (e) => {
   const charCode = e.charCode;
@@ -57,7 +58,10 @@ watch(
 );
 
 const onInput = (e) => {
-  const raw = e.target.value.replace(/[^0-9]/g, ''); // 숫자만
+  let raw = e.target.value.replace(/[^0-9]/g, ''); // 숫자만
+  if (raw.length > 20) {
+    raw = raw.slice(0, 20);
+  }
   const number = parseInt(raw);
   //HTML input 자체도 실시간 업데이트 (즉시 반영)
   e.target.value = raw === '' ? '' : parseInt(raw).toLocaleString();

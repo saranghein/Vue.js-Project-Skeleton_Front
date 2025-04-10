@@ -8,10 +8,11 @@
           id="memo"
           class="form-control no-default-icon"
           :value="modelValue"
-          @input="$emit('update:modelValue', $event.target.value)"
+          @input="onInput"
           placeholder="메모를 입력해주세요"
         />
       </div>
+      <small class="text-muted"> {{ modelValue.length }}/30자 </small>
     </div>
   </div>
 </template>
@@ -20,5 +21,10 @@
 defineProps({
   modelValue: String,
 });
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
+const onInput = (e) => {
+  const value = e.target.value.slice(0, 30); // 30자 제한
+  e.target.value = value;
+  emit('update:modelValue', value);
+};
 </script>
