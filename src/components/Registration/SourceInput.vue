@@ -8,7 +8,7 @@
           id="source"
           class="form-control no-default-icon"
           :value="modelValue"
-          @input="$emit('update:modelValue', $event.target.value)"
+          @input="onInput"
           :placeholder="placeholder"
         />
       </div>
@@ -28,5 +28,10 @@ defineProps({
   error: Boolean,
   placeholder: String,
 });
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
+const onInput = (e) => {
+  const value = e.target.value.slice(0, 30); // 30자 제한
+  e.target.value = value;
+  emit('update:modelValue', value);
+};
 </script>

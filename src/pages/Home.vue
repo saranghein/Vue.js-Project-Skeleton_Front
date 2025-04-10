@@ -8,7 +8,7 @@
       <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
       <div>
         <!-- 수입 지출 비교 탭 -->
-        <div class="balance-summary" @click="goToDetails">
+        <div class="balance-summary" @click="goToTransactionHistory">
           <div class="balance-text">
             <p v-if="totalIncome > totalExpense">
               💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
@@ -98,6 +98,10 @@
 
     <!-- Calendar 모달 -->
     <Calendar v-if="showCalendar" :budget="budget" @close="toggleCalendar" />
+    <RegistrationModal
+      v-if="showRegistration"
+      @close="showRegistration = false"
+    />
   </div>
 </template>
 
@@ -111,24 +115,55 @@ import HomeHeader from '@/components/common/HomeHeader.vue';
 import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
 import Calendar from '@/components/Calendar.vue';
+import RegistrationModal from '@/components/RegistrationModal.vue'; // ✅ 모달 import
+
+const router = useRouter();
+
 
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
 const showMoreHint = ref(true);
 const showCalendar = ref(false);
+const showRegistration = ref(false);
 
-const router = useRouter();
+// ✅ 추가: 카테고리 / 결제수단 목록
+const categories = ref([]);
+const paymentMethods = ref([]);
 
 onMounted(async () => {
-  const res = await axios.get('http://localhost:3000/money');
-  budget.value = res.data;
+  const currentUserId = 'test_user'; // ✅ 로그인된 유저 ID
 
-  totalIncome.value = res.data
+  // ✅ 3개 데이터 병렬 fetch
+  const [moneyRes, categoryRes, paymentMethodRes] = await Promise.all([
+    axios.get('http://localhost:3000/money'),
+    axios.get('http://localhost:3000/categories'),
+    axios.get('http://localhost:3000/paymentMethods'),
+  ]);
+
+  categories.value = categoryRes.data;
+  paymentMethods.value = paymentMethodRes.data;
+
+  const userData = moneyRes.data.filter(
+    (item) => item.user_id === currentUserId
+  );
+
+  // ✅ categoryName, paymentMethodName 매핑 추가
+  budget.value = userData.map((item) => ({
+    ...item,
+    categoryName:
+      categories.value.find((c) => c.name === item.category)?.name ||
+      item.category,
+    paymentMethodName:
+      paymentMethods.value.find((p) => p.name === item.payment_method)?.name ||
+      item.payment_method,
+  }));
+
+  totalIncome.value = budget.value
     .filter((item) => item.flow_type === '수입')
     .reduce((sum, item) => sum + item.amount, 0);
 
-  totalExpense.value = res.data
+  totalExpense.value = budget.value
     .filter((item) => item.flow_type === '지출')
     .reduce((sum, item) => sum + item.amount, 0);
 
@@ -143,12 +178,12 @@ function handleScroll() {
   showMoreHint.value = !scrollBottom;
 }
 
-function goToDetails() {
-  router.push('/details');
+function goToTransactionHistory() {
+  router.push('/transaction-history');
 }
 
 function goToAdd() {
-  router.push('/add');
+  showRegistration.value = true;
 }
 
 function toggleCalendar() {
