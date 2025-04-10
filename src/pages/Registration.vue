@@ -104,7 +104,7 @@ const handleSubmit = async () => {
     amount: Number(inputAmount.value), // 금액
     category: category.value?.name, // 카테고리
     source: depositor.value, // 출처
-    paymentMethod: paymentMethod.value?.name, // 거래 수단
+    paymentMethod: paymentMethod.value?.name || '', // 거래 수단
     memo: memo.value, // 메모
     flow_type: selectedType.value === 'income' ? '수입' : '지출', // 수입인지 지출인지
   };
