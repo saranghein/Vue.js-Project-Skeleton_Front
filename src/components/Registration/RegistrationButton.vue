@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 defineProps({
   label: String,
   image: String,
@@ -55,5 +55,66 @@ const emit = defineEmits(['click']);
 
 .btn-container.active .btn-label {
   color: #55efc4; /* 클릭 시 색 */
+}
+</style> -->
+<template>
+  <div
+    class="btn-container"
+    :class="{ active: isActive }"
+    @click="$emit('click')"
+    :style="{
+      backgroundColor: bgColor ? COLORS[bgColor] : COLORS.GRAY01,
+      color: color ? COLORS[color] : 'white',
+    }"
+  >
+    <span class="btn-label">{{ label }}</span>
+  </div>
+</template>
+
+<script setup>
+import { COLORS } from '@/util/constants';
+
+defineProps({
+  label: { type: String, required: true },
+  bgColor: String,
+  color: String,
+  isActive: Boolean,
+});
+const emit = defineEmits(['click']);
+</script>
+
+<style scoped>
+.btn-container {
+  min-width: 100px;
+  max-width: 160px;
+  width: 300px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+
+.btn-container:hover {
+  transform: scale(1.03);
+}
+
+.btn-container.active {
+  filter: brightness(0.85);
+}
+
+.btn-label {
+  font-weight: 200;
+  opacity: 0.9;
+}
+.btn-container.active {
+  background-color: #55efc4 !important; /* 예: 민트 */
+  color: black !important;
+  filter: none;
 }
 </style>
