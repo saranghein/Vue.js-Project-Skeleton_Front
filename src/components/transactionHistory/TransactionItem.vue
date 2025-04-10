@@ -12,6 +12,7 @@
         </p>
       </div>
     </div>
+
     <div class="transaction-item__right">
       <p
         class="transaction-item__amount"
@@ -28,6 +29,7 @@
       ></i>
     </div>
   </article>
+
   <div
     class="transaction-item__divider"
     :style="{ backgroundColor: COLORS.GRAY00 }"
@@ -36,11 +38,11 @@
 
 <style scoped>
 .transaction-item {
-  padding: 20px;
-  padding-right: 30px;
-
   display: flex;
   justify-content: space-between;
+
+  padding: 20px;
+  padding-right: 30px;
 }
 
 .transaction-item__left {
@@ -53,10 +55,10 @@
 }
 
 .transaction-item__img {
-  clip-path: circle(50%);
   height: 42px;
-  background-color: gray;
   width: 42px;
+  clip-path: circle(50%);
+  background-color: gray;
 }
 
 .transaction-item__title {
@@ -74,6 +76,7 @@
 .transaction-item__right {
   display: flex;
   align-items: center;
+
   gap: 8px;
 }
 
