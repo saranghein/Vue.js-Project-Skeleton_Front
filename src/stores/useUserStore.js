@@ -7,12 +7,14 @@ export const useUserStore = defineStore('user', {
     users: [],
   }),
   actions: {
-    async fetchUsers() {
+    async fetchUsers(userId) {
       try {
-        const response = await UsersService.get();
-        this.users = response.data;
+        const response = await UsersService.get(userId);
+        console.log('유저 정보 가져오기 성공: ', response.data);
+        return response.data;
       } catch (error) {
         console.error('유저 정보 가져오기 실패:', error);
+        throw error;
       }
     },
     async updateUser(userId, updatedData) {
@@ -22,10 +24,10 @@ export const useUserStore = defineStore('user', {
           updatedData
         );
         console.log('유저 정보 업데이트 성공:', response.data);
-        return response.data; // 성공한 데이터 반환
+        return response.data;
       } catch (error) {
         console.error('유저 정보 업데이트 실패:', error);
-        throw error; // 에러를 호출한 곳으로 전달
+        throw error;
       }
     },
   },

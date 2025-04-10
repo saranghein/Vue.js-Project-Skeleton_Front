@@ -4,7 +4,7 @@ import { useOptionStore } from '@/stores/useOptionStore';
 import Button from '@/components/common/Button.vue';
 
 const selectedBirthday = ref(''); // 생년월일
-const inputProfileImg = ref(''); // 프로필 이미지
+const inputProfileImg = ref('');
 const inputEmail = ref(''); // 이메일 주소
 const inputPhone = ref(''); // 전화번호
 const inputUsername = ref(''); // 사용자 이름
@@ -49,7 +49,7 @@ const handleSubmit = () => {
     birthday: errors.birthday,
     username: errors.username,
     email: errors.email,
-    phone: errors.phone, // PhoneNumberInput에서 전달된 에러 상태 사용
+    phone: errors.phone,
     profileImg: errors.phone,
   };
 

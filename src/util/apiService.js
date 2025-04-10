@@ -6,7 +6,7 @@ const ApiService = {
    * GET 요청을 실행하여 쿼리 파라미터를 전달합니다.
    * @param {string} resource - 요청할 API 리소스 경로 (예: 'money')
    * @param {object} params - Axios config 객체로, 주로 params: { key: value } 형태의 쿼리 파라미터
-   * @returns {Promise<AxiosResponse>} - Axios 응답 Promise
+   * @returns {Promise<AxiosResnpx json-server --watch db.json --port 5173ponse>} - Axios 응답 Promise
    */
   query(resource, params) {
     return axios.get(`${API_URL}${resource}`, params).catch((error) => {
@@ -90,14 +90,15 @@ export const TransactionService = {
 
 export const UsersService = {
   /**
-   * 거래 내역 전체를 조회합니다.
-   * @returns {Promise<AxiosResponse>} - 유저 데이터 리스트 반환
+   * 특정 유저 정보를 조회합니다.
+   * @param {number|string} id - 조회할 유저의 ID
+   * @returns {Promise<AxiosResponse>} - 유저 데이터 반환
    */
-  get() {
-    return ApiService.get('users');
+  get(id) {
+    return ApiService.get('users', id);
   },
   post() {
-    return ApiService.put('users', {
+    return ApiService.put(`users/${params.id}`, {
       nickname: params.nickname,
       birth: params.birth,
       phone: params.phone,
