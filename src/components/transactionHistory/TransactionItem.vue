@@ -1,7 +1,10 @@
 <template>
   <article class="transaction-item">
     <div class="transaction-item__left">
-      <img class="transaction-item__img" src="" alt="" />
+      <category-icon
+        :categoryType="data.transactionFlowType"
+        :expenseType="data.transactionCategory"
+      />
       <div class="transaction-item__content">
         <p class="transaction-item__title">{{ data.transactionTitle }}</p>
         <p class="transaction-item__desc" :style="{ color: COLORS.GRAY02 }">
@@ -10,9 +13,16 @@
       </div>
     </div>
     <div class="transaction-item__right">
-      <p class="transaction-item__amount">{{ data.transactionAmount }}원</p>
+      <p
+        class="transaction-item__amount"
+        :style="{
+          color: data.transactionFlowType === '지출' ? COLORS.RED : COLORS.BLUE,
+        }"
+      >
+        {{ data.transactionAmount }}원
+      </p>
       <i
-        class="fa-solid fa-ellipsis-vertical"
+        class="fa-solid fa-ellipsis-vertical pointer"
         style="color: #aeaeae; padding: 10px"
         @click="openModal"
       ></i>
@@ -81,12 +91,13 @@
 <script setup>
 import { defineProps } from 'vue';
 import { COLORS } from '@/util/constants';
+import CategoryIcon from '@/components/common/CategoryIcon.vue';
 
 const props = defineProps({
   data: {
     transactionId: Number,
     userId: Number,
-    flowType: String,
+    transactionFlowType: String,
     transactionDate: String,
     transactionAmount: Number,
     transactionCategory: String,

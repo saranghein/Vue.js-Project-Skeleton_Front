@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import { errorMessages } from 'vue/compiler-sfc';
 const props = defineProps({
   label: String, // 라벨 이름
   placeholder: String, // 기본 표시 텍스트
@@ -67,11 +66,14 @@ const selectedLabel = computed(() => {
       </ul>
     </div>
     <!-- 에러 메시지 -->
+    <small v-if="!modelValue && errorMessage" class="text-danger ms-1">
+      {{ errorMessage }}
+    </small>
     <small
-      v-if="!modelValue && errorMessage"
+      v-else
       class="text-danger ms-1"
       :style="{
-        visibility: !modelValue && errorMessage ? 'visible' : 'hidden',
+        visibility: 'hidden',
       }"
     >
       {{ errorMessage }}

@@ -10,6 +10,8 @@ export const COLORS = {
   BLUE01: '8BBFFF',
   BLACK: '#000000',
   WHITE: '#FDFDFD',
+  BLUE: '#007AFF',
+  RED: '#FF3B30',
 };
 
 export const API_URL = '/api';
