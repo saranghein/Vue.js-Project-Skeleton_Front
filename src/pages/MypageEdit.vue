@@ -89,7 +89,11 @@ onMounted(() => {
     />
 
     <!-- 생년월일 입력-->
-    <BirthdayInput v-model="selectedBirthday" :error="errors.birthday" />
+    <BirthdayInput
+      v-model="selectedBirthday"
+      :error="errors.birthday"
+      @update:error="(value) => (errors.birthday = value)"
+    />
 
     <!-- 전화번호 입력-->
     <PhoneNumberInput

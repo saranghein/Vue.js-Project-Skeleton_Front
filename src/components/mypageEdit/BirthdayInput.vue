@@ -9,7 +9,7 @@
             id="date"
             class="form-control"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="onInput"
           />
         </div>
         <small
@@ -24,9 +24,37 @@
 </template>
 
 <script setup>
-defineProps({
+import { watch } from 'vue';
+
+const props = defineProps({
   modelValue: String,
   error: Boolean,
 });
-defineEmits(['update:modelValue']);
+
+const emit = defineEmits(['update:modelValue', 'update:error']);
+
+// 입력 이벤트 처리
+function onInput(event) {
+  const value = event.target.value;
+
+  // 부모 컴포넌트로 선택된 값 전달
+  emit('update:modelValue', value);
+
+  // 에러 상태 업데이트
+  validateInput(value);
+}
+
+// 입력값 검증 함수
+function validateInput(value) {
+  const hasError = !value; // 값이 비어 있으면 에러
+  emit('update:error', hasError); // 에러 상태를 부모 컴포넌트로 전달
+}
+
+// modelValue가 외부에서 변경될 때 에러 상태 업데이트
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    validateInput(newValue);
+  }
+);
 </script>
