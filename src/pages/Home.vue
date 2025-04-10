@@ -119,6 +119,7 @@ import RegistrationModal from '@/components/RegistrationModal.vue'; // ✅ 모�
 
 const router = useRouter();
 
+
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
