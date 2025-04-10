@@ -377,7 +377,7 @@
       "user_id": "test_user",
       "date": "2025-04-01",
       "time": "10:56",
-      "amount": 444444444,
+      "amount": 44444,
       "category": "용돈",
       "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
       "memo": "테스트",
@@ -391,7 +391,8 @@
       "source": "마트",
       "memo": "테스트",
       "flow_type": "지출",
-      "id": "1183"
+      "id": "1183",
+      "category": "쇼핑"
     },
     {
       "user_id": "test_user",
@@ -421,7 +422,7 @@
       "user_id": "test_user",
       "date": "2025-04-04",
       "time": "13:20",
-      "amount": 444444444,
+      "amount": 44444,
       "category": "월급",
       "source": "마트",
       "paymentMethod": "",
@@ -433,7 +434,7 @@
       "user_id": "test_user",
       "date": "2025-04-04",
       "time": "13:42",
-      "amount": 84448888888888890000,
+      "amount": 90000,
       "category": "월급",
       "source": "마트",
       "paymentMethod": "현금",
@@ -445,7 +446,7 @@
       "user_id": "test_user",
       "date": "2025-04-05",
       "time": "13:45",
-      "amount": 444444444,
+      "amount": 4444,
       "category": "월급",
       "source": "마트",
       "paymentMethod": "현금",
@@ -469,7 +470,7 @@
       "user_id": "test_user",
       "date": "2025-04-02",
       "time": "13:56",
-      "amount": 444444444,
+      "amount": 4444,
       "category": "문화생활",
       "source": "마트",
       "paymentMethod": "신용/체크",
@@ -487,6 +488,18 @@
       "paymentMethod": "계좌이체",
       "memo": "",
       "flow_type": "수입"
+    },
+    {
+      "id": "1294",
+      "user_id": "test_user",
+      "date": "2025-03-07",
+      "time": "18:32",
+      "amount": 700,
+      "category": "쇼핑",
+      "source": "새콤달콤",
+      "paymentMethod": "현금",
+      "memo": "맛있다",
+      "flow_type": "지출"
     }
   ],
   "users": [
