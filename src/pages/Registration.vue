@@ -3,12 +3,12 @@ import RegistrationButton from '@/components/Registration/RegistrationButton.vue
 import { ref, onMounted, computed } from 'vue';
 import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
-import DropdownSelector from '@/components/Registration/DropdownSelector.vue';
 import { RegisterService } from '@/api/RegisterService';
-
+import { useRoute, useRouter } from 'vue-router';
 import CategorySelector from '@/components/Registration/CategorySelector.vue';
 import PaymentMethodSelector from '@/components/Registration/PaymentMethodSelector.vue';
 import Button from '@/components/common/Button.vue';
+import ApiService from '@/util/apiService';
 import DateInput from '@/components/Registration/DateInput.vue';
 const selectedDate = ref(''); // 날짜
 const selectedTime = ref(''); // 시간
@@ -23,11 +23,37 @@ import TimeInput from '@/components/Registration/TimeInput.vue';
 import AmountInput from '@/components/Registration/AmountInput.vue';
 import SourceInput from '@/components/Registration/SourceInput.vue';
 import MemoInput from '@/components/Registration/MemoInput.vue';
+const selectedCategory = ref(null); // { id, name, type }
+const selectedPaymentMethod = ref(null); // { id, name, type }
+
 //이벤트 핸들러
 const onTypeChange = (type) => {
   selectedType.value = type;
 };
+// 라우트, 라우터
+const route = useRoute();
+const router = useRouter();
 
+const id = route.params.id; // id 값 가져옴
+const isEditMode = computed(() => !!id); //id 값 있으면 편집모드
+
+/*
+"id": 1,
+"user_id": 1,
+"flow_type": "수입",
+"date": "2025-04-01T00:00:00",
+"amount": 3000000,
+"category": "월급",
+"memo": "4월 급여",
+"payment": "계좌이체"      
+*/
+// const form = ref({
+//   memo: '',
+//   amount: 0,
+//   source: '',
+//   date: '',
+//   time: '',
+// });
 // 수입, 지출에 따라 출처 출력 달라지도록
 const getDepositorPlaceholder = computed(() => {
   if (selectedType.value === 'income') return '수입의 출처를 입력하세요';
@@ -92,23 +118,57 @@ const handleSubmit = async () => {
 
   // 등록 요청
   const payload = {
-    date: selectedDate.value,
-    time: selectedTime.value,
-    amount: Number(inputAmount.value),
-    categoryId: category.value,
-    source: depositor.value,
-    paymentMethodId: paymentMethod.value,
-    memo: memo.value,
-    type: selectedType.value, // 'income' or 'expense'
+    user_id: 'test_user', // 테스트용 user_id 추가
+    date: selectedDate.value, // 날짜
+    time: selectedTime.value, // 시간
+    amount: Number(inputAmount.value), // 금액
+    category: category.value?.name, // 카테고리
+    source: depositor.value, // 출처
+    paymentMethod: paymentMethod.value?.name, // 거래 수단
+    memo: memo.value, // 메모
+    flow_type: selectedType.value === 'income' ? '수입' : '지출', // 수입인지 지출인지
   };
 
   try {
-    const response = await RegisterService.create(payload);
-    console.log('등록 성공:', response.data);
-    // 초기화 또는 이동 처리
-    resetForm(); // 선택 사항
+    // 편집모드라면
+    if (isEditMode.value) {
+      await RegisterService.update(id, payload);
+      // 팝업
+      alert('수정 완료!');
+    } else {
+      const response = await RegisterService.create(payload);
+      console.log('등록 성공:', response.data);
+    }
+
+    resetForm(); // 초기화
+    router.push('/');
+    // TODO:팝업띄우고->홈화면으로
   } catch (error) {
-    console.error('등록 실패:', error);
+    console.error('요청 실패:', error);
+  }
+};
+
+// 정보 가져오기
+const loadData = async () => {
+  if (isEditMode.value) {
+    try {
+      const { data } = await ApiService.get('money', id);
+      selectedDate.value = data.date;
+      selectedTime.value = data.time;
+      inputAmount.value = data.amount;
+      memo.value = data.memo;
+      depositor.value = data.source;
+      selectedType.value = data.flow_type === '수입' ? 'income' : 'expense';
+
+      selectedCategory.value = store.categories.find(
+        (cat) => cat.name === data.category
+      );
+      selectedPaymentMethod.value = store.paymentMethods.find(
+        (pay) => pay.name === data.payment
+      );
+    } catch (error) {
+      console.error('데이터 불러오기 실패:', error);
+    }
   }
 };
 // 초기화
@@ -132,11 +192,13 @@ const resetForm = () => {
 
 // 뒤로가기 또는 폼 초기화
 const handleCancel = () => {
-  //TODO: API 연결
+  //TODO: 팝업띄우기
+  router.push('/');
   console.log('취소 클릭');
 };
 onMounted(() => {
   store.fetchOptions();
+  loadData();
 });
 </script>
 
@@ -152,7 +214,9 @@ onMounted(() => {
 
         <!-- 가운데 제목 -->
         <div class="col text-center">
-          <span class="registry-title">거래 등록</span>
+          <span class="registry-title">
+            {{ isEditMode ? '거래 수정' : '거래 등록' }}
+          </span>
         </div>
 
         <!-- 오른쪽 아이콘 (자리 맞추기용) -->
@@ -217,7 +281,7 @@ onMounted(() => {
 
     <!-- 카테고리 -->
     <CategorySelector
-      v-model="category"
+      v-model="selectedCategory"
       :selected-type="selectedType"
       :error="errors.category"
       @update:modelValue="
@@ -243,7 +307,7 @@ onMounted(() => {
 
     <!-- 거래 수단 -->
     <PaymentMethodSelector
-      v-model="paymentMethod"
+      v-model="selectedPaymentMethod"
       :selected-type="selectedType"
     />
 
@@ -256,7 +320,7 @@ onMounted(() => {
       <div class="col-10 col-md-6 mx-auto">
         <Button
           type="button"
-          name="등록"
+          :name="isEditMode ? '수정' : '등록'"
           bgColor="GREEN02"
           color="BLACK"
           :click-handler="handleSubmit"
