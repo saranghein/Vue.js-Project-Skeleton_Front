@@ -114,7 +114,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Header :pageName="'마이페이지 수정'" :whiteBg="true"></Header>
+  <Header :pageName="'마이페이지 수정'" :whiteBg="true" id="1"></Header>
   <div class="row mt-3">
     <!-- 프로필 이미지 입력 -->
     <ProfileImgInput v-model="inputProfileImg" :error="errors.profileImg" />

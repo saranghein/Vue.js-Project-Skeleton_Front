@@ -49,7 +49,7 @@ i {
 import { useRouter } from 'vue-router';
 import { COLORS } from '@/util/constants';
 
-defineProps({
+const props = defineProps({
   pageName: {
     type: String,
     required: true, // pageName만 필수요소
@@ -58,10 +58,20 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  id: {
+    type: [String, Number],
+    default: null,
+  },
 });
 const router = useRouter();
 
 function navigateToHome() {
-  router.push('/');
+  if (props.pageName === '마이페이지 수정' && props.id) {
+    // 마이페이지 수정일 경우 /mypage/:id로 이동
+    router.push(`/mypage/${props.id}`);
+  } else {
+    // 기본적으로 홈으로 이동
+    router.push('/');
+  }
 }
 </script>
