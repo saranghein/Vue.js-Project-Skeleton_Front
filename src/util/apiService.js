@@ -99,6 +99,7 @@ export const UsersService = {
   },
   put(id, changedData) {
     return ApiService.put(`users/${id}`, {
+      id: id,
       profileImg: changedData.profileImg,
       birth: changedData.birth,
       phone: changedData.phone,

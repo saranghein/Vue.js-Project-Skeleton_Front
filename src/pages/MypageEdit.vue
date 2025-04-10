@@ -1,15 +1,17 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/useUserStore';
 import Button from '@/components/common/Button.vue';
+import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
 const user = ref(null);
 const userStore = useUserStore();
 const route = useRoute();
+const router = useRouter();
 
 const selectedBirthday = ref(''); // 생년월일
-const inputProfileImg = ref('');
+const inputProfileImg = ref('gallery07.png'); // 이미지 링크
 const inputEmail = ref(''); // 이메일 주소
 const inputPhone = ref(''); // 전화번호
 const inputUsername = ref(''); // 사용자 이름
@@ -21,11 +23,6 @@ import Header from '@/components/common/Header.vue';
 import ProfileImgInput from '@/components/mypageEdit/ProfileImgInput.vue';
 import BirthdayInput from '@/components/mypageEdit/BirthdayInput.vue';
 
-//이벤트 핸들러
-const onTypeChange = (type) => {
-  selectedType.value = type;
-};
-
 // 에러 상태
 const errors = reactive({
   birthday: true,
@@ -34,6 +31,10 @@ const errors = reactive({
   phone: true,
   profileImg: false,
 });
+
+function routeToMypage() {
+  router.push(`/mypage/${user.value.id}`);
+}
 
 // 모든 입력값이 유효한지 확인하는 계산된 속성
 const isFormValid = computed(() => {
@@ -54,7 +55,7 @@ const handleSubmit = async () => {
     username: errors.username,
     email: errors.email,
     phone: errors.phone,
-    profileImg: errors.phone,
+    profileImg: errors.profileImg,
   };
 
   Object.assign(errors, newErrors);
@@ -78,6 +79,7 @@ const handleSubmit = async () => {
 
     await userStore.updateUser(userId, updatedData);
     alert('등록 완료!');
+    routeToMypage();
   } catch (error) {
     console.error('업데이트 실패:', error);
     alert('업데이트 중 오류가 발생했습니다.');
@@ -90,10 +92,6 @@ const handleCancel = () => {
   console.log('취소 클릭');
 };
 
-function onClickEdit() {
-  route.push(`/mypage-edit/${user.value}`);
-}
-
 // 컴포넌트가 마운트될 때 사용자 정보 가져오기
 onMounted(async () => {
   const userId = route.params.id;
@@ -103,7 +101,13 @@ onMounted(async () => {
   }
   try {
     user.value = await userStore.fetchUsers(userId);
-    console.log('유저정보입니다', user.value);
+
+    // 데이터가 로드된 후 초기값 설정
+    selectedBirthday.value = user.value.birth || '';
+    inputProfileImg.value = user.value.profileImg || '';
+    inputEmail.value = user.value.email || '';
+    inputPhone.value = user.value.phone || '';
+    inputUsername.value = user.value.user_id || '';
   } catch (error) {
     console.error('유저 정보를 가져오는 중 오류 발생:', error);
   }

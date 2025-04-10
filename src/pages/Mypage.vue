@@ -74,10 +74,10 @@
 <template>
   <Header :pageName="'마이페이지'"></Header>
   <div class="mypageImgDiv">
-    <img class="mypageImg" src="" alt="profile-img" />
+    <img class="mypageImg" :src="defaultProfileImg" alt="profile-img" />
     <div class="nameContainer">
       <span class="usernameSpan">{{
-        user?.nickname || '사용자 정보 없음'
+        user?.user_id || '사용자 정보 없음'
       }}</span>
       <i class="fa-solid fa-pencil editIcon" @click="onClickEdit"></i>
     </div>
@@ -115,6 +115,7 @@ import { COLORS } from '@/util/constants';
 import Header from '@/components/common/Header.vue';
 import InfoItem from '@/components/mypage/InfoItem.vue';
 import BarcodeImg from '@/assets/barcode.png';
+import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
 const router = useRouter();
 const route = useRoute();
@@ -134,7 +135,6 @@ onMounted(async () => {
   }
   try {
     user.value = await userStore.fetchUsers(userId);
-    console.log('유저정보입니다', user.value);
   } catch (error) {
     console.error('유저 정보를 가져오는 중 오류 발생:', error);
   }
