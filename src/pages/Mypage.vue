@@ -74,9 +74,11 @@
 <template>
   <Header :pageName="'마이페이지'"></Header>
   <div class="mypageImgDiv">
-    <img class="mypageImg" src="" alt="profile-img" />
+    <img class="mypageImg" :src="defaultProfileImg" alt="profile-img" />
     <div class="nameContainer">
-      <span class="usernameSpan">{{ username }}</span>
+      <span class="usernameSpan">{{
+        user?.user_id || '사용자 정보 없음'
+      }}</span>
       <i class="fa-solid fa-pencil editIcon" @click="onClickEdit"></i>
     </div>
   </div>
@@ -88,17 +90,17 @@
       <InfoItem
         :icons="'fa-solid fa-cake-candles'"
         :subject="'생년월일'"
-        :contents="'2300.01.01'"
+        :contents="user?.birth || '생년월일 정보 없음'"
       />
       <InfoItem
         :icons="'fa-solid fa-phone'"
         :subject="'전화번호'"
-        :contents="'010-1234-5678'"
+        :contents="user?.phone || '전화번호 정보 없음'"
       />
       <InfoItem
         :icons="'fa-solid fa-envelope'"
         :subject="'이메일 주소'"
-        :contents="'example@naver.com'"
+        :contents="user?.email || '이메일 정보 없음'"
       />
       <div class="borderline"></div>
       <img class="barcodeImg" :src="BarcodeImg" alt="barcode" />
@@ -106,16 +108,35 @@
   </div>
 </template>
 <script setup>
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/useUserStore';
 import { COLORS } from '@/util/constants';
 import Header from '@/components/common/Header.vue';
 import InfoItem from '@/components/mypage/InfoItem.vue';
 import BarcodeImg from '@/assets/barcode.png';
+import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
-const route = useRouter();
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
+const user = ref(null);
+const userId = route.params.id;
 
 function onClickEdit() {
-  route.push('/mypage-edit');
+  router.push(`/mypage-edit/${userId}`);
 }
-const username = '홍길동';
+
+// 컴포넌트가 마운트될 때 사용자 정보 가져오기
+onMounted(async () => {
+  if (!userId) {
+    console.error('유저 ID가 전달되지 않았습니다.');
+    return;
+  }
+  try {
+    user.value = await userStore.fetchUsers(userId);
+  } catch (error) {
+    console.error('유저 정보를 가져오는 중 오류 발생:', error);
+  }
+});
 </script>

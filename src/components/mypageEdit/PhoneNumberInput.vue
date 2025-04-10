@@ -8,11 +8,11 @@
     <div class="col-10 col-md-6 mx-auto">
       <div class="mb-2">
         <label for="phone" class="form-label">⁎ 전화번호</label>
-        <div class="input-group w-50" :class="{ shake: error }">
+        <div class="input-group" :class="{ shake: error }">
           <input
             type="tel"
             id="phone"
-            class="form-control"
+            class="form-control w-100"
             :value="inputValue"
             @input="onInput"
             placeholder="123-4567-8910"

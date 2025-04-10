@@ -62,11 +62,11 @@ p {
 <template>
   <div :class="['sideBarContainer', { active: isActive }]">
     <section class="sideBarHeader">
-      <p>{{ username }}님, 안녕하세요!</p>
+      <p>{{ user?.user_id || user_id }}님, 안녕하세요!</p>
     </section>
     <section class="sideBarProfileSection">
       <img
-        src=""
+        :src="defaultProfileImg"
         alt="profile-image"
         :style="{ backgroundColor: COLORS.GRAY01 }"
       />
@@ -80,14 +80,20 @@ p {
 
 <script setup>
 import { COLORS } from '@/util/constants';
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/useUserStore';
+import defaultProfileImg from '@/assets/user_img/gallery07.png';
 
 const emit = defineEmits(['close']);
 
 const router = useRouter();
+const userStore = useUserStore();
+const userId = 1;
+const user = ref(null);
+
 const goToMypage = () => {
-  router.push({ name: 'Mypage' });
+  router.push('/mypage/1');
   emit('close');
 };
 
@@ -106,5 +112,18 @@ defineProps({
     default: true,
     required: true, // 사이드바 활성여부 필수요소
   },
+});
+
+// 컴포넌트가 마운트될 때 사용자 정보 가져오기
+onMounted(async () => {
+  if (!userId) {
+    console.error('유저 ID가 전달되지 않았습니다.');
+    return;
+  }
+  try {
+    user.value = await userStore.fetchUsers(userId);
+  } catch (error) {
+    console.error('유저 정보를 가져오는 중 오류 발생:', error);
+  }
 });
 </script>

@@ -3,7 +3,7 @@
     <div class="col-10 col-md-6 mx-auto">
       <div class="mb-2">
         <label for="email" class="form-label">⁎ 이메일 주소</label>
-        <div class="input-group w-50" :class="{ shake: error }">
+        <div class="input-group w-100" :class="{ shake: error }">
           <input
             type="email"
             id="email"

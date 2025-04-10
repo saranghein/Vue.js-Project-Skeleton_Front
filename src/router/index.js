@@ -24,14 +24,16 @@ const router = createRouter({
       component: () => import('@/pages/Registration.vue'), // 또는 RegistrationEdit.vue
     },
     {
-      path: '/mypage',
+      path: '/mypage/:id',
       name: 'Mypage',
       component: Mypage,
+      props: true,
     },
     {
-      path: '/mypage-edit',
+      path: '/mypage-edit/:id',
       name: 'MypageEdit',
       component: MypageEdit,
+      props: true,
     },
     {
       path: '/transaction-history',
