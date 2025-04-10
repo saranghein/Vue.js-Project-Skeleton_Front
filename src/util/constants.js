@@ -16,4 +16,3 @@ export const COLORS = {
 // export const API_URL = '/api';
 
 export const API_URL = import.meta.env.VITE_API_URL;
-// export const API_URL = 'https://shadow-charming-newsstand.glitch.me';
