@@ -1,15 +1,23 @@
 <script setup>
-import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
 import { ref, onMounted, computed, watch } from 'vue';
-import Button1 from '@/assets/Registration/Button1.svg';
 import { useOptionStore } from '@/stores/useOptionStore';
 import { RegisterService } from '@/api/RegisterService';
 import { useRoute, useRouter } from 'vue-router';
+
+// <=== 컴포넌트 관련 ===>
+import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
 import CategorySelector from '@/components/Registration/CategorySelector.vue';
 import PaymentMethodSelector from '@/components/Registration/PaymentMethodSelector.vue';
 import Button from '@/components/common/Button.vue';
 import ApiService from '@/util/apiService';
 import DateInput from '@/components/Registration/DateInput.vue';
+import TimeInput from '@/components/Registration/TimeInput.vue';
+import AmountInput from '@/components/Registration/AmountInput.vue';
+import SourceInput from '@/components/Registration/SourceInput.vue';
+import MemoInput from '@/components/Registration/MemoInput.vue';
+// </=== 컴포넌트 관련 ===>
+
+// <=== 변수 관련 ===>
 const selectedDate = ref(''); // 날짜
 const selectedTime = ref(''); // 시간
 const memo = ref(''); // 메모
@@ -19,15 +27,12 @@ const category = ref(''); // 카테고리 선택
 const paymentMethod = ref(''); // 지출 방식
 const store = useOptionStore(); // 스토어 정의
 const selectedType = ref('income'); // 지출인지 수입인지('income' 또는 'expense')
-import TimeInput from '@/components/Registration/TimeInput.vue';
-import AmountInput from '@/components/Registration/AmountInput.vue';
-import SourceInput from '@/components/Registration/SourceInput.vue';
-import MemoInput from '@/components/Registration/MemoInput.vue';
 const selectedCategory = ref(null); // { id, name, type }
 const selectedPaymentMethod = ref(null); // { id, name, type }
 const isLoading = ref(false); // 초기 로딩 플래그
+// </=== 변수 관련 ===>
 
-// ===== 모달 관련 ====
+// <===== 모달 관련 ====>
 import ModalMessage from '@/components/Registration/ModalMessage.vue';
 
 const modalVisible = ref(false);
@@ -55,16 +60,20 @@ const handleModalCancel = () => {
   // 홈 이동은 하지 않고 그대로 유지
 };
 
-// ==== /모달 관련 ====
+const props = defineProps({
+  isModal: Boolean,
+});
+// </==== 모달 관련 ====>
 
-// === api 관련 ===
-
-// 라우트, 라우터
-const route = useRoute();
-const router = useRouter();
+// <=== api 관련 ===>
+const route = useRoute(); // 라우트
+const router = useRouter(); // 라우터
 
 const id = route.params.id; // id 값 가져옴
 const isEditMode = computed(() => !!id); //id 값 있으면 편집모드
+// </=== api 관련 ===>
+
+// <=== '수입', '지출' 필터링 관련 ===>
 
 // "수입', "지출" 변경 이벤트 핸들러
 const onTypeChange = (type) => {
@@ -87,6 +96,9 @@ const getDepositorPlaceholder = computed(() => {
   if (selectedType.value === 'expense') return '사용처를 입력하세요';
   return ''; // 아무것도 선택되지 않은 경우
 });
+// </=== '수입', '지출' 필터링 관련 ===>
+
+// <=== 에러 처리 관련 ===>
 
 // 에러 상태
 const errors = ref({
@@ -96,7 +108,9 @@ const errors = ref({
   category: false,
   depositor: false,
 });
+// </=== 에러 처리 관련 ===>
 
+// <=== 버튼 처리 관련 ===>
 const handleSubmit = async () => {
   const newErrors = {
     date: !selectedDate.value,
@@ -150,7 +164,13 @@ const handleSubmit = async () => {
   }
 };
 
-// 정보 가져오기
+// 뒤로가기 또는 폼 초기화
+const handleCancel = () => {
+  showModal('작성한 내용이 사라집니다.', true);
+};
+// </=== 버튼 처리 관련 ===>
+
+// <=== 정보 로드 관련 ===>
 const loadData = async () => {
   if (isEditMode.value) {
     try {
@@ -179,7 +199,9 @@ const loadData = async () => {
     isLoading.value = false;
   }
 };
+// </=== 정보 로드 관련 ===>
 
+// <=== 초기화 관련 ===>
 // 초기화
 const resetForm = () => {
   selectedDate.value = '';
@@ -199,20 +221,16 @@ const resetForm = () => {
   };
 };
 
-// 뒤로가기 또는 폼 초기화
-const handleCancel = () => {
-  showModal('작성한 내용이 사라집니다.', true);
-};
-
 onMounted(() => {
   store.fetchOptions();
   loadData();
 });
+// </=== 초기화 관련 ===>
 </script>
 
 <template>
+  <!-- 헤더 -->
   <div class="row mt-5">
-    <!-- 헤더 -->
     <div class="col-10 col-md-6 mx-auto">
       <div class="row align-items-center">
         <!-- 왼쪽 아이콘 -->
@@ -236,7 +254,6 @@ onMounted(() => {
   </div>
 
   <!-- 지출 버튼 -->
-
   <div class="row mt-5">
     <div class="col-10 col-md-6 mx-auto mb-5">
       <div class="d-flex justify-content-center gap-2 flex-wrap">
@@ -360,6 +377,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <!-- 모달 등록 -->
   <ModalMessage
     :visible="modalVisible"
     :message="modalMessage"
