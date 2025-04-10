@@ -3,6 +3,7 @@
     <div class="transaction-item__left">
       <category-icon
         :categoryType="data.transactionFlowType"
+        :incomeType="data.transactionCategory"
         :expenseType="data.transactionCategory"
       />
       <div class="transaction-item__content">
