@@ -5,7 +5,7 @@
     </header>
 
     <main>
-      <TransactionSummary
+      <transaction-summary
         class="transaction-summary"
         :selectedType="selectedType"
         :calculateTotalAmount="calculateTotalAmount"
@@ -31,21 +31,22 @@
           />
         </div>
 
-        <EmptyView v-if="filteredTransactions.length === 0" />
+        <empty-view v-if="filteredTransactions.length === 0" />
 
-        <TransactionList
+        <transaction-list
           v-else
           :transactions="filteredTransactions"
           @open="openEditModal"
         />
       </section>
 
-      <FilterBottomModal
+      <filter-bottom-modal
         :type="filters.type"
         :isOpen="isFilterModalOpen"
         @close="closeFilterModal"
       />
-      <BottomModal
+
+      <bottom-modal
         :isOpen="isEditModalOpen"
         @close="closeEditModal"
         @delete="deleteTransaction"
@@ -60,6 +61,7 @@
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+
   background-color: v-bind('COLORS.GREEN02');
 }
 
@@ -76,12 +78,13 @@ main {
 }
 
 .transaction-list__filter {
-  width: 100%;
-  margin-left: auto;
-  margin-top: 15px;
   display: flex;
   align-items: center;
   justify-content: right;
+
+  width: 100%;
+  margin-left: auto;
+  margin-top: 15px;
 }
 
 .transaction-list__filter__label {
@@ -94,25 +97,30 @@ main {
   }
 
   main {
+    display: flex;
+    flex-direction: row;
+
     width: 100%;
     max-width: 1200px;
     margin: 50px auto;
-    display: flex;
-    flex-direction: row;
     gap: 10px;
   }
 
   .transaction-summary {
     flex: 1 1 40%;
     align-self: flex-start;
+
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   }
 
   .transaction-list {
-    margin-top: 0;
     flex: 1 1 60%;
+    overflow-y: scroll;
+
+    margin-top: 0;
+    height: 600px;
     padding: 12px;
     border: 1px solid #eee;
     border-radius: 16px;
@@ -148,6 +156,10 @@ const filters = reactive({
 });
 
 const selectedType = computed(() => filters.type || '전체');
+
+onMounted(() => {
+  fetchTransactions();
+});
 
 const fetchTransactions = async () => {
   try {
@@ -214,10 +226,6 @@ const calculateTotalAmount = () => {
     return '수입과 지출이 같아요';
   }
 };
-
-onMounted(() => {
-  fetchTransactions();
-});
 
 const openFilterModal = () => {
   isFilterModalOpen.value = true;
