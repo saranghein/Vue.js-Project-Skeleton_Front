@@ -14,6 +14,7 @@
     "bootstrap": "^5.3.5",
     "bootstrap5": "^1.1.9",
     "chart.js": "^4.4.8",
+    "dayjs": "^1.11.13",
     "eslint": "^9.24.0",
     "package.json": "^2.0.1",
     "pinia": "^3.0.1",

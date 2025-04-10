@@ -41,7 +41,6 @@ function toggleSidebar() {
   width: 100%;
   height: 56px;
   border-radius: 12px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;

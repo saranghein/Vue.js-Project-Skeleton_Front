@@ -7,9 +7,15 @@
     <div class="responsive-summary-graph">
       <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
       <div>
+        <div class="month-header">
+          <i class="fa-solid fa-chevron-left" @click="goPrevMonth" />
+          <span>{{ currentMonth.format('YYYY년 M월') }}</span>
+          <i class="fa-solid fa-chevron-right" @click="goNextMonth" />
+        </div>
         <!-- 수입 지출 비교 탭 -->
         <div class="balance-summary" @click="goToTransactionHistory">
           <div class="balance-text">
+            <p>이번 달은...</p>
             <p v-if="totalIncome > totalExpense">
               💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
             </p>
@@ -32,7 +38,7 @@
             <h3 class="red">{{ totalExpense.toLocaleString() }}원</h3>
           </div>
           <div class="graph-spacing">
-            <IncomeExpenseChart :data="budget" class="scroll-appear" />
+            <IncomeExpenseChart :data="filteredBudget" class="scroll-appear" />
           </div>
         </section>
       </div>
@@ -40,28 +46,20 @@
       <!-- 오른쪽 컬럼: 그래프들 -->
       <div class="graph-group">
         <div class="graph-spacing">
-          <DoughnutChart :data="budget" type="수입" class="scroll-appear" />
+          <DoughnutChart
+            :data="filteredBudget"
+            type="수입"
+            class="scroll-appear"
+          />
         </div>
         <div class="graph-spacing">
-          <DoughnutChart :data="budget" type="지출" class="scroll-appear" />
+          <DoughnutChart
+            :data="filteredBudget"
+            type="지출"
+            class="scroll-appear"
+          />
         </div>
       </div>
-    </div>
-
-    <!-- 더보기 텍스트 + 아이콘 -->
-    <div v-show="showMoreHint" class="more-hint">
-      <div class="more-text">더보기</div>
-      <svg
-        class="more-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 96 960 960"
-        width="24"
-      >
-        <path
-          d="M480 774 285 579l42-42 153 153 153-153 42 42-195 195Zm0-192L285 387l42-42 153 153 153-153 42 42-195 195Z"
-        />
-      </svg>
     </div>
 
     <!-- FAB 아이콘 버튼 -->
@@ -101,12 +99,13 @@
     <RegistrationModal
       v-if="showRegistration"
       @close="showRegistration = false"
+      @submitted="handleSubmitted"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -116,20 +115,35 @@ import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
 import Calendar from '@/components/Calendar.vue';
 import RegistrationModal from '@/components/RegistrationModal.vue'; // ✅ 모달 import
+import dayjs from 'dayjs';
 
 const router = useRouter();
 
-
 const budget = ref([]);
-const totalIncome = ref(0);
-const totalExpense = ref(0);
+const totalIncome = computed(() =>
+  filteredBudget.value
+    .filter((item) => item.flow_type === '수입')
+    .reduce((sum, item) => sum + item.amount, 0)
+);
+
+const totalExpense = computed(() =>
+  filteredBudget.value
+    .filter((item) => item.flow_type === '지출')
+    .reduce((sum, item) => sum + item.amount, 0)
+);
 const showMoreHint = ref(true);
 const showCalendar = ref(false);
 const showRegistration = ref(false);
+const currentMonth = ref(dayjs());
 
 // ✅ 추가: 카테고리 / 결제수단 목록
 const categories = ref([]);
 const paymentMethods = ref([]);
+const filteredBudget = computed(() =>
+  budget.value.filter((item) =>
+    dayjs(item.date).isSame(currentMonth.value, 'month')
+  )
+);
 
 onMounted(async () => {
   const currentUserId = 'test_user'; // ✅ 로그인된 유저 ID
@@ -189,6 +203,13 @@ function goToAdd() {
 function toggleCalendar() {
   showCalendar.value = !showCalendar.value;
 }
+
+function goPrevMonth() {
+  currentMonth.value = currentMonth.value.subtract(1, 'month');
+}
+function goNextMonth() {
+  currentMonth.value = currentMonth.value.add(1, 'month');
+}
 </script>
 
 <style scoped>
@@ -197,6 +218,21 @@ function toggleCalendar() {
   margin: auto;
   padding: 16px;
   position: relative;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+  font-size: 30px;
+  font-weight: bold;
+}
+.month-header i {
+  cursor: pointer;
+  font-size: 32px;
+  color: rgb(52, 191, 156);
 }
 
 /* 수입 지출 비교 탭 */
@@ -211,7 +247,7 @@ function toggleCalendar() {
   border-radius: 12px;
   height: 150px;
   padding: 20px;
-  margin-top: 40px;
+  margin-top: 30px;
   margin-bottom: 40px;
   font-weight: bold;
   font-size: 25px;
@@ -230,10 +266,16 @@ function toggleCalendar() {
   right: 12px;
   bottom: 8px;
 }
-.balance-text p {
-  margin: 0;
+.balance-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수직 가운데 정렬 */
+  text-align: center; /* 텍스트도 가운데 정렬 */
 }
 
+.balance-text p {
+  margin: 4px 0;
+}
 /* 반응형으로 요약 + 그래프 배치 */
 .responsive-summary-graph {
   display: flex;
@@ -304,31 +346,6 @@ function toggleCalendar() {
   color: #ff3b30;
 }
 
-/* 더보기 텍스트 + 아이콘 */
-.more-hint {
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounce 1.5s infinite ease-in-out;
-  pointer-events: none;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.more-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.35);
-  margin-bottom: -7px;
-}
-.more-icon {
-  width: 32px;
-  height: 32px;
-  fill: rgba(0, 0, 0, 0.35);
-  transform: scaleX(1.5);
-}
 @keyframes bounce {
   0%,
   100% {
