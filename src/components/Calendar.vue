@@ -295,4 +295,46 @@ const attributes = computed(() => {
 :deep(.vc-day-popover-row-indicator .vc-dot) {
   background-color: #2eccaa !important;
 }
+
+:deep(.vc-nav-item) {
+  background-color: #e0faf3 !important;
+}
+
+:deep(.vc-nav-item:hover) {
+  background-color: #c1f0e5 !important;
+}
+
+:deep(.vc-nav-title) {
+  background-color: #e0faf3;
+}
+
+:deep(.vc-nav-title:hover) {
+  background-color: #c1f0e5;
+}
+:deep(.vc-blue.vc-light) {
+  --vc-accent-50: #e0faf3;
+  --vc-accent-100: #c1f0e5;
+  --vc-accent-200: #a3e2d2;
+  --vc-accent-300: #75d3be;
+  --vc-accent-400: #55c9af;
+  --vc-accent-500: #2dbd9e; /* 메인 강조색 */
+  --vc-accent-600: #24a78c;
+  --vc-accent-700: #1c927b;
+  --vc-accent-800: #157d69;
+  --vc-accent-900: #0e6858;
+
+  --vc-bg: #ffffff;
+  --vc-text: #222;
+  --vc-border: #cceee5;
+}
+:deep(.is-active) {
+  color: #1c927b;
+}
+:deep(.is-current) {
+  color: black;
+}
+:deep(.vc-focus:focus) {
+  outline: none !important;
+  box-shadow: none !important;
+}
 </style>

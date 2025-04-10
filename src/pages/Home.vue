@@ -8,7 +8,7 @@
       <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
       <div>
         <!-- 수입 지출 비교 탭 -->
-        <div class="balance-summary" @click="goToDetails">
+        <div class="balance-summary" @click="goToTransactionHistory">
           <div class="balance-text">
             <p v-if="totalIncome > totalExpense">
               💰 {{ (totalIncome - totalExpense).toLocaleString() }}원 벌었어요
@@ -98,6 +98,10 @@
 
     <!-- Calendar 모달 -->
     <Calendar v-if="showCalendar" :budget="budget" @close="toggleCalendar" />
+    <RegistrationModal
+      v-if="showRegistration"
+      @close="showRegistration = false"
+    />
   </div>
 </template>
 
@@ -111,12 +115,14 @@ import HomeHeader from '@/components/common/HomeHeader.vue';
 import IncomeExpenseChart from '@/components/Chart.vue';
 import DoughnutChart from '@/components/DoughnutChart.vue';
 import Calendar from '@/components/Calendar.vue';
+import RegistrationModal from '@/components/RegistrationModal.vue';
 
 const budget = ref([]);
 const totalIncome = ref(0);
 const totalExpense = ref(0);
 const showMoreHint = ref(true);
 const showCalendar = ref(false);
+const showRegistration = ref(false);
 
 const router = useRouter();
 
@@ -143,12 +149,12 @@ function handleScroll() {
   showMoreHint.value = !scrollBottom;
 }
 
-function goToDetails() {
-  router.push('/details');
+function goToTransactionHistory() {
+  router.push('/transaction-history');
 }
 
 function goToAdd() {
-  router.push('/add');
+  showRegistration.value = true;
 }
 
 function toggleCalendar() {
