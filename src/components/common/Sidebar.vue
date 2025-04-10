@@ -2,7 +2,7 @@
 .sideBarContainer {
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   width: 70dvw;
   height: 100dvh;
 
@@ -12,7 +12,7 @@
 
   background-color: white;
   z-index: 20;
-  transform: translateX(-100%);
+  transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
 }
 
