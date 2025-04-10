@@ -95,8 +95,8 @@ import CategoryIcon from '@/components/common/CategoryIcon.vue';
 
 const props = defineProps({
   data: {
-    transactionId: Number,
-    userId: Number,
+    transactionId: String,
+    userId: String,
     transactionFlowType: String,
     transactionDate: String,
     transactionAmount: Number,
