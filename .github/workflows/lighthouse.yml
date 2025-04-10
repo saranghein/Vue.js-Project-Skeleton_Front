@@ -1,0 +1,100 @@
+name: Run Lighthouse CI (Push on PR to master branch)
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches: ['main', 'develop']
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lhci:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.12.1
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.1
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install packages
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Lighthouse CI for Desktop
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm install -g @lhci/cli
+          lhci collect --config=lighthouserc-desktop.js || echo 'Fail to Run Lighthouse CI 💦'
+          lhci upload --config=lighthouserc-desktop.js || echo 'Fail to Run Lighthouse CI 💦'
+
+      - name: Run Lighthouse CI for Mobile
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          lhci collect --config=lighthouserc-mobile.cjs || echo 'Fail to Run Lighthouse CI 💦'
+          lhci upload --config=lighthouserc-mobile.cjs || echo 'Fail to Run Lighthouse CI 💦'
+
+    #   - name: Generate Lighthouse Table Summary
+    #     run: |
+    #       DESKTOP=$(jq '.[0].summary' ./lhci_reports/desktop/manifest.json)
+    #       MOBILE=$(jq '.[0].summary' ./lhci_reports/mobile/manifest.json)
+
+    #       echo "## 📊 Lighthouse Report Summary" > lighthouse-summary.md
+    #       echo "" >> lighthouse-summary.md
+    #       echo "| 항목 | 💻 데스크탑 | 📱 모바일 |" >> lighthouse-summary.md
+    #       echo "|------|-------------|-----------|" >> lighthouse-summary.md
+
+    #       add_signal() {
+    #         score=$1
+    #         if (( $(echo "$score >= 0.9" | bc -l) )); then
+    #           echo "🟢 $score"
+    #         elif (( $(echo "$score >= 0.5" | bc -l) )); then
+    #           echo "🟡 $score"
+    #         else
+    #           echo "🔴 $score"
+    #         fi
+    #       }
+
+    #       declare -A label_map=(
+    #         ["performance"]="성능"
+    #         ["accessibility"]="접근성"
+    #         ["bestPractices"]="베스트 프랙티스"
+    #         ["seo"]="SEO"
+    #         ["pwa"]="PWA"
+    #       )
+
+    #       for key in performance accessibility bestPractices seo pwa; do
+    #         d_raw=$(echo "$DESKTOP" | jq -r ".$key")
+    #         m_raw=$(echo "$MOBILE" | jq -r ".$key")
+    #         d_val=$(add_signal $d_raw)
+    #         m_val=$(add_signal $m_raw)
+    #         label=${label_map[$key]}
+    #         echo "| $label | $d_val | $m_val |" >> lighthouse-summary.md
+    #       done
+
+    #   - name: Comment on PR with Lighthouse Result
+    #     uses: thollander/actions-comment-pull-request@v2
+    #     with:
+    #       filePath: lighthouse-summary.md

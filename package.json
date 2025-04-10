@@ -6,14 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite preview --port 3000"
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "bootstrap": "^5.3.5",
     "bootstrap5": "^1.1.9",
+    "chart.js": "^4.4.8",
+    "dayjs": "^1.11.13",
     "eslint": "^9.24.0",
+    "package.json": "^2.0.1",
     "pinia": "^3.0.1",
+    "v-calendar": "^3.1.2",
     "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {

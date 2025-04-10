@@ -1,44 +1,590 @@
 {
-  "budget": [
+  "money": [
     {
-      "id": 1,
+      "user_id": "test_user",
       "date": "2025-04-01",
-      "type": "income",
+      "time": "10:56",
+      "amount": 444444,
       "category": "월급",
-      "detailCategory": "정기급여",
-      "amout": 3000000,
-      "memo": "4월 급여"
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "테스트",
+      "flow_type": "수입",
+      "id": "7ff1",
+      "user_img": ""
     },
     {
-      "id": 2,
-      "date": "2025-04-02",
-      "type": "expense",
+      "user_id": "test_user",
+      "date": "2025-03-16",
+      "time": "15:26",
+      "amount": 29333,
+      "category": "쇼핑",
+      "source": "쿠팡",
+      "memo": "쇼핑 관련 거래",
+      "flow_type": "지출",
+      "id": "tx001",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-28",
+      "time": "15:54",
+      "amount": 35401,
+      "category": "커피",
+      "source": "메가커피",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx002",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-03",
+      "time": "16:29",
+      "amount": 98741,
+      "category": "커피",
+      "source": "이디야",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx003",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-14",
+      "time": "20:20",
+      "amount": 57718,
+      "category": "문화생활",
+      "source": "유튜브프리미엄",
+      "memo": "문화생활 관련 거래",
+      "flow_type": "지출",
+      "id": "tx004",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-29",
+      "time": "17:45",
+      "amount": 72882,
+      "category": "문화생활",
+      "source": "넷플릭스",
+      "memo": "문화생활 관련 거래",
+      "flow_type": "지출",
+      "id": "tx005",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-25",
+      "time": "10:56",
+      "amount": 33592,
       "category": "식비",
-      "detailCategory": "점심",
-      "amout": 12000,
-      "memo": "회사 근처 식당"
+      "source": "배달의민족",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx006",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-28",
+      "time": "21:05",
+      "amount": 36341,
+      "category": "교통",
+      "source": "지하철",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx007",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-13",
+      "time": "21:49",
+      "amount": 64882,
+      "category": "커피",
+      "source": "이디야",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx008",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-30",
+      "time": "14:12",
+      "amount": 96092,
+      "category": "교통",
+      "source": "버스",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx009",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-28",
+      "time": "21:38",
+      "amount": 93030,
+      "category": "기타",
+      "source": "잡비",
+      "memo": "기타 관련 거래",
+      "flow_type": "지출",
+      "id": "tx010",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-20",
+      "time": "18:21",
+      "amount": 48763,
+      "category": "커피",
+      "source": "스타벅스",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx011",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-04",
+      "time": "18:33",
+      "amount": 27814,
+      "category": "문화생활",
+      "source": "넷플릭스",
+      "memo": "문화생활 관련 거래",
+      "flow_type": "지출",
+      "id": "tx012",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-18",
+      "time": "12:42",
+      "amount": 870113,
+      "category": "월급",
+      "source": "알바",
+      "memo": "월급 관련 거래",
+      "flow_type": "수입",
+      "id": "tx013",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-20",
+      "time": "12:06",
+      "amount": 34250,
+      "category": "식비",
+      "source": "김밥천국",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx014",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-08",
+      "time": "12:34",
+      "amount": 85414,
+      "category": "식비",
+      "source": "편의점",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx015",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-16",
+      "time": "14:56",
+      "amount": 71549,
+      "category": "기타",
+      "source": "기타소득",
+      "memo": "기타 관련 거래",
+      "flow_type": "지출",
+      "id": "tx016",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-15",
+      "time": "17:28",
+      "amount": 12727,
+      "category": "교통",
+      "source": "택시",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx017",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-23",
+      "time": "14:16",
+      "amount": 70774,
+      "category": "식비",
+      "source": "배달의민족",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx018",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-11",
+      "time": "13:52",
+      "amount": 86297,
+      "category": "쇼핑",
+      "source": "무신사",
+      "memo": "쇼핑 관련 거래",
+      "flow_type": "지출",
+      "id": "tx019",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-23",
+      "time": "9:06",
+      "amount": 25061,
+      "category": "교통",
+      "source": "버스",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx020",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-23",
+      "time": "15:42",
+      "amount": 62415,
+      "category": "교통",
+      "source": "지하철",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx021",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-30",
+      "time": "17:59",
+      "amount": 65176,
+      "category": "커피",
+      "source": "스타벅스",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx022",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-13",
+      "time": "9:51",
+      "amount": 10330,
+      "category": "교통",
+      "source": "버스",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx023",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-13",
+      "time": "14:33",
+      "amount": 77715,
+      "category": "식비",
+      "source": "김밥천국",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx024",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-07",
+      "time": "16:54",
+      "amount": 48775,
+      "category": "커피",
+      "source": "메가커피",
+      "memo": "커피 관련 거래",
+      "flow_type": "지출",
+      "id": "tx025",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-04",
+      "time": "17:33",
+      "amount": 48169,
+      "category": "쇼핑",
+      "source": "무신사",
+      "memo": "쇼핑 관련 거래",
+      "flow_type": "지출",
+      "id": "tx026",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-05",
+      "time": "21:06",
+      "amount": 93599,
+      "category": "교통",
+      "source": "택시",
+      "memo": "교통 관련 거래",
+      "flow_type": "지출",
+      "id": "tx027",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-24",
+      "time": "8:18",
+      "amount": 33840,
+      "category": "쇼핑",
+      "source": "11번가",
+      "memo": "쇼핑 관련 거래",
+      "flow_type": "지출",
+      "id": "tx028",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-02",
+      "time": "18:05",
+      "amount": 46678,
+      "category": "식비",
+      "source": "김밥천국",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx029",
+      "user_img": ""
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-03-05",
+      "time": "17:24",
+      "amount": 92924,
+      "category": "식비",
+      "source": "회사 구내식당",
+      "memo": "식비 관련 거래",
+      "flow_type": "지출",
+      "id": "tx030",
+      "user_img": ""
+    },
+    {
+      "id": "7ff1",
+      "user_id": "test_user",
+      "date": "2025-04-01",
+      "time": "10:56",
+      "amount": 44444,
+      "category": "용돈",
+      "source": "ㅇㄹㅇㄹㅇㄹㄴㄹㄴㄹ",
+      "memo": "테스트",
+      "flow_type": "수입"
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-04-03",
+      "time": "13:12",
+      "amount": 556565,
+      "source": "마트",
+      "memo": "테스트",
+      "flow_type": "지출",
+      "id": "1183",
+      "category": "쇼핑"
+    },
+    {
+      "user_id": "test_user",
+      "date": "2025-04-03",
+      "time": "13:16",
+      "amount": 444444,
+      "category": "식비",
+      "source": "마트",
+      "paymentMethod": "신용/체크",
+      "memo": "테스트",
+      "flow_type": "지출",
+      "id": "d941"
+    },
+    {
+      "id": "2c6a",
+      "user_id": "test_user",
+      "date": "2025-04-04",
+      "time": "13:19",
+      "amount": 4444,
+      "category": "월급",
+      "source": "마트",
+      "memo": "",
+      "flow_type": "수입"
+    },
+    {
+      "id": "f656",
+      "user_id": "test_user",
+      "date": "2025-04-04",
+      "time": "13:20",
+      "amount": 44444,
+      "category": "월급",
+      "source": "마트",
+      "paymentMethod": "",
+      "memo": "",
+      "flow_type": "수입"
+    },
+    {
+      "id": "a27a",
+      "user_id": "test_user",
+      "date": "2025-04-04",
+      "time": "13:42",
+      "amount": 90000,
+      "category": "월급",
+      "source": "마트",
+      "paymentMethod": "현금",
+      "memo": "테스트",
+      "flow_type": "수입"
+    },
+    {
+      "id": "19c2",
+      "user_id": "test_user",
+      "date": "2025-04-05",
+      "time": "13:45",
+      "amount": 4444,
+      "category": "월급",
+      "source": "마트",
+      "paymentMethod": "현금",
+      "memo": "dfdfdfsfdff",
+      "flow_type": "수입"
+    },
+    {
+      "id": "eadf",
+      "user_id": "test_user",
+      "date": "2025-04-04",
+      "time": "13:50",
+      "amount": 333,
+      "category": "월급",
+      "source": "마트",
+      "paymentMethod": "현금",
+      "memo": "테스트",
+      "flow_type": "수입"
+    },
+    {
+      "id": "f957",
+      "user_id": "test_user",
+      "date": "2025-04-02",
+      "time": "13:56",
+      "amount": 4444,
+      "category": "문화생활",
+      "source": "마트",
+      "paymentMethod": "신용/체크",
+      "memo": "테스트",
+      "flow_type": "지출"
+    },
+    {
+      "id": "a171",
+      "user_id": "test_user",
+      "date": "2025-04-03",
+      "time": "13:57",
+      "amount": 333,
+      "category": "월급",
+      "source": "마트",
+      "paymentMethod": "계좌이체",
+      "memo": "",
+      "flow_type": "수입"
+    },
+    {
+      "id": "1294",
+      "user_id": "test_user",
+      "date": "2025-03-07",
+      "time": "18:32",
+      "amount": 700,
+      "category": "쇼핑",
+      "source": "새콤달콤",
+      "paymentMethod": "현금",
+      "memo": "맛있다",
+      "flow_type": "지출"
     }
   ],
-  "incomeCategory": [
-    { "id": 1, "name": "월급" },
-    { "id": 2, "name": "용돈" },
-    { "id": 3, "name": "이자" },
-    { "id": 4, "name": "기타수입" }
-  ],
-  "expenseCategory": [
-    { "id": 1, "name": "식비" },
-    { "id": 2, "name": "교통비" },
-    { "id": 3, "name": "취미생활" },
-    { "id": 4, "name": "공과금" }
-  ],
-  "periodicExpense": [
+  "users": [
     {
-      "id": 1,
-      "date": "2025-04-01",
-      "type": "expense",
-      "category": "공과금",
-      "amout": 100000,
-      "memo": "전기요금 자동이체"
+      "id": "1",
+      "profileImg": "blob:http://localhost:5173/1ae925c0-abc4-409d-a455-4d40e899d806",
+      "birth": "1990-01-01",
+      "phone": "010-1234-5678",
+      "email": "hong@example.com",
+      "user_id": "hong1",
+      "user_pw": "securepassword"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "식비",
+      "type": "expense"
+    },
+    {
+      "id": "2",
+      "name": "교통",
+      "type": "expense"
+    },
+    {
+      "id": "3",
+      "name": "쇼핑",
+      "type": "expense"
+    },
+    {
+      "id": "4",
+      "name": "커피",
+      "type": "expense"
+    },
+    {
+      "id": "5",
+      "name": "문화생활",
+      "type": "expense"
+    },
+    {
+      "id": "6",
+      "name": "월급",
+      "type": "income"
+    },
+    {
+      "id": "7",
+      "name": "용돈",
+      "type": "income"
+    },
+    {
+      "id": "8",
+      "name": "기타",
+      "type": "both"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "1",
+      "name": "신용/체크",
+      "type": "expense"
+    },
+    {
+      "id": "2",
+      "name": "현금",
+      "type": "both"
+    },
+    {
+      "id": "3",
+      "name": "간편결제",
+      "type": "expense"
+    },
+    {
+      "id": "4",
+      "name": "휴대폰소액결제",
+      "type": "expense"
+    },
+    {
+      "id": "5",
+      "name": "계좌이체",
+      "type": "income"
+    },
+    {
+      "id": "6",
+      "name": "기타",
+      "type": "both"
     }
   ]
 }
