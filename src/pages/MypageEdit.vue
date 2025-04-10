@@ -2,7 +2,6 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useOptionStore } from '@/stores/useOptionStore';
 import Button from '@/components/common/Button.vue';
-import DateInput from '@/components/Registration/DateInput.vue';
 
 const selectedBirthday = ref(''); // 생년월일
 const inputProfileImg = ref(''); // 프로필 이미지
@@ -16,6 +15,7 @@ import PhoneNumberInput from '@/components/mypageEdit/PhoneNumberInput.vue';
 import EmailInput from '@/components/mypageEdit/EmailInput.vue';
 import Header from '@/components/common/Header.vue';
 import ProfileImgInput from '@/components/mypageEdit/ProfileImgInput.vue';
+import BirthdayInput from '@/components/mypageEdit/BirthdayInput.vue';
 
 //이벤트 핸들러
 const onTypeChange = (type) => {
@@ -73,7 +73,7 @@ onMounted(() => {
     <UsernameInput v-model="inputUsername" :error="errors.username" />
 
     <!-- 생년월일 입력-->
-    <DateInput v-model="selectedBirthday" :error="errors.birthday" />
+    <BirthdayInput v-model="selectedBirthday" :error="errors.birthday" />
 
     <!-- 전화번호 입력-->
     <PhoneNumberInput
