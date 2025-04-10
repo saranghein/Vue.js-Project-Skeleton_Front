@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import { useOptionStore } from '@/stores/useOptionStore';
 import Button from '@/components/common/Button.vue';
 import DateInput from '@/components/Registration/DateInput.vue';
@@ -9,7 +9,7 @@ const inputProfileImg = ref(''); // 프로필 이미지
 const inputEmail = ref(''); // 이메일 주소
 const inputPhone = ref(''); // 전화번호
 const inputUsername = ref(''); // 사용자 이름
-const store = useOptionStore(); // 스토어 정의
+// const store = useOptionStore(); // 스토어 정의
 
 import UsernameInput from '@/components/mypageEdit/UsernameInput.vue';
 import PhoneNumberInput from '@/components/mypageEdit/PhoneNumberInput.vue';
@@ -23,8 +23,8 @@ const onTypeChange = (type) => {
 };
 
 // 에러 상태
-const errors = ref({
-  birtday: false,
+const errors = reactive({
+  birthday: false,
   username: false,
   email: false,
   phone: false,
@@ -34,16 +34,19 @@ const errors = ref({
 // 등록 버튼 클릭했을 때 유효성 검사
 const handleSubmit = () => {
   const newErrors = {
-    birtday: !selectedBirthday.value,
+    birthday: !selectedBirthday.value,
     username: !inputUsername.value,
     email: !inputEmail.value,
-    phone: !inputPhone.value,
+    phone: errors.phone, // PhoneNumberInput에서 전달된 에러 상태 사용
     profileImg: !inputProfileImg.value,
   };
 
-  errors.value = newErrors;
+  Object.assign(errors, newErrors);
 
-  if (Object.values(newErrors).some(Boolean)) return;
+  if (Object.values(newErrors).some(Boolean)) {
+    alert('입력값을 확인해주세요.');
+    return;
+  }
 
   alert('등록 완료!');
 };
@@ -70,13 +73,17 @@ onMounted(() => {
     <UsernameInput v-model="inputUsername" :error="errors.username" />
 
     <!-- 생년월일 입력-->
-    <DateInput v-model="selectedBirthday" :error="errors.date" />
+    <DateInput v-model="selectedBirthday" :error="errors.birthday" />
 
     <!-- 전화번호 입력-->
-    <PhoneNumberInput v-model="inputPhone" />
+    <PhoneNumberInput
+      v-model="inputPhone"
+      :error="errors.phone"
+      @update:error="(value) => (errors.phone = value)"
+    />
 
     <!-- 이메일 주소 입력 -->
-    <EmailInput v-model="inputEmail" />
+    <EmailInput v-model="inputEmail" :error="errors.email" />
     <!-- 등록 버튼 -->
     <div class="row mb-2 mt-3">
       <div class="col-10 col-md-6 mx-auto">
