@@ -97,14 +97,14 @@ export const UsersService = {
   get(id) {
     return ApiService.get('users', id);
   },
-  post() {
-    return ApiService.put(`users/${params.id}`, {
-      nickname: params.nickname,
-      birth: params.birth,
-      phone: params.phone,
-      email: params.email,
-      user_id: params.user_id,
-      user_pw: params.user_pw,
+  put(id, changedData) {
+    return ApiService.put(`users/${id}`, {
+      profileImg: changedData.profileImg,
+      birth: changedData.birth,
+      phone: changedData.phone,
+      email: changedData.email,
+      user_id: changedData.user_id,
+      user_pw: changedData.user_pw,
     });
   },
 };

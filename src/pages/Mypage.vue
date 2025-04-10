@@ -109,25 +109,25 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/useUserStore';
 import { COLORS } from '@/util/constants';
 import Header from '@/components/common/Header.vue';
 import InfoItem from '@/components/mypage/InfoItem.vue';
 import BarcodeImg from '@/assets/barcode.png';
 
+const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 const user = ref(null);
+const userId = route.params.id;
 
 function onClickEdit() {
-  route.push('/mypage-edit');
+  router.push(`/mypage-edit/${userId}`);
 }
 
 // 컴포넌트가 마운트될 때 사용자 정보 가져오기
 onMounted(async () => {
-  console.log('Route params:', route.params); // 디버깅용 로그
-  const userId = route.params.id; // 특정 유저 ID
   if (!userId) {
     console.error('유저 ID가 전달되지 않았습니다.');
     return;

@@ -1,14 +1,18 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue';
-import { useOptionStore } from '@/stores/useOptionStore';
+import { useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/useUserStore';
 import Button from '@/components/common/Button.vue';
+
+const user = ref(null);
+const userStore = useUserStore();
+const route = useRoute();
 
 const selectedBirthday = ref(''); // 생년월일
 const inputProfileImg = ref('');
 const inputEmail = ref(''); // 이메일 주소
 const inputPhone = ref(''); // 전화번호
 const inputUsername = ref(''); // 사용자 이름
-// const store = useOptionStore(); // 스토어 정의
 
 import UsernameInput from '@/components/mypageEdit/UsernameInput.vue';
 import PhoneNumberInput from '@/components/mypageEdit/PhoneNumberInput.vue';
@@ -44,7 +48,7 @@ const isFormValid = computed(() => {
 });
 
 // 등록 버튼 클릭했을 때 유효성 검사
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const newErrors = {
     birthday: errors.birthday,
     username: errors.username,
@@ -60,7 +64,24 @@ const handleSubmit = () => {
     return;
   }
 
-  alert('등록 완료!');
+  try {
+    const updatedData = {
+      birth: selectedBirthday.value,
+      profileImg: inputProfileImg.value,
+      email: inputEmail.value,
+      phone: inputPhone.value,
+      user_id: inputUsername.value,
+      user_pw: 'securepassword',
+    };
+
+    const userId = 1;
+
+    await userStore.updateUser(userId, updatedData);
+    alert('등록 완료!');
+  } catch (error) {
+    console.error('업데이트 실패:', error);
+    alert('업데이트 중 오류가 발생했습니다.');
+  }
 };
 
 // 뒤로가기 또는 폼 초기화
@@ -69,9 +90,23 @@ const handleCancel = () => {
   console.log('취소 클릭');
 };
 
-onMounted(() => {
-  // 초기 데이터 로드 (예: 사용자 정보 가져오기)
-  // TODO: userStore.fetchUser(userId.value) 등을 호출하여 초기화
+function onClickEdit() {
+  route.push(`/mypage-edit/${user.value}`);
+}
+
+// 컴포넌트가 마운트될 때 사용자 정보 가져오기
+onMounted(async () => {
+  const userId = route.params.id;
+  if (!userId) {
+    console.error('유저 ID가 전달되지 않았습니다.');
+    return;
+  }
+  try {
+    user.value = await userStore.fetchUsers(userId);
+    console.log('유저정보입니다', user.value);
+  } catch (error) {
+    console.error('유저 정보를 가져오는 중 오류 발생:', error);
+  }
 });
 </script>
 
