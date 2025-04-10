@@ -49,6 +49,7 @@
         :isOpen="isEditModalOpen"
         @close="closeEditModal"
         @delete="deleteTransaction"
+        @edit="goToRegister"
       />
     </main>
   </div>
@@ -133,7 +134,9 @@ import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 import { COLORS } from '@/util/constants';
 import { reactive, ref, onMounted, computed } from 'vue';
 import { TransactionService } from '@/util/apiService';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const transactions = ref([]);
@@ -234,5 +237,9 @@ const closeFilterModal = (selectedFilters) => {
 
 const closeEditModal = () => {
   isEditModalOpen.value = false;
+};
+
+const goToRegister = () => {
+  router.push(`/register?${transactionId.value}`);
 };
 </script>
