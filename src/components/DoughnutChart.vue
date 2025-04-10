@@ -17,7 +17,7 @@
           <li v-for="item in filteredItems" :key="item.id" class="detail-item">
             <div class="detail-left">
               <p class="detail-date">{{ item.date.slice(0, 10) }}</p>
-              <p class="detail-memo">{{ item.memo }}</p>
+              <p class="detail-memo">{{ item.source }}</p>
             </div>
             <div
               class="detail-amount"
@@ -56,8 +56,21 @@ const observerTarget = ref(null);
 const isVisible = ref(false);
 const selectedCategory = ref(null);
 
-const incomeColors = ['#FFB74D', '#FFD54F', '#81C784', '#4DB6AC', '#A1887F'];
-const expenseColors = ['#4FC3F7', '#64B5F6', '#BA68C8', '#E57373', '#F06292'];
+// CategoryIcon.vue의 아이콘/색상 매핑 그대로 복붙
+const incomeIcons = {
+  월급: ['briefcase', '#4CAF50'],
+  용돈: ['sack-dollar', '#FFC107'],
+  기타: ['folder-plus', '#03A9F4'],
+};
+
+const expenseIcons = {
+  식비: ['utensils', '#FF5722'],
+  쇼핑: ['basket-shopping', '#9C27B0'],
+  커피: ['mug-hot', '#795548'],
+  문화생활: ['masks-theater', '#673AB7'],
+  교통: ['car-side', '#2196F3'],
+  기타: ['folder-minus', '#607D8B'],
+};
 
 const categoryMap = computed(() => {
   const result = {};
@@ -70,8 +83,11 @@ const categoryMap = computed(() => {
 });
 
 const backgroundColors = computed(() => {
-  const palette = props.type === '수입' ? incomeColors : expenseColors;
-  return categoryMap.value.map((_, i) => palette[i % palette.length]);
+  return categoryMap.value.map(([cat]) => {
+    const color =
+      props.type === '수입' ? incomeIcons[cat]?.[1] : expenseIcons[cat]?.[1];
+    return color || '#BDBDBD'; // 기본 색
+  });
 });
 
 const chartData = computed(() => {
