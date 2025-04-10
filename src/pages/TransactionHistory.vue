@@ -145,22 +145,36 @@ import { TransactionService } from '@/util/apiService';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+// 필터 및 모달 상태
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
+
+// 전체 거래 데이터
 const transactions = ref([]);
+
+// 수정 또는 삭제할 거래의 ID
 const transactionId = ref(null);
+
+// 필터 조건 상태
 const filters = reactive({
-  type: null,
-  category: null,
-  date: null,
+  type: null, // 수입 or 지출
+  category: null, // 카테고리 (식비, 교통 등)
+  date: null, // 정렬 순서 (최신순, 오래된 순)
 });
 
+// 선택된 거래 타입 (예: '수입', '지출')
 const selectedType = computed(() => filters.type || '전체');
 
+// 마운트 시 거래 내역 로딩
 onMounted(() => {
   fetchTransactions();
 });
 
+/**
+ * 거래 내역 전체 조회
+ * @description 모든 거래 데이터를 API에서 가져옴
+ */
 const fetchTransactions = async () => {
   try {
     const response = await TransactionService.get();
@@ -170,6 +184,10 @@ const fetchTransactions = async () => {
   }
 };
 
+/**
+ * 필터 조건에 따른 거래 리스트 반환
+ * @returns {Array} 필터링 및 정렬된 거래 배열
+ */
 const filteredTransactions = computed(() => {
   return transactions.value
     .filter((tx) => {
@@ -192,13 +210,21 @@ const filteredTransactions = computed(() => {
     });
 });
 
+/**
+ * 수입/지출 타입 선택 시 필터 변경
+ * @param {string} type - 선택된 타입 ('수입' 또는 '지출')
+ */
 const selectType = (type) => {
   if (filters.type !== type) {
-    filters.category = '전체';
+    filters.category = '전체'; // 타입 변경 시 카테고리 초기화
   }
   filters.type = type;
 };
 
+/**
+ * 거래 삭제
+ * @description 선택된 거래 ID를 기준으로 삭제
+ */
 const deleteTransaction = async () => {
   try {
     await TransactionService.delete(transactionId.value);
@@ -210,12 +236,21 @@ const deleteTransaction = async () => {
   }
 };
 
+/**
+ * 특정 타입(수입 or 지출)의 총 금액 계산
+ * @param {string} type - '수입' 또는 '지출'
+ * @returns {number} 총 금액
+ */
 const sumTransactionsAmount = (type) => {
   return transactions.value
     .filter((tx) => tx.flow_type === type)
     .reduce((acc, tx) => acc + tx.amount, 0);
 };
 
+/**
+ * 전체 수입과 지출 차이를 계산하여 사용자 메시지 반환
+ * @returns {string} 요약 문구
+ */
 const calculateTotalAmount = () => {
   const total = sumTransactionsAmount('수입') - sumTransactionsAmount('지출');
   if (total > 0) {
@@ -227,15 +262,26 @@ const calculateTotalAmount = () => {
   }
 };
 
+/**
+ * 필터 모달 열기
+ */
 const openFilterModal = () => {
   isFilterModalOpen.value = true;
 };
 
+/**
+ * 거래 수정 모달 열기
+ * @param {number|string} id - 거래 ID
+ */
 const openEditModal = (id) => {
   isEditModalOpen.value = true;
   transactionId.value = id;
 };
 
+/**
+ * 필터 모달 닫기 및 필터 값 저장
+ * @param {object} selectedFilters - 선택된 필터들
+ */
 const closeFilterModal = (selectedFilters) => {
   isFilterModalOpen.value = false;
   filters.type = selectedFilters.type;
@@ -243,10 +289,16 @@ const closeFilterModal = (selectedFilters) => {
   filters.date = selectedFilters.date;
 };
 
+/**
+ * 거래 수정 모달 닫기
+ */
 const closeEditModal = () => {
   isEditModalOpen.value = false;
 };
 
+/**
+ * 거래 등록 페이지로 이동
+ */
 const goToRegister = () => {
   router.push(`/register?${transactionId.value}`);
 };
