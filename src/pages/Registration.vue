@@ -52,8 +52,7 @@ const handleModalConfirm = () => {
   modalVisible.value = false;
   if (props.isModal) {
     emit('close');
-  }
-  if (navigateAfterModal.value && isEditMode.value) {
+  } else if (navigateAfterModal.value && isEditMode.value) {
     router.push('/transaction-history');
   } else {
     router.push('/');
@@ -251,7 +250,7 @@ onMounted(() => {
         <!-- 가운데 제목 -->
         <div class="col text-center">
           <span class="registry-title">
-            {{ isEditMode ? '거래 수정' : '거래 등록' }}
+            {{ isEditMode.valueOf ? '거래 수정' : '거래 등록' }}
           </span>
         </div>
 
@@ -364,7 +363,7 @@ onMounted(() => {
       <div class="col-10-md-6 mx-auto">
         <Button
           type="button"
-          :name="isEditMode ? '수정' : '등록'"
+          :name="isEditMode.valueOf ? '수정' : '등록'"
           bgColor="GREEN02"
           color="BLACK"
           :click-handler="handleSubmit"
