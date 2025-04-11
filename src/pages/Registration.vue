@@ -57,7 +57,6 @@ const handleModalConfirm = () => {
     router.push('/transaction-history');
   } else {
     router.push('/');
-
 };
 
 // 취소 눌렀을 때
