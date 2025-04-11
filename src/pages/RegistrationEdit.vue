@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue';
 import { useOptionStore } from '@/stores/useOptionStore';
 import { RegisterService } from '@/api/RegisterService';
 import { useRoute, useRouter } from 'vue-router';
+import { unref } from 'vue';
 
 // <=== 컴포넌트 관련 ===>
 import RegistrationButton from '@/components/Registration/RegistrationButton.vue';
@@ -74,9 +75,7 @@ const props = defineProps({
 const route = useRoute(); // 라우트
 const router = useRouter(); // 라우터
 
-// const id = route.params.id; // id 값 가져옴
-
-// const isEditMode = computed(() => !!id); //id 값 있으면 편집모드
+const id = route.params.id; // id 값 가져옴
 
 // </=== api 관련 ===>
 
@@ -147,11 +146,12 @@ const handleSubmit = async () => {
 
   try {
     let response;
-    response = await RegisterService.create(payload);
+
+    response = await RegisterService.update(id, payload);
     if (response.status >= 200 && response.status < 300) {
-      showModal('등록 완료!', true);
+      showModal('수정 완료!', true);
     } else {
-      showModal('등록 실패!', true);
+      showModal('수정 실패!', true);
     }
   } catch (error) {
     showModal('요청 중 문제가 발생했습니다.', true);
@@ -162,8 +162,44 @@ const handleSubmit = async () => {
 
 // 뒤로가기 또는 폼 초기화
 const handleCancel = () => {
-  showModal('작성한 내용이 사라집니다.', true);
+  // if (isEditMode.value) {
+  showModal('수정한 내용이 사라집니다.', true);
+  // } else {
+  //   showModal('작성한 내용이 사라집니다.', true);
+  // }
 };
+// </=== 버튼 처리 관련 ===>
+
+// <=== 정보 로드 관련 ===>
+const loadData = async () => {
+  // if (isEditMode.value) {
+  try {
+    const { data } = await ApiService.get('money', id);
+    // 존재하지 않는 ID일 경우 에러처리
+    if (!data) {
+      throw new Error('존재하지 않는 거래입니다.');
+    }
+    selectedDate.value = data.date;
+    selectedTime.value = data.time;
+    inputAmount.value = data.amount;
+    memo.value = data.memo;
+    depositor.value = data.source;
+    selectedType.value = data.flow_type === '수입' ? 'income' : 'expense';
+
+    selectedCategory.value = store.categories.find(
+      (cat) => cat.name === data.category
+    );
+    selectedPaymentMethod.value = store.paymentMethods.find(
+      (pay) => pay.name === data.payment
+    );
+  } catch (error) {
+    showModal('존재하지 않는 거래입니다.', true);
+  }
+
+  isLoading.value = false;
+  // }
+};
+// </=== 정보 로드 관련 ===>
 
 // <=== 초기화 관련 ===>
 // 초기화
@@ -187,7 +223,7 @@ const resetForm = () => {
 
 onMounted(() => {
   store.fetchOptions();
-  // loadData();
+  loadData();
 });
 // </=== 초기화 관련 ===>
 </script>
@@ -316,7 +352,7 @@ onMounted(() => {
       <div class="col-10-md-6 mx-auto">
         <Button
           type="button"
-          name="등록"
+          name="수정"
           bgColor="GREEN02"
           color="BLACK"
           :click-handler="handleSubmit"
