@@ -49,9 +49,10 @@ const showModal = (message, goHome = false) => {
 // 확인 눌렀을 때
 const handleModalConfirm = () => {
   modalVisible.value = false;
-  if (navigateAfterModal.value) {
-    router.push('/');
+  if (navigateAfterModal.value && isEditMode) {
+    router.push('/transaction-history');
   }
+  router.push('/');
 };
 
 // 취소 눌렀을 때
