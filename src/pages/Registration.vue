@@ -50,13 +50,14 @@ const showModal = (message, goHome = false) => {
 // 확인 눌렀을 때
 const handleModalConfirm = () => {
   modalVisible.value = false;
- if (props.isModal) {
+  if (props.isModal) {
     emit('close');
   }
   if (navigateAfterModal.value && isEditMode.value) {
     router.push('/transaction-history');
   } else {
     router.push('/');
+  }
 };
 
 // 취소 눌렀을 때
@@ -176,7 +177,6 @@ const handleCancel = () => {
   } else {
     showModal('작성한 내용이 사라집니다.', true);
   }
-
 };
 // </=== 버튼 처리 관련 ===>
 
