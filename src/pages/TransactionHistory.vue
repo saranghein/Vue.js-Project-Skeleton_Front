@@ -50,11 +50,14 @@
         :isOpen="isEditModalOpen"
         @close="closeEditModal"
         @delete="deleteTransaction"
-        @edit="goToRegister"
+        @edit="openEditForm"
       />
-      <registration-modal
-        v-if="isRegistrationModalOpen"
-        @close="isRegistrationModalOpen = false"
+
+      <registration-edit
+        v-if="isRegistrationEditOpen"
+        :editData="selectedTransaction"
+        :isModal="true"
+        @close="isRegistrationEditOpen = false"
       />
     </main>
   </div>
@@ -144,22 +147,40 @@ import EmptyView from '@/components/transactionHistory/EmptyView.vue';
 import FilterBottomModal from '@/components/transactionHistory/FilterBottomModal.vue';
 import BottomModal from '@/components/transactionHistory/BottomModal.vue';
 import { COLORS } from '@/util/constants';
-import { reactive, ref, onMounted, computed } from 'vue';
+import { reactive, ref, onMounted, computed, watchEffect, watch } from 'vue';
 import { TransactionService } from '@/util/apiService';
 import { useRouter } from 'vue-router';
-import RegistrationModal from '@/components/RegistrationModal.vue';
+import RegistrationEdit from './RegistrationEdit.vue';
 
 const router = useRouter();
 
 // 필터 및 모달 상태
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
-const isRegistrationModalOpen = ref(false);
+const isRegistrationEditOpen = ref(false);
 // 전체 거래 데이터
 const transactions = ref([]);
 
 // 수정 또는 삭제할 거래의 ID
 const transactionId = ref(null);
+const selectedTransaction = ref(null); // 거래 데이터 저장
+
+const openEditModal = (id) => {
+  transactionId.value = id;
+  isEditModalOpen.value = true; // ✅ 바텀 모달만 열기
+};
+
+const openEditForm = () => {
+  isEditModalOpen.value = false;
+
+  // 바텀모달 닫힌 후에 RegistrationEdit 모달 열도록 delay 줌
+  setTimeout(() => {
+    selectedTransaction.value = transactions.value.find(
+      (tx) => tx.id === transactionId.value
+    );
+    isRegistrationEditOpen.value = true;
+  }, 300); // transition-duration과 맞추면 깔끔
+};
 
 // 필터 조건 상태
 const filters = reactive({
@@ -275,15 +296,6 @@ const openFilterModal = () => {
 };
 
 /**
- * 거래 수정 모달 열기
- * @param {number|string} id - 거래 ID
- */
-const openEditModal = (id) => {
-  isEditModalOpen.value = true;
-  transactionId.value = id;
-};
-
-/**
  * 필터 모달 닫기 및 필터 값 저장
  * @param {object} selectedFilters - 선택된 필터들
  */
@@ -302,7 +314,7 @@ const goToRegister = () => {
   isEditModalOpen.value = false;
 
   // 2) Registration 모달 열기
-  isRegistrationModalOpen.value = true;
+  isRegistrationEditOpen.value = true;
 };
 /**
  * 거래 수정 모달 닫기
