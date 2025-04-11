@@ -85,8 +85,8 @@ const emit = defineEmits(['click']);
 
 <style scoped>
 .btn-container {
-  min-width: 100px;
-  max-width: 160px;
+  min-width: 6.25rem;
+  max-width: 7.5rem;
   width: 300px;
   height: 44px;
   display: flex;
