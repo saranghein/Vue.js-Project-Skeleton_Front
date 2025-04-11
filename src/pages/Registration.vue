@@ -30,6 +30,7 @@ const selectedType = ref('income'); // 지출인지 수입인지('income' 또는
 const selectedCategory = ref(null); // { id, name, type }
 const selectedPaymentMethod = ref(null); // { id, name, type }
 const isLoading = ref(false); // 초기 로딩 플래그
+const emit = defineEmits(['close']);
 // </=== 변수 관련 ===>
 
 // <===== 모달 관련 ====>
@@ -49,10 +50,14 @@ const showModal = (message, goHome = false) => {
 // 확인 눌렀을 때
 const handleModalConfirm = () => {
   modalVisible.value = false;
-  if (navigateAfterModal.value && isEditMode) {
-    router.push('/transaction-history');
+  if (props.isModal) {
+    emit('close');
   }
-  router.push('/');
+  if (navigateAfterModal.value && isEditMode.value) {
+    router.push('/transaction-history');
+  } else {
+    router.push('/');
+  }
 };
 
 // 취소 눌렀을 때
@@ -167,7 +172,11 @@ const handleSubmit = async () => {
 
 // 뒤로가기 또는 폼 초기화
 const handleCancel = () => {
-  showModal('작성한 내용이 사라집니다.', true);
+  if (isEditMode.value) {
+    showModal('수정한 내용이 사라집니다.', true);
+  } else {
+    showModal('작성한 내용이 사라집니다.', true);
+  }
 };
 // </=== 버튼 처리 관련 ===>
 
