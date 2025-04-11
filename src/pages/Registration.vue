@@ -230,8 +230,8 @@ onMounted(() => {
 
 <template>
   <!-- 헤더 -->
-  <div class="row mt-5">
-    <div class="col-10 col-md-6 mx-auto">
+  <div class="row mt-4">
+    <div class="col-10-md-6 mx-auto">
       <div class="row align-items-center">
         <!-- 왼쪽 아이콘 -->
         <div class="col-auto pointer" @click="handleCancel">
@@ -255,7 +255,7 @@ onMounted(() => {
 
   <!-- 지출 버튼 -->
   <div class="row mt-5">
-    <div class="col-10 col-md-6 mx-auto mb-5">
+    <div class="col-10-md-6 mb-5">
       <div class="d-flex justify-content-center gap-2 flex-wrap">
         <div class="col-auto">
           <RegistrationButton
@@ -351,7 +351,7 @@ onMounted(() => {
     <!-- 버튼 -->
     <!-- 등록 버튼 -->
     <div class="row mb-2 mt-3">
-      <div class="col-10 col-md-6 mx-auto">
+      <div class="col-10-md-6 mx-auto">
         <Button
           type="button"
           :name="isEditMode ? '수정' : '등록'"
@@ -365,7 +365,7 @@ onMounted(() => {
 
     <!-- 취소 버튼 -->
     <div class="row mb-4">
-      <div class="col-10 col-md-6 mx-auto">
+      <div class="col-10-md-6 mx-auto">
         <Button
           type="button"
           name="취소"
@@ -389,6 +389,7 @@ onMounted(() => {
 <style scoped>
 * {
   font-size: 20px;
+  margin: 0;
 }
 .registry-title {
   font-size: 20px;
