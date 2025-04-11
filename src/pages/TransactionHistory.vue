@@ -52,6 +52,10 @@
         @delete="deleteTransaction"
         @edit="goToRegister"
       />
+      <registration-modal
+        v-if="isRegistrationModalOpen"
+        @close="isRegistrationModalOpen = false"
+      />
     </main>
   </div>
 </template>
@@ -143,13 +147,14 @@ import { COLORS } from '@/util/constants';
 import { reactive, ref, onMounted, computed } from 'vue';
 import { TransactionService } from '@/util/apiService';
 import { useRouter } from 'vue-router';
+import RegistrationModal from '@/components/RegistrationModal.vue';
 
 const router = useRouter();
 
 // 필터 및 모달 상태
 const isFilterModalOpen = ref(false);
 const isEditModalOpen = ref(false);
-
+const isRegistrationModalOpen = ref(false);
 // 전체 거래 데이터
 const transactions = ref([]);
 
@@ -290,16 +295,19 @@ const closeFilterModal = (selectedFilters) => {
 };
 
 /**
+ * 거래 등록 페이지로 이동
+ */
+const goToRegister = () => {
+  // 1) BottomModal 먼저 닫기
+  isEditModalOpen.value = false;
+
+  // 2) Registration 모달 열기
+  isRegistrationModalOpen.value = true;
+};
+/**
  * 거래 수정 모달 닫기
  */
 const closeEditModal = () => {
   isEditModalOpen.value = false;
-};
-
-/**
- * 거래 등록 페이지로 이동
- */
-const goToRegister = () => {
-  router.push(`/register/${transactionId.value}`);
 };
 </script>
