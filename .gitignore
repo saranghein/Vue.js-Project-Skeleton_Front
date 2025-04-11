@@ -26,6 +26,9 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
+.env
+.env.development
 *.tsbuildinfo
 .vercel
+.env
+.env.development

@@ -26,7 +26,7 @@ const selectedLabel = computed(() => props.modelValue?.name || '');
 
 <template>
   <div class="row mb-4">
-    <div class="col-10 col-md-6 mx-auto">
+    <div class="col-10-md-6">
       <label class="form-label">거래수단</label>
       <div class="input-group">
         <input
