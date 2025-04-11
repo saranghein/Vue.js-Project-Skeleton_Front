@@ -10,6 +10,7 @@
     "start": "vite preview --port 3000"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.5",
     "bootstrap5": "^1.1.9",
