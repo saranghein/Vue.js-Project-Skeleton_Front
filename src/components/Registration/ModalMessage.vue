@@ -43,8 +43,8 @@ const onCancel = () => {
 
 .modal-content {
   background: white;
-  width: 50%;
-  padding: 3rem 2rem;
+  width: 18.75rem;
+  padding: 2rem 2.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -66,7 +66,7 @@ const onCancel = () => {
 }
 
 .confirm {
-  background-color: #007aff;
+  background-color: #8bbfff;
   color: white;
 }
 
