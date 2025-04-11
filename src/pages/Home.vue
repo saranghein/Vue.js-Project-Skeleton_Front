@@ -4,14 +4,14 @@
     <HomeHeader />
 
     <!-- 요약 + 그래프: 반응형 구성 -->
+    <div class="month-header">
+      <i class="fa-solid fa-chevron-left" @click="goPrevMonth" />
+      <span>{{ currentMonth.format('YYYY년 M월') }}</span>
+      <i class="fa-solid fa-chevron-right" @click="goNextMonth" />
+    </div>
     <div class="responsive-summary-graph">
       <!-- 왼쪽 컬럼: balance-summary + summary(수입/지출 요약) -->
       <div>
-        <div class="month-header">
-          <i class="fa-solid fa-chevron-left" @click="goPrevMonth" />
-          <span>{{ currentMonth.format('YYYY년 M월') }}</span>
-          <i class="fa-solid fa-chevron-right" @click="goNextMonth" />
-        </div>
         <!-- 수입 지출 비교 탭 -->
         <div class="balance-summary" @click="goToTransactionHistory">
           <div class="balance-text">
