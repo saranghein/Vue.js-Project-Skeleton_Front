@@ -300,6 +300,6 @@ const closeEditModal = () => {
  * 거래 등록 페이지로 이동
  */
 const goToRegister = () => {
-  router.push(`/register?${transactionId.value}`);
+  router.push(`/register/${transactionId.value}`);
 };
 </script>

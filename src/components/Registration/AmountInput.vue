@@ -1,6 +1,6 @@
 <template>
   <div class="row mb-4">
-    <div class="col-10 col-md-6 mx-auto">
+    <div class="col-10-md-6">
       <label for="amount" class="form-label">⁎ 금액</label>
       <div class="input-group" :class="{ shake: error }">
         <input

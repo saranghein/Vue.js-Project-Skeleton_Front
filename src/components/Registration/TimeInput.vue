@@ -1,6 +1,6 @@
 <template>
   <div class="row mb-4">
-    <div class="col-10 col-md-6 mx-auto">
+    <div class="col-10md-6">
       <div class="input-group w-50" :class="{ shake: error }">
         <input
           type="time"
