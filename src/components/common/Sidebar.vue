@@ -1,10 +1,12 @@
 <style scoped>
 .sideBarContainer {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 15px;
+  right: 15px;
   width: 70dvw;
-  height: 100dvh;
+  max-width: 400px;
+  /* width: 400px; */
+  height: 40dvh;
 
   display: flex;
   flex-direction: column;
@@ -12,12 +14,18 @@
 
   background-color: white;
   z-index: 20;
-  transform: translateX(100%);
+
+  transform-origin: top right;
+  transform: scale(0);
   transition: transform 0.3s ease-in-out;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  /* border-bottom-left-radius: 20px; */
 }
 
 .sideBarContainer.active {
-  transform: translateX(0);
+  /* transform: translateX(0); */
+  transform: scaleX(1);
 }
 
 .sideBarHeader {
@@ -26,7 +34,11 @@
   display: flex;
   justify-content: flex-start;
 
-  margin: 17px 0 27px 16px;
+  margin: 17px -20px 27px 16px;
+
+  /* font-size: 18px;
+  font-weight: bold;
+  color: #333; */
 }
 
 img {
@@ -37,6 +49,8 @@ img {
 
   object-fit: cover;
   border-radius: 50%;
+  border: 3px solid #eee;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sideBarButtons {
@@ -56,6 +70,16 @@ img {
 p {
   font-size: 16px;
   cursor: pointer;
+}
+.sideBarButtons p {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.sideBarButtons p:hover {
+  background-color: #8bbfff;
 }
 </style>
 

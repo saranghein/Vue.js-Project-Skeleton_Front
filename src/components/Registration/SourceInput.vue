@@ -1,6 +1,6 @@
 <template>
   <div class="row mb-4">
-    <div class="col-10 col-md-6 mx-auto">
+    <div class="col-10-md-6">
       <label for="source" class="form-label">⁎ 출처</label>
       <div class="input-group" :class="{ shake: error }">
         <input

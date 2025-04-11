@@ -32,7 +32,7 @@ const selectedLabel = computed(() => props.modelValue?.name || '');
 
 <template>
   <div class="row mb-4">
-    <div class="col-10 col-md-6 mx-auto">
+    <div class="col-10-md-6">
       <label class="form-label">⁎ 카테고리</label>
       <div class="input-group">
         <input

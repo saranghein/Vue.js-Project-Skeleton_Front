@@ -1,6 +1,8 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+
   /* font-size: 62.5%; */
 }
 .pointer {
@@ -25,6 +27,24 @@
 .shake {
   animation: shake 0.3s ease-in-out;
 }
-.modal-content {
-  padding: 0;
+
+body {
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8bbfff;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #007bffac;
 }
