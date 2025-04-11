@@ -17,7 +17,8 @@
   </div>
 </div>
 
-
+[💸PAYDAY MAYDAY 홈페이지](https://payday-mayday.vercel.app/)<br>
+[💸PAYDAY MAYDAY 서버](https://shadow-charming-newsstand.glitch.me/)
 
 <br/>
 <br/>
