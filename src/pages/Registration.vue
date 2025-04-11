@@ -49,10 +49,11 @@ const showModal = (message, goHome = false) => {
 // 확인 눌렀을 때
 const handleModalConfirm = () => {
   modalVisible.value = false;
-  if (navigateAfterModal.value && isEditMode) {
+  if (navigateAfterModal.value && isEditMode.value) {
     router.push('/transaction-history');
+  } else {
+    router.push('/');
   }
-  router.push('/');
 };
 
 // 취소 눌렀을 때
@@ -167,7 +168,11 @@ const handleSubmit = async () => {
 
 // 뒤로가기 또는 폼 초기화
 const handleCancel = () => {
-  showModal('작성한 내용이 사라집니다.', true);
+  if (isEditMode.value) {
+    showModal('수정한 내용이 사라집니다.', true);
+  } else {
+    showModal('작성한 내용이 사라집니다.', true);
+  }
 };
 // </=== 버튼 처리 관련 ===>
 
